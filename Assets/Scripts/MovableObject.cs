@@ -1,17 +1,38 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using DG.Tweening;
 
 public class MovableObject : MonoBehaviour
 {
     #region Variables
 
+    [Header("Interact Key")]
+    [SerializeField] KeyCode key;
+
+    [Header("Kind Of Manipulation")]
+    [Space(10)]
+    [SerializeField] private bool isRotation;
+    [Space(10)]
+    [SerializeField] private Quaternion leftRotation;
+    [SerializeField] private Quaternion rightRotation;
+    [Space(10)]
+    [SerializeField] private Vector3 movedPosition;
+
     [Header("MovableObject Materials")]
+    [Space(10)]
     [SerializeField] Material unActivatedMaterial;
     [SerializeField] Material activatedMaterial;
 
     private MeshRenderer[] meshRenderers;
+
     private bool isActivated;
+    private bool isRotatedRight;
+    private bool isRotatedLeft;
+
+    private Vector3 basePosition;
+
+    private Quaternion baseRotation;
 
     #endregion
 
@@ -21,13 +42,18 @@ public class MovableObject : MonoBehaviour
         meshRenderers = this.transform.Find("Structure").GetComponentsInChildren<MeshRenderer>();
         foreach (MeshRenderer mr in meshRenderers)
             mr.material = unActivatedMaterial;
+
+        if(isRotation)
+            baseRotation = gameObject.transform.rotation;
+        else
+            basePosition = gameObject.transform.position;
     }
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.W) && !isActivated)
+        if (Input.GetKeyDown(key) && !isActivated)
             ActivateObject();
-        else if (Input.GetKeyDown(KeyCode.W) && isActivated)
+        else if (Input.GetKeyDown(key) && isActivated)
             DeactivateObject();
     }
 
@@ -36,18 +62,54 @@ public class MovableObject : MonoBehaviour
         foreach (MeshRenderer mr in meshRenderers)
             mr.material = activatedMaterial;
 
-        // Actually make the object move out
+        if (!isRotation)
+            MoveObject(movedPosition, 4f);
+        else
+            RotateObject(2f);
 
         isActivated = true;
     }
 
     private void DeactivateObject()
     {
-        foreach (MeshRenderer mr in meshRenderers)
-            mr.material = unActivatedMaterial;
+        if (!isRotation)
+        { 
+            foreach (MeshRenderer mr in meshRenderers)
+                mr.material = unActivatedMaterial;        
+        }
 
-        // Actually make the object move back to origin position
+        if (!isRotation)
+            MoveObject(basePosition, 6f);
+        else
+            RotateObject(3f);
 
         isActivated = false;
+    }
+
+    private void MoveObject(Vector3 targetPosition, float moveTime)
+    {
+        transform.DOMoveX(targetPosition.x, moveTime);
+    }
+
+    private void RotateObject(float moveTime)
+    {
+        if (!isRotatedLeft && !isRotatedRight)
+        {
+            transform.DORotateQuaternion(rightRotation, moveTime);
+            isRotatedRight = true;
+        }
+        else if (isRotatedLeft)
+        {
+            transform.DORotateQuaternion(baseRotation, moveTime);
+            isRotatedLeft = false;
+            foreach (MeshRenderer mr in meshRenderers)
+                mr.material = unActivatedMaterial;
+        }
+        else if (isRotatedRight)
+        {
+            transform.DORotateQuaternion(leftRotation, moveTime*2);
+            isRotatedRight = false;
+            isRotatedLeft = true;
+        }
     }
 }
