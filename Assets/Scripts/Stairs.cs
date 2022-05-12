@@ -6,8 +6,9 @@ public class Stairs : MonoBehaviour
 {
     #region Variables
 
-    [Header("Stairs Material")]
-    [SerializeField] Material material;
+    [Header("Stairs Materials")]
+    [SerializeField] Material normalMaterial;
+    [SerializeField] Material touchedMaterial;
 
     private MeshRenderer[] meshRenderers;
 
@@ -18,6 +19,6 @@ public class Stairs : MonoBehaviour
         //Set the material of the whole object to the material provided in the inspector
         meshRenderers = GetComponentsInChildren<MeshRenderer>();
         foreach (MeshRenderer mr in meshRenderers)
-            mr.material = material;
+            mr.material = normalMaterial;
     }
 }

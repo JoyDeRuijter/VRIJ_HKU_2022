@@ -6,8 +6,16 @@ public class Cube : MonoBehaviour
 {
     #region Variables
 
-    [Header("Cube Material")]
-    [SerializeField] Material material;
+    [Header("Is This Cube Walkable?")]
+    public bool isWalkable;
+
+    [Header("Cube Materials")]
+    [Space(10)]
+    [SerializeField] Material normalMaterial;
+    [SerializeField] Material touchedMaterial;
+
+    [HideInInspector] public int xPos, yPos, zPos;
+    [HideInInspector] public Vector3Int position;
 
     private MeshRenderer meshRenderer;
 
@@ -15,8 +23,24 @@ public class Cube : MonoBehaviour
 
     private void Awake()
     {
+        xPos = (int)transform.localPosition.x;
+        yPos = (int)transform.localPosition.y;
+        zPos = (int)transform.localPosition.z;
+        position = new Vector3Int(xPos, yPos, zPos);
+
         //Set the material of the whole object to the material provided in the inspector
         meshRenderer = GetComponent<MeshRenderer>();
-        meshRenderer.material = material;
+        SetNormalMaterial();
+        
+    }
+
+    public void SetNormalMaterial()
+    {
+        meshRenderer.material = normalMaterial;
+    }
+
+    public void SetTouchedMaterial()
+    { 
+        meshRenderer.material = touchedMaterial;
     }
 }
