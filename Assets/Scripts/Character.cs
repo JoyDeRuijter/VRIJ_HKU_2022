@@ -56,14 +56,14 @@ public class Character : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.GetComponent<Cube>() != null)
+        if (collision.gameObject.GetComponent<Cube>() != null && collision.gameObject.GetComponent<Cube>().isWalkable)
             collision.gameObject.GetComponent<Cube>().SetTouchedMaterial();
         // Do the same for stairs later: collision.gameObject.transform.parent.GetComponent<Stairs>() != null
     }
 
     private void OnCollisionExit(Collision collision)
     {
-        if (collision.gameObject.GetComponent<Cube>() != null)
+        if (collision.gameObject.GetComponent<Cube>() != null && collision.gameObject.GetComponent<Cube>().isWalkable)
             collision.gameObject.GetComponent<Cube>().SetNormalMaterial();
         // Do the same for stairs later: collision.gameObject.transform.parent.GetComponent<Stairs>() != null
     }
