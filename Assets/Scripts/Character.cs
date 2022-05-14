@@ -105,7 +105,8 @@ public class Character : MonoBehaviour
     // Make the character move towards the current node position
     private void Move()
     {
-        transform.position = Vector3.MoveTowards(transform.position, nodes[currentNode].position, Time.deltaTime * movementSpeed);
+        if(direction != Direction.stationary)
+            transform.position = Vector3.MoveTowards(transform.position, nodes[currentNode].position, Time.deltaTime * movementSpeed);
     }
 
     // Make the character change directions and move to the nodes in opposite order

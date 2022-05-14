@@ -7,8 +7,12 @@ public class Door : MonoBehaviour
     #region Variables
 
     [Header("Door Materials")]
-    [SerializeField] Material normalMaterial;
-    [SerializeField] Material useMaterial;
+    [SerializeField] protected Material normalMaterial;
+    [SerializeField] protected Material useMaterial;
+
+    [Space(10)]
+    [Header("Door Usage Time")]
+    [SerializeField] protected float usageTime = 3f;
 
     [Space(10)]
     [Header("Door Paths & Nodes")]
@@ -17,17 +21,17 @@ public class Door : MonoBehaviour
     public int enterNode;
     public int exitNode;
     public Direction exitDirection;
-    [SerializeField] private Door exitDoor;
+    [SerializeField] protected Door exitDoor;
 
     private MeshRenderer[] meshRenderers;
-    private GameManager gameManager;
+    protected GameManager gameManager;
     private Character character;
-    private bool isBlocked;
+    protected bool isBlocked;
     private bool characterIsAtDoor;
 
     #endregion
 
-    private void Awake()
+    public virtual void Awake()
     {
         //Set the material of the whole object to the material provided in the inspector
         meshRenderers = GetComponentsInChildren<MeshRenderer>();
@@ -43,7 +47,7 @@ public class Door : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.GetComponent<Character>() != null && !isBlocked)
-            StartCoroutine(Use(3f));
+            StartCoroutine(Use(usageTime));
     }
 
     public void ChangeMaterial(Material _material)
@@ -52,7 +56,7 @@ public class Door : MonoBehaviour
             mr.material = _material;
     }
 
-    private IEnumerator Use(float _useDuration)
+    public virtual IEnumerator Use(float _useDuration)
     {
         exitDoor.isBlocked = true;
         ChangeMaterial(useMaterial);

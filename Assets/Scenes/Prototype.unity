@@ -15105,6 +15105,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   normalMaterial: {fileID: 2100000, guid: f569dd505422cb74eb50bef1a6eae0ab, type: 2}
   useMaterial: {fileID: 2100000, guid: 9d29b9b6d6acfd64db57069b1b91ad3c, type: 2}
+  usageTime: 3
   enterPathID: 0
   exitPathID: 0
   enterNode: 0
@@ -21994,6 +21995,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 728547046}
+  - component: {fileID: 728547048}
   - component: {fileID: 728547045}
   - component: {fileID: 728547047}
   m_Layer: 0
@@ -22017,6 +22019,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   normalMaterial: {fileID: 2100000, guid: f569dd505422cb74eb50bef1a6eae0ab, type: 2}
   useMaterial: {fileID: 2100000, guid: 9d29b9b6d6acfd64db57069b1b91ad3c, type: 2}
+  usageTime: 3
   enterPathID: 0
   exitPathID: 0
   enterNode: 0
@@ -22053,6 +22056,30 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 0.8241744, y: 1.7604582, z: 0.41945124}
   m_Center: {x: -0.4, y: -0.63102925, z: -0.05224991}
+--- !u!114 &728547048
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 728547044}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8a81ed71284bd374facfb511217e8877, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  normalMaterial: {fileID: 2100000, guid: f569dd505422cb74eb50bef1a6eae0ab, type: 2}
+  useMaterial: {fileID: 2100000, guid: 9d29b9b6d6acfd64db57069b1b91ad3c, type: 2}
+  usageTime: 4
+  enterPathID: 2
+  exitPathID: 2
+  enterNode: 1
+  exitNode: 1
+  exitDirection: 0
+  exitDoor: {fileID: 728547048}
+  exit2PathID: 3
+  exit2Node: 0
+  exit2Direction: 0
 --- !u!1 &732055554
 GameObject:
   m_ObjectHideFlags: 0
@@ -34203,6 +34230,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   normalMaterial: {fileID: 2100000, guid: f569dd505422cb74eb50bef1a6eae0ab, type: 2}
   useMaterial: {fileID: 2100000, guid: 9d29b9b6d6acfd64db57069b1b91ad3c, type: 2}
+  usageTime: 3
   enterPathID: 1
   exitPathID: 0
   enterNode: 0
@@ -34320,9 +34348,13 @@ MonoBehaviour:
   isRotation: 1
   leftRotation: {x: 0, y: 0.70710677, z: 0, w: 0.70710677}
   rightRotation: {x: 0, y: -0.58778524, z: 0, w: 0.809017}
+  numberOfRotationStates: 3
   movedPosition: {x: 0, y: 0, z: 0}
+  numberOfMoveStates: 0
   unActivatedMaterial: {fileID: 2100000, guid: 1b41f7e5ada7d1748acee03356f09699, type: 2}
   activatedMaterial: {fileID: 2100000, guid: 19cae2918e797434bbc88fe721e9a0a9, type: 2}
+  rotationState: 0
+  moveState: 0
 --- !u!1 &1257629143
 GameObject:
   m_ObjectHideFlags: 0
@@ -39445,6 +39477,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   normalMaterial: {fileID: 2100000, guid: f569dd505422cb74eb50bef1a6eae0ab, type: 2}
   useMaterial: {fileID: 2100000, guid: 9d29b9b6d6acfd64db57069b1b91ad3c, type: 2}
+  usageTime: 3
   enterPathID: 0
   exitPathID: 1
   enterNode: 0
@@ -41255,7 +41288,7 @@ GameObject:
   - component: {fileID: 1527054923}
   - component: {fileID: 1527054922}
   m_Layer: 0
-  m_Name: Path_Low1
+  m_Name: Path_Low
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -49392,9 +49425,13 @@ MonoBehaviour:
   isRotation: 0
   leftRotation: {x: 0, y: 0, z: 0, w: 0}
   rightRotation: {x: 0, y: 0, z: 0, w: 0}
+  numberOfRotationStates: 0
   movedPosition: {x: -4, y: 0, z: 0}
+  numberOfMoveStates: 2
   unActivatedMaterial: {fileID: 2100000, guid: 1b41f7e5ada7d1748acee03356f09699, type: 2}
   activatedMaterial: {fileID: 2100000, guid: 19cae2918e797434bbc88fe721e9a0a9, type: 2}
+  rotationState: 0
+  moveState: 0
 --- !u!1 &1887314062
 GameObject:
   m_ObjectHideFlags: 0

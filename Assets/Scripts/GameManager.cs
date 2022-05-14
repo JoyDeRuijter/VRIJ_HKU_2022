@@ -73,7 +73,7 @@ public class GameManager : MonoBehaviour
         Vector3Int nodePosition = new Vector3Int((int)character.GetNodePosition(_doorNode).x, (int)(character.GetNodePosition(_doorNode).y - 5.1), (int)character.GetNodePosition(_doorNode).z);
         
         DestroyCharacter();
-        walkableCubes[nodePosition].ChangeMaterial(walkableCubes[nodePosition].normalMaterial);
+        //walkableCubes[nodePosition].ChangeMaterial(walkableCubes[nodePosition].normalMaterial);
         yield return new WaitForSeconds(_delay);
 
         SpawnCharacter(_newPathID, _startNode, _startDirection);
@@ -83,7 +83,7 @@ public class GameManager : MonoBehaviour
 
     #region Spawning & Destroying
 
-    private void SpawnCharacter(int _pathID, int _startNode, Direction _startDirection) 
+    public void SpawnCharacter(int _pathID, int _startNode, Direction _startDirection) 
     {
         Vector3 spawnPosition = paths[_pathID].gameObject.GetComponent<NodePath>().nodes[_startNode].position;
 
@@ -92,6 +92,15 @@ public class GameManager : MonoBehaviour
         character.path = paths[_pathID].transform;
         character.currentNode = _startNode;
         character.direction = _startDirection;
+    }
+
+    public void DropCharacter(Vector3 _dropPosition)
+    {
+        characterGameObject = Instantiate(characterPrefab, _dropPosition, Quaternion.identity);
+        character = characterGameObject.GetComponent<Character>();
+        character.path = null;
+        character.currentNode = 0;
+        character.direction = Direction.stationary;
     }
 
     private void DestroyCharacter()
