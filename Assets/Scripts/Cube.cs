@@ -9,10 +9,10 @@ public class Cube : MonoBehaviour
     [Header("Is This Cube Walkable?")]
     public bool isWalkable;
 
-    [Header("Cube Materials")]
     [Space(10)]
-    [SerializeField] Material normalMaterial;
-    [SerializeField] Material touchedMaterial;
+    [Header("Cube Materials")]
+    public Material normalMaterial;
+    public Material touchedMaterial;
 
     [HideInInspector] public int xPos, yPos, zPos;
     [HideInInspector] public Vector3Int position;
@@ -30,17 +30,27 @@ public class Cube : MonoBehaviour
 
         //Set the material of the whole object to the material provided in the inspector
         meshRenderer = GetComponent<MeshRenderer>();
-        SetNormalMaterial();
-        
+        ChangeMaterial(normalMaterial);  
     }
 
-    public void SetNormalMaterial()
+    public void ChangeMaterial(Material _material)
     {
-        meshRenderer.material = normalMaterial;
+        meshRenderer.material = _material;
     }
 
-    public void SetTouchedMaterial()
-    { 
-        meshRenderer.material = touchedMaterial;
+    #region Collision With Character
+
+    private void OnCollisionEnter(Collision _collision)
+    {
+        if (_collision.gameObject.GetComponent<Character>() != null && isWalkable)
+            ChangeMaterial(touchedMaterial);
     }
+
+    private void OnCollisionExit(Collision _collision)
+    {
+        if (_collision.gameObject.GetComponent<Character>() != null && isWalkable)
+            ChangeMaterial(normalMaterial);
+    }
+
+    #endregion
 }

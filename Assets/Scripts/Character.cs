@@ -10,21 +10,21 @@ public class Character : MonoBehaviour
     [Header("Character Material")]
     [SerializeField] Material material;
 
-    [Header("Character Movement & Pathfinding")]
     [Space(10)]
+    [Header("Character Movement & Pathfinding")]
     [SerializeField] private float movementSpeed = 1.2f;
     public Transform path;
-    [SerializeField] private int currentNode;
+    public int currentNode;
+    public Direction direction;
    
     [HideInInspector] public int xPos, yPos, zPos;
     [HideInInspector] public Vector3Int position;
     [HideInInspector] public bool isMoving;
+    [HideInInspector] public int currentPathID;
 
     private List<Transform> nodes = new List<Transform>();
     private MeshRenderer meshRenderer;
 
-    private enum Direction { forward, stationary, backward}
-    private Direction direction;
 
     #endregion
 
@@ -40,7 +40,7 @@ public class Character : MonoBehaviour
     private void Start()
     {
         InitializePath();
-        direction = Direction.forward;
+        currentPathID = GetPathID();
     }
 
     private void Update()
@@ -74,25 +74,16 @@ public class Character : MonoBehaviour
             isMoving = true;
         else
             isMoving = false;
-
     }
 
-    #endregion
-
-    #region Collision With Cubes
-
-    private void OnCollisionEnter(Collision collision)
+    private int GetPathID()
     {
-        if (collision.gameObject.GetComponent<Cube>() != null && collision.gameObject.GetComponent<Cube>().isWalkable)
-            collision.gameObject.GetComponent<Cube>().SetTouchedMaterial();
-        // Do the same for stairs later: collision.gameObject.transform.parent.GetComponent<Stairs>() != null
+        return path.gameObject.GetComponent<NodePath>().ID;
     }
 
-    private void OnCollisionExit(Collision collision)
+    public Vector3 GetNodePosition(int _node)
     {
-        if (collision.gameObject.GetComponent<Cube>() != null && collision.gameObject.GetComponent<Cube>().isWalkable)
-            collision.gameObject.GetComponent<Cube>().SetNormalMaterial();
-        // Do the same for stairs later: collision.gameObject.transform.parent.GetComponent<Stairs>() != null
+        return nodes[_node].position;
     }
 
     #endregion
@@ -148,3 +139,5 @@ public class Character : MonoBehaviour
     #endregion
 
 }
+
+    public enum Direction { forward, stationary, backward}

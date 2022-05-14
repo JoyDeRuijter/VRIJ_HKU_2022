@@ -18,7 +18,12 @@ public class Stairs : MonoBehaviour
     {
         //Set the material of the whole object to the material provided in the inspector
         meshRenderers = GetComponentsInChildren<MeshRenderer>();
+        ChangeMaterial(normalMaterial);
+    }
+
+    public void ChangeMaterial(Material _material)
+    {
         foreach (MeshRenderer mr in meshRenderers)
-            mr.material = normalMaterial;
+            mr.material = _material;
     }
 }

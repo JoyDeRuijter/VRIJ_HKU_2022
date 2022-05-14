@@ -6,9 +6,11 @@ public class NodePath : MonoBehaviour
 {
     #region Variables
 
+    [Header ("Path Properties")]
     public Color lineColor;
-    private List<Transform> nodes = new List<Transform>();
     public int ID;
+    
+    [HideInInspector] public List<Transform> nodes = new List<Transform>();
 
     #endregion
 
