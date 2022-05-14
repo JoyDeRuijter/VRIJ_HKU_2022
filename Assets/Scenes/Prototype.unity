@@ -16785,7 +16785,7 @@ GameObject:
   - component: {fileID: 561353099}
   - component: {fileID: 561353098}
   m_Layer: 0
-  m_Name: Path
+  m_Name: Path_1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -16804,6 +16804,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   lineColor: {r: 1, g: 1, b: 1, a: 1}
+  ID: 0
 --- !u!4 &561353099
 Transform:
   m_ObjectHideFlags: 0
@@ -28349,6 +28350,7 @@ MonoBehaviour:
   material: {fileID: 2100000, guid: 948c1f1d7bbb4f4449ed423ab926de6d, type: 2}
   movementSpeed: 1.2
   path: {fileID: 561353099}
+  currentNode: 4
   xPos: 0
   yPos: 0
   zPos: 0
@@ -28365,7 +28367,7 @@ CapsuleCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   m_Radius: 0.5
-  m_Height: 2.0829923
+  m_Height: 2
   m_Direction: 1
   m_Center: {x: 0, y: -0.041495956, z: 0}
 --- !u!23 &1023732958
@@ -28426,7 +28428,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1023732955}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 8, y: 3.1, z: -3.0000005}
+  m_LocalPosition: {x: 8, y: 3.1, z: 0.9999995}
   m_LocalScale: {x: 0.4, y: 0.6, z: 0.4}
   m_ConstrainProportionsScale: 0
   m_Children: []

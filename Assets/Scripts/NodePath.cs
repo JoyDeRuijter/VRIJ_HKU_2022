@@ -8,6 +8,7 @@ public class NodePath : MonoBehaviour
 
     public Color lineColor;
     private List<Transform> nodes = new List<Transform>();
+    public int ID;
 
     #endregion
 

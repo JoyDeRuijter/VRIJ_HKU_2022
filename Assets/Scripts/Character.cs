@@ -14,6 +14,7 @@ public class Character : MonoBehaviour
     [Space(10)]
     [SerializeField] private float movementSpeed = 1.2f;
     public Transform path;
+    [SerializeField] private int currentNode;
    
     [HideInInspector] public int xPos, yPos, zPos;
     [HideInInspector] public Vector3Int position;
@@ -21,7 +22,6 @@ public class Character : MonoBehaviour
 
     private List<Transform> nodes = new List<Transform>();
     private MeshRenderer meshRenderer;
-    private int currentNode = 0;
 
     private enum Direction { forward, stationary, backward}
     private Direction direction;
