@@ -9,6 +9,7 @@ public class PlayerCamera : MonoBehaviour
     [Header("Camera information")]
     [Range(0f, 0.5f), SerializeField] float camSpeed;
     [SerializeField] GameObject camNodesObject;
+    [Range(1f, 10f), SerializeField] float minCamOffset;
 
     [Header("Camera looks at player or centerObject")]
     [SerializeField] bool looksAtPlayer;
@@ -27,6 +28,7 @@ public class PlayerCamera : MonoBehaviour
     {
         if (!playerIsActive) return;
 
+        //camNodesObject.transform.localScale = Vector3.one * Vector3.Distance(centerObject.position, characterTransform.position) * minCamOffset;
         camNodesObject.transform.position = new Vector3(camNodesObject.transform.position.x, characterTransform.position.y + 2, camNodesObject.transform.position.z);
 
         // The camera transforms towards the closest node
