@@ -46,11 +46,14 @@ public class Character : MonoBehaviour
     private void Update()
     {
         UpdatePosition();
+
+        if (Input.GetKeyDown(KeyCode.Space))
+            FlipDirection();
     }
 
     private void FixedUpdate()
     {
-        CheckForMovement();
+        StartCoroutine(CheckForMovement());
         Move();
         CheckWaypointDistance();
     }
@@ -141,4 +144,4 @@ public class Character : MonoBehaviour
 
 }
 
-    public enum Direction { forward, stationary, backward}
+    public enum Direction { forward, stationary, backward }

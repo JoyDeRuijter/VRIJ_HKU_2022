@@ -70,12 +70,8 @@ public class GameManager : MonoBehaviour
 
     public IEnumerator SwitchCharacterPath(int _newPathID, int _startNode, int _doorNode, Direction _startDirection, float _delay)
     {
-        Vector3Int nodePosition = new Vector3Int((int)character.GetNodePosition(_doorNode).x, (int)(character.GetNodePosition(_doorNode).y - 5.1), (int)character.GetNodePosition(_doorNode).z);
-        
-        DestroyCharacter();
-        //walkableCubes[nodePosition].ChangeMaterial(walkableCubes[nodePosition].normalMaterial);
+        DestroyCharacter(_doorNode);
         yield return new WaitForSeconds(_delay);
-
         SpawnCharacter(_newPathID, _startNode, _startDirection);
     }
 
@@ -85,25 +81,31 @@ public class GameManager : MonoBehaviour
 
     public void SpawnCharacter(int _pathID, int _startNode, Direction _startDirection) 
     {
-        Vector3 spawnPosition = paths[_pathID].gameObject.GetComponent<NodePath>().nodes[_startNode].position;
+        if (characterGameObject == null)
+        { 
+            Vector3 spawnPosition = paths[_pathID].gameObject.GetComponent<NodePath>().nodes[_startNode].position;
 
-        characterGameObject = Instantiate(characterPrefab, spawnPosition, Quaternion.identity);
-        character = characterGameObject.GetComponent<Character>();
-        character.path = paths[_pathID].transform;
-        character.currentNode = _startNode;
-        character.direction = _startDirection;
+            characterGameObject = Instantiate(characterPrefab, spawnPosition, Quaternion.identity);
+            character = characterGameObject.GetComponent<Character>();
+            character.path = paths[_pathID].transform;
+            character.currentNode = _startNode;
+            character.direction = _startDirection;
+        }
     }
 
     public void DropCharacter(Vector3 _dropPosition)
     {
-        characterGameObject = Instantiate(characterPrefab, _dropPosition, Quaternion.identity);
-        character = characterGameObject.GetComponent<Character>();
-        character.path = null;
-        character.currentNode = 0;
-        character.direction = Direction.stationary;
+        if (characterGameObject == null)
+        { 
+            characterGameObject = Instantiate(characterPrefab, _dropPosition, Quaternion.identity);
+            character = characterGameObject.GetComponent<Character>();
+            character.path = null;
+            character.currentNode = 0;
+            character.direction = Direction.stationary;
+        }
     }
 
-    private void DestroyCharacter()
+    public void DestroyCharacter(int _doorNode)
     {
         Destroy(characterGameObject);
     }
