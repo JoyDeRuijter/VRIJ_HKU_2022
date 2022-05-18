@@ -19,7 +19,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private Direction startDirection;
 
     public Dictionary<Vector3Int, Cube> walkableCubes = new Dictionary<Vector3Int, Cube>();
-    [HideInInspector] public NodePath[] paths;
+    public NodePath[] paths;
     [HideInInspector] public Character character;
 
     private Stairs stairs;
@@ -92,6 +92,8 @@ public class GameManager : MonoBehaviour
         character.path = paths[_pathID].transform;
         character.currentNode = _startNode;
         character.direction = _startDirection;
+
+        CamFollowsPlayer(characterGameObject);
     }
 
     public void DropCharacter(Vector3 _dropPosition)
@@ -101,10 +103,27 @@ public class GameManager : MonoBehaviour
         character.path = null;
         character.currentNode = 0;
         character.direction = Direction.stationary;
+
+        CamFollowsPlayer(characterGameObject);
+    }
+
+    // If the player spawns in / drops in, the camera has to follow the player
+    public void CamFollowsPlayer(GameObject player)
+    {
+        PlayerCamera.playerIsActive = true;
+        PlayerCamera.characterTransform = player.transform;
+    }
+
+    // And if the player gets destroyed, this function makes sure the PlayerCamera script doesn't create any errors
+    public void CamStopsFollowPlayer()
+    {
+        PlayerCamera.playerIsActive = false;
+        PlayerCamera.characterTransform = null;
     }
 
     private void DestroyCharacter()
     {
+        CamStopsFollowPlayer();
         Destroy(characterGameObject);
     }
 
