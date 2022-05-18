@@ -70,7 +70,7 @@ public class GameManager : MonoBehaviour
 
     public IEnumerator SwitchCharacterPath(int _newPathID, int _startNode, int _doorNode, Direction _startDirection, float _delay)
     {
-        DestroyCharacter(_doorNode);
+        DestroyCharacter();
         yield return new WaitForSeconds(_delay);
         SpawnCharacter(_newPathID, _startNode, _startDirection);
     }
@@ -123,7 +123,7 @@ public class GameManager : MonoBehaviour
         PlayerCamera.characterTransform = null;
     }
 
-    public void DestroyCharacter(int _doorNode)
+    public void DestroyCharacter()
     {
         CamStopsFollowPlayer();
         Destroy(characterGameObject);

@@ -29,17 +29,17 @@ public class MovingDoor : Door
         _exitDoor.isBlocked = true;
         ChangeMaterial(useMaterial);
         _exitDoor.ChangeMaterial(useMaterial);
-        gameManager.DestroyCharacter(enterNode);
+        gameManager.DestroyCharacter();
         yield return new WaitForSeconds(_useDuration);
+
+        yield return new WaitUntil(() => !movableObject.isMoving);
 
         if (movableObject.moveState == 0)
             gameManager.SpawnCharacter(exitPathID, exitNode, exitDirection);
         else if (movableObject.moveState == 1)
             gameManager.SpawnCharacter(exit2PathID, exit2Node, exit2Direction);
-        else
-            Debug.Log("Player should drop now");
 
-        yield return new WaitForSeconds(_useDuration);
+        yield return new WaitForSeconds(_useDuration / 4 * 3);
 
         ChangeMaterial(normalMaterial);
         _exitDoor.ChangeMaterial(normalMaterial);

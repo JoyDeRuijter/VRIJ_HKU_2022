@@ -32,12 +32,11 @@ public class MovableObject : MonoBehaviour
 
     private MeshRenderer[] meshRenderers;
     private bool isActivated;
-    private bool isRotatedRight;
-    private bool isRotatedLeft;
+    [HideInInspector] public bool isMoving;
     private Vector3 basePosition;
     private Quaternion baseRotation;
-    [HideInInspector] public int rotationState = 0; // -1 = moving, 0 = base, 1 = right, 2 = left
-    [HideInInspector] public int moveState = 0; // -1 = moving, 0 = base, 1 = moved forward
+    [HideInInspector] public int rotationState = 0; // 0 = base, 1 = right, 2 = left
+    [HideInInspector] public int moveState = 0; // 0 = base, 1 = moved forward
 
     #endregion
 
@@ -96,47 +95,38 @@ public class MovableObject : MonoBehaviour
 
     private void MoveObject(Vector3 _targetPosition, float _moveTime)
     {
-        moveState = -1;
+        StartCoroutine(CheckIfMoving(_moveTime));
         transform.DOMoveX(_targetPosition.x, _moveTime);
-        StartCoroutine(InMovement(_targetPosition, _moveTime));
+        if (_targetPosition == basePosition) // If it moves back to the base position
+            moveState = 0;
+        else // If it moves out to the moved position 
+            moveState = 1;
     }
 
-    private IEnumerator InMovement(Vector3 _targetPosition, float _moveTime)
-    { 
-        yield return new WaitForSeconds(_moveTime - 1f);
-        if (_targetPosition == basePosition) // If it moves back to the base position
-        {
-            if (Vector3.Distance(_targetPosition, basePosition) <= 1f)
-                moveState = 0;
-        }
-        else if (_targetPosition == movedPosition) // If it moves out to the moved position
-        {  
-            if (Vector3.Distance(_targetPosition, movedPosition) <= 1f)
-                moveState = 1;      
-        }
+    private IEnumerator CheckIfMoving(float _moveTime)
+    {
+        isMoving = true;
+        yield return new WaitForSeconds(_moveTime);
+        isMoving = false;
     }
 
     private void RotateObject(float _moveTime)
     {
-        if (!isRotatedLeft && !isRotatedRight)
+        if (rotationState == 0)
         {
             transform.DORotateQuaternion(rightRotation, _moveTime);
-            isRotatedRight = true;
             rotationState = 1;
         }
-        else if (isRotatedLeft)
-        {
-            transform.DORotateQuaternion(baseRotation, _moveTime);
-            isRotatedLeft = false;
-            ChangeMaterial(unActivatedMaterial);
-            rotationState = 0;
-        }
-        else if (isRotatedRight)
+        else if (rotationState == 1)
         {
             transform.DORotateQuaternion(leftRotation, _moveTime * 2);
-            isRotatedRight = false;
-            isRotatedLeft = true;
             rotationState = 2;
+        }
+        else if (rotationState == 2)
+        {
+            transform.DORotateQuaternion(baseRotation, _moveTime);
+            ChangeMaterial(unActivatedMaterial);
+            rotationState = 0;
         }
     }
 }
