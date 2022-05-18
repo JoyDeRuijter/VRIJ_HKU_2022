@@ -64,8 +64,27 @@ public class GameManager : MonoBehaviour
         NodePath[] unsortedPaths = FindObjectsOfType<NodePath>();
         paths = new NodePath[unsortedPaths.Length];
 
-        for (int i = 0; i < unsortedPaths.Length; i++)
-            paths[unsortedPaths[i].ID] = unsortedPaths[i];
+        SortPaths(unsortedPaths);
+    }
+
+    private void SortPaths(NodePath[] _path)
+    {
+        for (int i = 0; i < _path.Length; i++)
+            paths[_path[i].ID] = _path[i];
+    }
+
+    private List<Transform> SortNodes(List<Transform> _nodes)
+    {
+        List<Transform> newNodes = new List<Transform>();
+        for (int i = 0; i < newNodes.Count - 1; i++)
+        {
+            for (int j = 0; j < _nodes.Count - 1; j++)
+            {
+                if (_nodes[j].name == "Node_" + i)
+                    newNodes[i] = _nodes[j];
+            }
+        }
+        return newNodes;
     }
 
     public IEnumerator SwitchCharacterPath(int _newPathID, int _startNode, int _doorNode, Direction _startDirection, float _delay)
@@ -73,6 +92,26 @@ public class GameManager : MonoBehaviour
         DestroyCharacter();
         yield return new WaitForSeconds(_delay);
         SpawnCharacter(_newPathID, _startNode, _startDirection);
+    }
+
+    public void RemoveNodesFromPath(int _pathID, int[] _nodeIDs)
+    {
+        for (int i = 0; i < paths[_pathID].nodes.Count - 1; i++)
+        {
+            for (int j = 0; j < _nodeIDs.Length; i++)
+            { 
+                if (i == _nodeIDs[j])
+                    paths[_pathID].nodes.RemoveAt(i);
+            }
+        }
+    }
+
+    public void AddNodesToPath(int _pathID, int[] _nodeIDs) 
+    {
+        foreach (int _node in _nodeIDs)
+            paths[_pathID].nodes.Add(paths[_pathID].transform.Find("Node_" + _node));
+
+        paths[_pathID].nodes = SortNodes(paths[_pathID].nodes);
     }
 
     #endregion

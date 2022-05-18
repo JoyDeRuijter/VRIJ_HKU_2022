@@ -53548,6 +53548,8 @@ MonoBehaviour:
   numberOfRotationStates: 0
   movedPosition: {x: -4, y: 0, z: 0}
   numberOfMoveStates: 2
+  affectedPathID: 2
+  affectedNodeIDs: 000000000100000002000000
   unActivatedMaterial: {fileID: 2100000, guid: 1b41f7e5ada7d1748acee03356f09699, type: 2}
   activatedMaterial: {fileID: 2100000, guid: 19cae2918e797434bbc88fe721e9a0a9, type: 2}
   isMoving: 0
@@ -65338,6 +65340,8 @@ MonoBehaviour:
   numberOfRotationStates: 3
   movedPosition: {x: 0, y: 0, z: 0}
   numberOfMoveStates: 0
+  affectedPathID: 0
+  affectedNodeIDs: 
   unActivatedMaterial: {fileID: 2100000, guid: 1b41f7e5ada7d1748acee03356f09699, type: 2}
   activatedMaterial: {fileID: 2100000, guid: 19cae2918e797434bbc88fe721e9a0a9, type: 2}
   isMoving: 0
@@ -83603,6 +83607,8 @@ MonoBehaviour:
   numberOfRotationStates: 3
   movedPosition: {x: 0, y: 0, z: 0}
   numberOfMoveStates: 0
+  affectedPathID: 0
+  affectedNodeIDs: 
   unActivatedMaterial: {fileID: 2100000, guid: 1b41f7e5ada7d1748acee03356f09699, type: 2}
   activatedMaterial: {fileID: 2100000, guid: 19cae2918e797434bbc88fe721e9a0a9, type: 2}
   isMoving: 0
@@ -96422,6 +96428,8 @@ MonoBehaviour:
   numberOfRotationStates: 0
   movedPosition: {x: -4, y: 0, z: 0}
   numberOfMoveStates: 2
+  affectedPathID: 0
+  affectedNodeIDs: 
   unActivatedMaterial: {fileID: 2100000, guid: 1b41f7e5ada7d1748acee03356f09699, type: 2}
   activatedMaterial: {fileID: 2100000, guid: 19cae2918e797434bbc88fe721e9a0a9, type: 2}
   isMoving: 0

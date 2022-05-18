@@ -24,6 +24,8 @@ public class MovableObject : MonoBehaviour
     [Header("If Movement")]
     [SerializeField] private Vector3 movedPosition;
     [SerializeField] private int numberOfMoveStates;
+    [SerializeField] private int affectedPathID;
+    [SerializeField] private int[] affectedNodeIDs; // Nodes that are blocked from the path when the object is moved out
 
     [Space(10)]
     [Header("MovableObject Materials")]
@@ -38,6 +40,8 @@ public class MovableObject : MonoBehaviour
     [HideInInspector] public int rotationState = 0; // 0 = base, 1 = right, 2 = left
     [HideInInspector] public int moveState = 0; // 0 = base, 1 = moved forward
 
+    private GameManager gameManager;
+
     #endregion
 
     private void Awake()
@@ -50,6 +54,11 @@ public class MovableObject : MonoBehaviour
             baseRotation = gameObject.transform.rotation;
         else
             basePosition = gameObject.transform.position;
+    }
+
+    private void Start()
+    {
+        gameManager = GameManager.instance;
     }
 
     private void Update()
@@ -71,7 +80,8 @@ public class MovableObject : MonoBehaviour
         ChangeMaterial(activatedMaterial);
 
         if (!isRotation)
-        { 
+        {
+            moveState = 1;
             MoveObject(movedPosition, 4f);
         }
         else
@@ -83,7 +93,8 @@ public class MovableObject : MonoBehaviour
     private void DeactivateObject()
     {
         if (!isRotation)
-        { 
+        {
+            moveState = 0;
             MoveObject(basePosition, 4f);
             ChangeMaterial(unActivatedMaterial);
         }
@@ -95,19 +106,32 @@ public class MovableObject : MonoBehaviour
 
     private void MoveObject(Vector3 _targetPosition, float _moveTime)
     {
-        StartCoroutine(CheckIfMoving(_moveTime));
+        StartCoroutine(WhileMoving(_moveTime));
         transform.DOMoveX(_targetPosition.x, _moveTime);
-        if (_targetPosition == basePosition) // If it moves back to the base position
-            moveState = 0;
-        else // If it moves out to the moved position 
-            moveState = 1;
     }
 
-    private IEnumerator CheckIfMoving(float _moveTime)
+    private IEnumerator WhileMoving(float _moveTime)
     {
         isMoving = true;
+        //if(moveState == 1 && affectedNodeIDs.Length != 0)
+            //BlockEffectedNodes();
+
         yield return new WaitForSeconds(_moveTime);
+
         isMoving = false;
+        //if(moveState == 0 && affectedNodeIDs.Length != 0)
+           // UnblockEffectedNodes();
+    }
+
+    // THESE FREEZE THE WHOLE GAME, FIND OUT WHY
+    private void BlockEffectedNodes()
+    {
+        gameManager.RemoveNodesFromPath(affectedPathID, affectedNodeIDs);
+    }
+
+    private void UnblockEffectedNodes()
+    { 
+        gameManager.AddNodesToPath(affectedPathID, affectedNodeIDs);
     }
 
     private void RotateObject(float _moveTime)
