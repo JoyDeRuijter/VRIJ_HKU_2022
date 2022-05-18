@@ -29,6 +29,7 @@ public class PlayerCamera : MonoBehaviour
 
         camNodesObject.transform.position = new Vector3(camNodesObject.transform.position.x, characterTransform.position.y + 2, camNodesObject.transform.position.z);
 
+        // The camera transforms towards the closest node
         CameraNodes camNodes = camNodesObject.GetComponent<CameraNodes>();
         smallestDistance = Vector3.Distance(camNodes.nodes[0].position, characterTransform.position);
         closestNode = camNodes.nodes[0];
