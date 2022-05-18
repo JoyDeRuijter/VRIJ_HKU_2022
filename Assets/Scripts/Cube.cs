@@ -40,6 +40,7 @@ public class Cube : MonoBehaviour
 
     #region Collision With Character
 
+    /*
     private void OnCollisionEnter(Collision _collision)
     {
         if (_collision.gameObject.GetComponent<Character>() != null && isWalkable)
@@ -51,6 +52,6 @@ public class Cube : MonoBehaviour
         if (_collision.gameObject.GetComponent<Character>() != null && isWalkable)
             ChangeMaterial(normalMaterial);
     }
-
+    */
     #endregion
 }

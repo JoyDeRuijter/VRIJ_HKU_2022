@@ -59,9 +59,6 @@ public class MovableObject : MonoBehaviour
             ActivateObject();
         else if (Input.GetKeyDown(key) && isActivated)
             DeactivateObject();
-
-        //if (moveState == 1)
-            //Debug.Log("MoveState = 1");
     }
 
     public void ChangeMaterial(Material _material)
@@ -76,7 +73,6 @@ public class MovableObject : MonoBehaviour
 
         if (!isRotation)
         { 
-            moveState = 1;
             MoveObject(movedPosition, 4f);
         }
         else
@@ -89,9 +85,7 @@ public class MovableObject : MonoBehaviour
     {
         if (!isRotation)
         { 
-            moveState = 0;
-            MoveObject(basePosition, 6f);
-            //StartCoroutine(InMovement(6f));
+            MoveObject(basePosition, 4f);
             ChangeMaterial(unActivatedMaterial);
         }
         else
@@ -102,14 +96,24 @@ public class MovableObject : MonoBehaviour
 
     private void MoveObject(Vector3 _targetPosition, float _moveTime)
     {
-        //moveState = -1;
-        transform.DOMoveX(_targetPosition.x, _moveTime);       
+        moveState = -1;
+        transform.DOMoveX(_targetPosition.x, _moveTime);
+        StartCoroutine(InMovement(_targetPosition, _moveTime));
     }
 
-    private IEnumerator InMovement(float _moveTime)
+    private IEnumerator InMovement(Vector3 _targetPosition, float _moveTime)
     { 
-        yield return new WaitForSeconds(_moveTime);
-        moveState = 1;
+        yield return new WaitForSeconds(_moveTime - 1f);
+        if (_targetPosition == basePosition) // If it moves back to the base position
+        {
+            if (Vector3.Distance(_targetPosition, basePosition) <= 1f)
+                moveState = 0;
+        }
+        else if (_targetPosition == movedPosition) // If it moves out to the moved position
+        {  
+            if (Vector3.Distance(_targetPosition, movedPosition) <= 1f)
+                moveState = 1;      
+        }
     }
 
     private void RotateObject(float _moveTime)

@@ -20,12 +20,7 @@ public class MovingDoor : Door
     {
         base.Awake();
         movableObject = this.gameObject.GetComponentInParent<MovableObject>();
-    }
-
-    private void Update()
-    {
-        //if(movableObject.moveState != 0)
-            //Debug.Log(movableObject.moveState);
+        usageTime = 5f;
     }
 
     public override IEnumerator Use(float _useDuration)
@@ -34,23 +29,20 @@ public class MovingDoor : Door
         _exitDoor.isBlocked = true;
         ChangeMaterial(useMaterial);
         _exitDoor.ChangeMaterial(useMaterial);
-        yield return new WaitForSeconds(0.3f);
+        gameManager.DestroyCharacter(enterNode);
+        yield return new WaitForSeconds(_useDuration);
 
-        // WERKT NIET OMDAT DIT AL WORDT UITGEVOERD VOORDAT DE PREFAB UBERHAUPT WORDT VERWIJDERD
-        // MOET ERGENS TIJDENS HET VERVOEREN KUNNEN CHECKEN
         if (movableObject.moveState == 0)
-            StartCoroutine(gameManager.SwitchCharacterPath(exitPathID, exitNode, enterNode, exitDirection, _useDuration));
+            gameManager.SpawnCharacter(exitPathID, exitNode, exitDirection);
         else if (movableObject.moveState == 1)
-            StartCoroutine(gameManager.SwitchCharacterPath(exit2PathID, exit2Node, enterNode, exit2Direction, _useDuration));
-        //else if (moveState == -1)
-        //    gameManager.DropCharacter(transform.position);
+            gameManager.SpawnCharacter(exit2PathID, exit2Node, exit2Direction);
+        else
+            Debug.Log("Player should drop now");
 
-        yield return new WaitForSeconds(_useDuration + 1f);
+        yield return new WaitForSeconds(_useDuration);
 
         ChangeMaterial(normalMaterial);
         _exitDoor.ChangeMaterial(normalMaterial);
-        yield return new WaitForSeconds(_useDuration + 0.5f);
-
         _exitDoor.isBlocked = false;
     }
 }

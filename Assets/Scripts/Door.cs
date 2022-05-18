@@ -25,9 +25,7 @@ public class Door : MonoBehaviour
 
     private MeshRenderer[] meshRenderers;
     protected GameManager gameManager;
-    private Character character;
     protected bool isBlocked;
-    private bool characterIsAtDoor;
 
     #endregion
 
@@ -41,13 +39,15 @@ public class Door : MonoBehaviour
     private void Start()
     {
         gameManager = GameManager.instance;
-        character = gameManager.character;
     }
 
-    private void OnTriggerEnter(Collider other)
+    public virtual void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.GetComponent<Character>() != null && !isBlocked)
+        { 
+            isBlocked = true;
             StartCoroutine(Use(usageTime));
+        }
     }
 
     public void ChangeMaterial(Material _material)
@@ -64,12 +64,10 @@ public class Door : MonoBehaviour
         yield return new WaitForSeconds(0.3f);
 
         StartCoroutine(gameManager.SwitchCharacterPath(exitPathID, exitNode, enterNode, exitDirection, _useDuration));
-        yield return new WaitForSeconds(_useDuration + 1f);
+        yield return new WaitForSeconds(_useDuration);
 
         ChangeMaterial(normalMaterial);
         exitDoor.ChangeMaterial(normalMaterial);
-        yield return new WaitForSeconds(_useDuration + 0.5f);
-
         exitDoor.isBlocked = false;
     }
 }
