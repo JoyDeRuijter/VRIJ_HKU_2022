@@ -12,7 +12,7 @@ public class MovableObject : MonoBehaviour
 
     [Space(10)]
     [Header("Kind Of Manipulation")]
-    [SerializeField] private bool isRotation;
+    public bool isRotation;
     
     [Space(10)]
     [Header("If Rotation")]
@@ -35,6 +35,7 @@ public class MovableObject : MonoBehaviour
     private MeshRenderer[] meshRenderers;
     private bool isActivated;
     [HideInInspector] public bool isMoving;
+    [HideInInspector] public bool isRotating;
     private Vector3 basePosition;
     private Quaternion baseRotation;
     [HideInInspector] public int rotationState = 0; // 0 = base, 1 = right, 2 = left
@@ -123,6 +124,15 @@ public class MovableObject : MonoBehaviour
            // UnblockEffectedNodes();
     }
 
+    private IEnumerator WhileRotating(float _rotateTime)
+    {
+        isRotating = true;
+
+        yield return new WaitForSeconds(_rotateTime);
+
+        isRotating = false;
+    }
+
     // THESE FREEZE THE WHOLE GAME, FIND OUT WHY
     private void BlockEffectedNodes()
     {
@@ -134,21 +144,23 @@ public class MovableObject : MonoBehaviour
         gameManager.AddNodesToPath(affectedPathID, affectedNodeIDs);
     }
 
-    private void RotateObject(float _moveTime)
+    private void RotateObject(float _rotateTime)
     {
+        StartCoroutine(WhileRotating(_rotateTime));
+
         if (rotationState == 0)
         {
-            transform.DORotateQuaternion(rightRotation, _moveTime);
+            transform.DORotateQuaternion(rightRotation, _rotateTime);
             rotationState = 1;
         }
         else if (rotationState == 1)
         {
-            transform.DORotateQuaternion(leftRotation, _moveTime * 2);
+            transform.DORotateQuaternion(leftRotation, _rotateTime * 2);
             rotationState = 2;
         }
         else if (rotationState == 2)
         {
-            transform.DORotateQuaternion(baseRotation, _moveTime);
+            transform.DORotateQuaternion(baseRotation, _rotateTime);
             ChangeMaterial(unActivatedMaterial);
             rotationState = 0;
         }

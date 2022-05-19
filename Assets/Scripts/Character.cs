@@ -96,6 +96,9 @@ public class Character : MonoBehaviour
     // Initialize the first path the character has to follow
     private void InitializePath()
     {
+        if (direction == Direction.stationary)
+            return;
+
         Transform[] pathTransforms = path.GetComponentsInChildren<Transform>();
         
         for (int i = 0; i < pathTransforms.Length; i++)
@@ -115,6 +118,9 @@ public class Character : MonoBehaviour
     // Make the character change directions and move to the nodes in opposite order
     private void FlipDirection()
     {
+        if (direction == Direction.stationary)
+            return;
+
         if (direction == Direction.forward)
             direction = Direction.backward;
         else if (direction == Direction.backward)
@@ -124,6 +130,9 @@ public class Character : MonoBehaviour
     // Check the distance between the character and the currentNode, and move to the next node if it's close enough
     private void CheckWaypointDistance()
     {
+        if (direction == Direction.stationary)
+            return;
+
         if (Vector3.Distance(transform.position, nodes[currentNode].position) < 0.05f)
         {
             if (currentNode == nodes.Count - 1 && direction == Direction.forward) // If the character is on the last node and is moving forward
