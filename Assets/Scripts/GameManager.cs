@@ -121,7 +121,7 @@ public class GameManager : MonoBehaviour
     public void SpawnCharacter(int _pathID, int _startNode, Direction _startDirection) 
     {
         if (characterGameObject == null)
-        { 
+        {
             Vector3 spawnPosition = paths[_pathID].gameObject.GetComponent<NodePath>().nodes[_startNode].position;
 
             characterGameObject = Instantiate(characterPrefab, spawnPosition, Quaternion.identity);
@@ -129,6 +129,7 @@ public class GameManager : MonoBehaviour
             character.path = paths[_pathID].transform;
             character.currentNode = _startNode;
             character.direction = _startDirection;
+            character.boundToPath = true;
         }
 
         CamFollowsPlayer(characterGameObject);
@@ -143,6 +144,7 @@ public class GameManager : MonoBehaviour
             character.path = null;
             character.currentNode = 0;
             character.direction = Direction.stationary;
+            character.boundToPath = true;
         }
 
         CamFollowsPlayer(characterGameObject);

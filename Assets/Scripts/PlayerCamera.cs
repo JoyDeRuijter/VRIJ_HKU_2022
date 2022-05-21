@@ -10,8 +10,10 @@ public class PlayerCamera : MonoBehaviour
     [Range(0f, 0.5f), SerializeField] float camSpeed;
     [SerializeField] GameObject camNodesObject;
     [Range(1f, 10f), SerializeField] float minCamOffset;
+    [SerializeField] float minCamHeight;
+    [SerializeField] float maxCamHeight;
 
-    [Header("Camera looks at player or centerObject")]
+    [Header("Camera looks at player or a centerObject")]
     [SerializeField] bool looksAtPlayer;
     [SerializeField] Transform centerObject;
 
@@ -24,12 +26,17 @@ public class PlayerCamera : MonoBehaviour
 
     #endregion
 
+    private void Start()
+    {
+        camNodesObject.transform.position = new Vector3(camNodesObject.transform.position.x, characterTransform.position.y + 2, camNodesObject.transform.position.z);
+    }
+
     private void Update()
     {
         if (!playerIsActive) return;
 
-        //camNodesObject.transform.localScale = Vector3.one * Vector3.Distance(centerObject.position, characterTransform.position) * minCamOffset;
-        camNodesObject.transform.position = new Vector3(camNodesObject.transform.position.x, characterTransform.position.y + 2, camNodesObject.transform.position.z);
+        if (camNodesObject.transform.position.y > minCamHeight && camNodesObject.transform.position.y < maxCamHeight)
+            camNodesObject.transform.position = new Vector3(camNodesObject.transform.position.x, characterTransform.position.y + 2, camNodesObject.transform.position.z);
 
         // The camera transforms towards the closest node
         CameraNodes camNodes = camNodesObject.GetComponent<CameraNodes>();
