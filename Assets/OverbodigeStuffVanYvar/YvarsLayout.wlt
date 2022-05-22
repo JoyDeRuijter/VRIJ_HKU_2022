@@ -19,7 +19,7 @@ MonoBehaviour:
     width: 2560
     height: 1357
   m_ShowMode: 4
-  m_Title: Game
+  m_Title: Project
   m_RootView: {fileID: 11}
   m_MinSize: {x: 875, y: 300}
   m_MaxSize: {x: 10000, y: 10000}
@@ -43,8 +43,8 @@ MonoBehaviour:
     y: 0
     width: 1797
     height: 253
-  m_MinSize: {x: 100, y: 100}
-  m_MaxSize: {x: 4000, y: 4000}
+  m_MinSize: {x: 102, y: 121}
+  m_MaxSize: {x: 4002, y: 4021}
   m_ActualView: {fileID: 24}
   m_Panes:
   - {fileID: 24}
@@ -147,8 +147,8 @@ MonoBehaviour:
     y: 0
     width: 1007
     height: 1054
-  m_MinSize: {x: 200, y: 200}
-  m_MaxSize: {x: 4000, y: 4000}
+  m_MinSize: {x: 202, y: 221}
+  m_MaxSize: {x: 4002, y: 4021}
   m_ActualView: {fileID: 23}
   m_Panes:
   - {fileID: 23}
@@ -250,8 +250,8 @@ MonoBehaviour:
     y: 0
     width: 332
     height: 1307
-  m_MinSize: {x: 275, y: 50}
-  m_MaxSize: {x: 4000, y: 4000}
+  m_MinSize: {x: 276, y: 71}
+  m_MaxSize: {x: 4001, y: 4021}
   m_ActualView: {fileID: 20}
   m_Panes:
   - {fileID: 20}
@@ -349,8 +349,8 @@ MonoBehaviour:
     y: 0
     width: 948
     height: 1054
-  m_MinSize: {x: 200, y: 200}
-  m_MaxSize: {x: 4000, y: 4000}
+  m_MinSize: {x: 202, y: 221}
+  m_MaxSize: {x: 4002, y: 4021}
   m_ActualView: {fileID: 22}
   m_Panes:
   - {fileID: 22}
@@ -533,8 +533,7 @@ MonoBehaviour:
     m_ShowAllHits: 0
     m_SkipHidden: 0
     m_SearchArea: 1
-    m_Folders:
-    - Assets/OverbodigeStuffVanYvar
+    m_Folders: []
     m_Globs: []
     m_OriginalText: 
   m_ViewMode: 0
@@ -577,21 +576,21 @@ MonoBehaviour:
     scrollPos: {x: 0, y: 0}
     m_SelectedIDs: 
     m_LastClickedID: 0
-    m_ExpandedIDs: ffffffff000000003080000032800000348000003680000038800000dc810000e8810000ea810000ee810000
+    m_ExpandedIDs: ffffffff000000003080000032800000348000003680000038800000dc810000de810000e8810000ea810000ee810000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
-      m_Name: YvarsLayout
-      m_OriginalName: YvarsLayout
+      m_Name: 
+      m_OriginalName: 
       m_EditFieldRect:
         serializedVersion: 2
         x: 0
         y: 0
         width: 0
         height: 0
-      m_UserData: 33272
+      m_UserData: 0
       m_IsWaitingForDelay: 0
       m_IsRenaming: 0
-      m_OriginalEventType: 0
+      m_OriginalEventType: 11
       m_IsRenamingFilename: 1
       m_ClientGUIView: {fileID: 3}
     m_SearchString: 
@@ -707,8 +706,8 @@ MonoBehaviour:
   m_SceneHierarchy:
     m_TreeViewState:
       scrollPos: {x: 0, y: 0}
-      m_SelectedIDs: ea000200
-      m_LastClickedID: 131306
+      m_SelectedIDs: 
+      m_LastClickedID: 0
       m_ExpandedIDs: 58bcfdff42bdfdff70ddffff36fbffffc26700008e6e0000de75000086770000
       m_RenameOverlay:
         m_UserAcceptedRename: 0
@@ -1010,7 +1009,7 @@ MonoBehaviour:
   m_Rotation:
     m_Target: {x: -0.09346253, y: 0.41397768, z: -0.044082474, w: -0.90454876}
     speed: 2
-    m_Value: {x: -0.093450174, y: 0.41392297, z: -0.044076648, w: -0.9044292}
+    m_Value: {x: -0.09346253, y: 0.4139777, z: -0.044082478, w: -0.9045488}
   m_Size:
     m_Target: 3.3752158
     speed: 2
