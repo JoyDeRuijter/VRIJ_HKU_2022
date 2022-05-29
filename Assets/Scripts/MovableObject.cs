@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
 
-public class MovableObject : MonoBehaviour
+public class MovableObject : MonoBehaviour, IActivateable
 {
     #region Variables
 
@@ -168,5 +168,11 @@ public class MovableObject : MonoBehaviour
             ChangeMaterial(unActivatedMaterial);
             rotationState = 0;
         }
+    }
+
+    public void Activate(float time)
+    {
+        ActivateObject();
+        Invoke("DeactivateObject", time);
     }
 }

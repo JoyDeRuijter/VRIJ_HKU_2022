@@ -3,20 +3,26 @@ using UnityEngine;
 [SelectionBase, ExecuteAlways]
 public class ObstacleEffects : MonoBehaviour
 {
-    public enum TileEffect { none, death, drafting }
+    public enum TileEffect { none, death, drafting, activating }
 
     public TileEffect tileEffect;
 
     // Neutral stuff
-    public Material neutralTileColor;
+    [SerializeField] Material neutralTileColor;
 
     // Death stuff
-    public Material deathTileColor;
+    [SerializeField] Material deathTileColor;
 
     // Draft stuff
-    public Material draftTileColor;
-    public float draftSpeed;
-    public float draftHeight;
+    [SerializeField] Material draftTileColor;
+    [SerializeField] float draftSpeed;
+    [SerializeField] float draftHeight;
+
+    // Activate stuff
+    [SerializeField] Material activateTileColor;
+    [SerializeField] GameObject[] activatedObject;
+    [SerializeField] float deactivateAfterTime;
+    
 
     private BoxCollider hitBox;
     private MeshRenderer mr;
@@ -56,6 +62,17 @@ public class ObstacleEffects : MonoBehaviour
                     // do stuff...
                 }
                 break;
+
+            case TileEffect.activating:
+                if (activateTileColor != null) mr.material = activateTileColor;
+                hitBox.center = Vector3.zero + Vector3.up * transform.localScale.y / 2;
+                hitBox.size = Vector3.one;
+
+                if (Application.IsPlaying(gameObject))
+                {
+                    // do stuff...
+                }
+                break;
         }
     }
 
@@ -74,6 +91,17 @@ public class ObstacleEffects : MonoBehaviour
                     Debug.Log("you are now floating!");
                     break;
 
+                case TileEffect.activating:
+                    Debug.Log("You activated something!");
+                    foreach (GameObject obj in activatedObject)
+                    {
+                        if (obj != null)
+                        {
+                            IActivateable temp = obj.GetComponent<IActivateable>();
+                            temp.Activate(deactivateAfterTime);
+                        }
+                    }
+                    break;
             }
         }
     }
@@ -93,7 +121,6 @@ public class ObstacleEffects : MonoBehaviour
                     rb.AddForce(Vector3.up * draftSpeed);
                     Character.isFloating = true;
                     break;
-
             }
         }
     }
@@ -112,6 +139,10 @@ public class ObstacleEffects : MonoBehaviour
 
             case TileEffect.drafting:
                 Gizmos.color = new Color(0 / 255f, 51 / 255f, 0 / 255f, 0.4f);
+                break;
+
+            case TileEffect.activating:
+                Gizmos.color = new Color(255 / 255f, 255 / 255f, 0 / 255f, 0.4f);
                 break;
 
         }
