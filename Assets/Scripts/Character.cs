@@ -77,7 +77,7 @@ public class Character : MonoBehaviour
 
     private void FixedUpdate()
     {
-        StartCoroutine(CheckForMovement());
+        //StartCoroutine(CheckForMovement());
         Move();
     }
 
@@ -145,7 +145,6 @@ public class Character : MonoBehaviour
         else
         {
             SearchForPath();
-
             if (isGrounded)
                 MoveFreely();
         }
@@ -167,8 +166,7 @@ public class Character : MonoBehaviour
     private void GroundCheck()
     {
         Ray ray = new Ray(transform.position, -transform.up);
-        RaycastHit hit;
-        if (Physics.SphereCast(ray, transform.localScale.x - 0.1f, out hit, 0.7f))
+        if (Physics.SphereCast(ray, transform.localScale.x / 2, 0.7f))
             isGrounded = true;
         else
         {
@@ -203,11 +201,12 @@ public class Character : MonoBehaviour
     // Check the distance between the character and the currentNode, and move to the next node if it's close enough
     private void CheckWaypointDistance()
     {
-        if (direction == Direction.stationary)
-            return;
-
         if (Vector3.Distance(transform.position, nodes[currentNode].position) < 0.05f)
         {
+            if (direction == Direction.stationary)
+            {
+                return;
+            }
             if (currentNode == nodes.Count - 1 && direction == Direction.forward) // If the character is on the last node and is moving forward
             {
                 LastNodeBehaviour();
@@ -236,7 +235,7 @@ public class Character : MonoBehaviour
         {
             boundToPath = false;
             rb.useGravity = true;
-            Invoke("PathSearchingDelay", 1f);
+            Invoke("PathSearchingDelay", 2.5f);
         }
     }
 
