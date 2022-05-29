@@ -34,6 +34,7 @@ public class Character : MonoBehaviour
 
     private bool canFindPath = false;
     private bool isGrounded = true;
+    public static bool isFloating = false;
 
     #endregion
 
@@ -155,10 +156,14 @@ public class Character : MonoBehaviour
     private void GroundCheck()
     {
         Ray ray = new Ray(transform.position, -transform.up);
-        if (Physics.SphereCast(ray, transform.localScale.x - 0.1f, 0.7f))
+        RaycastHit hit;
+        if (Physics.SphereCast(ray, transform.localScale.x - 0.1f, out hit, 0.7f))
             isGrounded = true;
         else
-            isGrounded = false;
+        {
+            if (!isFloating)
+                isGrounded = false;
+        }
     }
 
     // Make the character change directions and move to the nodes in opposite order

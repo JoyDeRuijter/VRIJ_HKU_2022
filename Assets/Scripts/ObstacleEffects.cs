@@ -3,9 +3,12 @@ using UnityEngine;
 [SelectionBase, ExecuteAlways]
 public class ObstacleEffects : MonoBehaviour
 {
-    public enum TileEffect { death, drafting }
+    public enum TileEffect { none, death, drafting }
 
     public TileEffect tileEffect;
+
+    // Neutral stuff
+    public Material neutralTileColor;
 
     // Death stuff
     public Material deathTileColor;
@@ -28,6 +31,12 @@ public class ObstacleEffects : MonoBehaviour
     {
         switch (tileEffect)
         {
+            case TileEffect.none:
+                mr.material = neutralTileColor;
+                hitBox.center = Vector3.zero + Vector3.up * transform.localScale.y / 2;
+                hitBox.size = Vector3.one;
+                break;
+
             case TileEffect.death:
                 if (deathTileColor != null) mr.material = deathTileColor;
                 hitBox.center = Vector3.up * 0.15f;
@@ -81,6 +90,7 @@ public class ObstacleEffects : MonoBehaviour
                 case TileEffect.drafting:
                     Rigidbody rb = other.GetComponent<Rigidbody>();
                     rb.AddForce(Vector3.up * draftSpeed);
+                    Character.isFloating = true;
                     break;
 
             }
@@ -91,8 +101,12 @@ public class ObstacleEffects : MonoBehaviour
     {
         switch (tileEffect)
         {
+            case TileEffect.none:
+                Gizmos.color = new Color(200 / 255f, 200 / 255f, 200 / 255f, 0.4f);
+                break;
+
             case TileEffect.death:
-                Gizmos.color = new Color(255 / 255f, 0 / 255f, 0 / 17f, 0.4f);
+                Gizmos.color = new Color(255 / 255f, 0 / 255f, 17 / 255f, 0.4f);
                 break;
 
             case TileEffect.drafting:

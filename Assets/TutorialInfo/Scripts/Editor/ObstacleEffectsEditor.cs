@@ -7,6 +7,9 @@ public class ObstacleEffectsEditor : Editor
     public SerializedProperty
         tileEffect_prop,
 
+        // properties for neutral
+        neutralTileColor_prop,
+
         // properties for death
         deathTileColor_prop,
 
@@ -18,6 +21,9 @@ public class ObstacleEffectsEditor : Editor
     private void OnEnable()
     {
         tileEffect_prop = serializedObject.FindProperty("tileEffect");
+
+        // properties for none
+        neutralTileColor_prop = serializedObject.FindProperty("neutralTileColor");
 
         // properties for death
         deathTileColor_prop = serializedObject.FindProperty("deathTileColor");
@@ -39,6 +45,9 @@ public class ObstacleEffectsEditor : Editor
         EditorGUILayout.LabelField("Adjust settings for " + effect + " effect", EditorStyles.boldLabel);
         switch (effect)
         {
+            case ObstacleEffects.TileEffect.none:
+                EditorGUILayout.PropertyField(neutralTileColor_prop, new GUIContent("Tile color"));
+                break;
             case ObstacleEffects.TileEffect.death:
                 EditorGUILayout.PropertyField(deathTileColor_prop, new GUIContent("Tile color"));
                 break;
