@@ -63,7 +63,6 @@ public class Character : MonoBehaviour
 
     private void Update()
     {
-
         UpdatePosition();
 
         if (Input.GetKeyDown(KeyCode.Space))
