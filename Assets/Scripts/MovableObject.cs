@@ -108,7 +108,12 @@ public class MovableObject : MonoBehaviour
     private void MoveObject(Vector3 _targetPosition, float _moveTime)
     {
         StartCoroutine(WhileMoving(_moveTime));
-        transform.DOMoveX(_targetPosition.x, _moveTime);
+        if(_targetPosition.x != transform.position.x)
+            transform.DOMoveX(_targetPosition.x, _moveTime);
+        if(_targetPosition.y != transform.position.y)
+            transform.DOMoveY(_targetPosition.y, _moveTime);
+        if(_targetPosition.z != transform.position.z)
+            transform.DOMoveZ(_targetPosition.z, _moveTime);
     }
 
     private IEnumerator WhileMoving(float _moveTime)
