@@ -22,6 +22,7 @@ public class Character : MonoBehaviour
     [Space(10)]
     [Header("Other...")]
     [SerializeField] LayerMask onlyPathLayer;
+    [SerializeField] Animator anim;
    
     [HideInInspector] public int xPos, yPos, zPos;
     [HideInInspector] public Vector3Int position;
@@ -53,10 +54,13 @@ public class Character : MonoBehaviour
         currentPathID = GetPathID();
 
         lastDirection = Direction.forward;
+
+        //anim.SetBool("IsWalking", true);
     }
 
     private void Update()
     {
+
         UpdatePosition();
 
         if (Input.GetKeyDown(KeyCode.Space))
