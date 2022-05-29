@@ -43,8 +43,8 @@ public class Character : MonoBehaviour
         UpdatePosition();
 
         //Set the material of the whole object to the material provided in the inspector
-        meshRenderer = GetComponent<MeshRenderer>();
-        meshRenderer.material = material;
+        //meshRenderer = GetComponentInChildren<MeshRenderer>();
+        //meshRenderer.material = material;
     }
 
     private void Start()
@@ -76,7 +76,7 @@ public class Character : MonoBehaviour
     private void UpdatePosition()
     {
         xPos = (int)transform.position.x;
-        yPos = (int)(transform.position.y - 5.1f);
+        yPos = (int)((transform.position.y) - 0.6f);
         zPos = (int)transform.position.z;
         position = new Vector3Int(xPos, yPos, zPos);
     }

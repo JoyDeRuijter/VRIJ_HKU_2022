@@ -39275,6 +39275,8 @@ MonoBehaviour:
   camSpeed: 0.251
   camNodesObject: {fileID: 1077924831}
   minCamOffset: 1.5
+  minCamHeight: 0
+  maxCamHeight: 0
   looksAtPlayer: 0
   centerObject: {fileID: 352595032}
 --- !u!114 &1466814560
@@ -40392,7 +40394,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3d8e0ab36d529c64ebb395f3b02e0ce0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  characterPrefab: {fileID: 7021099195394459601, guid: 00ef3bb8bac2028448c2033e7163aa9c,
+  characterPrefab: {fileID: 5796142838289293790, guid: b609a7ed6e60d8f44b38f575623f3c4e,
     type: 3}
   startPathID: 2
   startNode: 4
