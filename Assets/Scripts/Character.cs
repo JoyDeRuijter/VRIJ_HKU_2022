@@ -24,7 +24,8 @@ public class Character : MonoBehaviour
     [Space(10)]
     [Header("Other...")]
     [SerializeField] LayerMask onlyPathLayer;
-
+    [SerializeField] Animator anim;
+   
     [HideInInspector] public int xPos, yPos, zPos;
     [HideInInspector] public Vector3Int position;
     [HideInInspector] public bool isMoving;
@@ -45,8 +46,8 @@ public class Character : MonoBehaviour
         UpdatePosition();
 
         //Set the material of the whole object to the material provided in the inspector
-        meshRenderer = GetComponent<MeshRenderer>();
-        meshRenderer.material = material;
+        //meshRenderer = GetComponentInChildren<MeshRenderer>();
+        //meshRenderer.material = material;
         rb = GetComponent<Rigidbody>();
     }
 
@@ -56,10 +57,13 @@ public class Character : MonoBehaviour
         currentPathID = GetPathID();
 
         lastDirection = Direction.forward;
+
+        //anim.SetBool("IsWalking", true);
     }
 
     private void Update()
     {
+
         UpdatePosition();
 
         if (Input.GetKeyDown(KeyCode.Space))
@@ -82,7 +86,7 @@ public class Character : MonoBehaviour
     private void UpdatePosition()
     {
         xPos = (int)transform.position.x;
-        yPos = (int)(transform.position.y - 5.1f);
+        yPos = (int)((transform.position.y) - 0.6f);
         zPos = (int)transform.position.z;
         position = new Vector3Int(xPos, yPos, zPos);
     }
