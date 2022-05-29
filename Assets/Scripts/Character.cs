@@ -1,11 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using DG.Tweening;
 
 public class Character : MonoBehaviour
 {
     #region Variables
+
+    public static bool isFloating = false;
 
     [Header("Character Material")]
     [SerializeField] Material material;
@@ -18,11 +19,12 @@ public class Character : MonoBehaviour
     public Direction direction;
     [SerializeField] KeyCode directionChangeKey;
     private Direction lastDirection;
+    [SerializeField] float diesBelowYLevel;
 
     [Space(10)]
     [Header("Other...")]
     [SerializeField] LayerMask onlyPathLayer;
-   
+
     [HideInInspector] public int xPos, yPos, zPos;
     [HideInInspector] public Vector3Int position;
     [HideInInspector] public bool isMoving;
@@ -34,8 +36,8 @@ public class Character : MonoBehaviour
 
     private bool canFindPath = false;
     private bool isGrounded = true;
-    public static bool isFloating = false;
 
+    private Rigidbody rb;
     #endregion
 
     private void Awake()
@@ -45,6 +47,7 @@ public class Character : MonoBehaviour
         //Set the material of the whole object to the material provided in the inspector
         meshRenderer = GetComponent<MeshRenderer>();
         meshRenderer.material = material;
+        rb = GetComponent<Rigidbody>();
     }
 
     private void Start()
@@ -63,6 +66,9 @@ public class Character : MonoBehaviour
             FlipDirection();
 
         GroundCheck();
+
+        if (transform.position.y < diesBelowYLevel)
+            deathBehaviour();
     }
 
     private void FixedUpdate()
@@ -102,6 +108,10 @@ public class Character : MonoBehaviour
         return nodes[_node].position;
     }
 
+    public void deathBehaviour()
+    {
+        UserInterface.reloadScene();
+    }
     #endregion
 
     #region Movement & Pathfinding
@@ -113,7 +123,7 @@ public class Character : MonoBehaviour
             return;
 
         Transform[] pathTransforms = path.GetComponentsInChildren<Transform>();
-        
+
         for (int i = 0; i < pathTransforms.Length; i++)
         {
             if (pathTransforms[i] != path.transform)
@@ -121,7 +131,7 @@ public class Character : MonoBehaviour
         }
     }
 
-    private void Move() 
+    private void Move()
     {
         if (boundToPath)
         {
@@ -140,12 +150,9 @@ public class Character : MonoBehaviour
     // Make the character move towards the current node position
     private void MoveToNode()
     {
-        if (direction != Direction.stationary)
-        {
-            transform.position = Vector3.MoveTowards(transform.position, nodes[currentNode].position, Time.deltaTime * movementSpeed);
-            transform.LookAt(nodes[currentNode].position);
-            transform.rotation = Quaternion.Euler(0, transform.localEulerAngles.y, 0);
-        }
+        transform.position = Vector3.MoveTowards(transform.position, nodes[currentNode].position, Time.deltaTime * movementSpeed);
+        transform.LookAt(nodes[currentNode].position);
+        transform.rotation = Quaternion.Euler(0, transform.localEulerAngles.y, 0);
     }
 
     private void MoveFreely()
@@ -224,6 +231,7 @@ public class Character : MonoBehaviour
         else
         {
             boundToPath = false;
+            rb.useGravity = true;
             Invoke("PathSearchingDelay", 1f);
         }
     }
@@ -247,13 +255,14 @@ public class Character : MonoBehaviour
             NodePath foundPath = hit.transform.GetComponentInParent<NodePath>();
             nodes = foundPath.nodes;
             currentPathID = foundPath.ID;
-            string[] nodeNameArray = hit.transform.name.Split('_');
-            currentNode = int.Parse(nodeNameArray[nodeNameArray.Length - 1]);
-            transform.position = GetNodePosition(currentNode);
+            string temp = hit.transform.name;
+            temp = temp.Remove(0, 6);
+            temp = temp.Remove(temp.Length - 1);
+            currentNode = int.Parse(temp);
             boundToPath = true;
             canFindPath = false;
             direction = Direction.stationary;
-            Debug.Log("I seem to have found my way again!");
+            rb.useGravity = false;
         }
     }
 
@@ -261,10 +270,8 @@ public class Character : MonoBehaviour
     {
         if (Physics.Raycast(transform.position, transform.forward, castDistance))
         {
-            Debug.Log("Hmm... seems there is a wall here");
             return true;
         }
-        Debug.Log("Oh Lord... I'm lost...");
         return false;
     }
 
@@ -272,4 +279,4 @@ public class Character : MonoBehaviour
 
 }
 
-    public enum Direction { forward, stationary, backward }
+public enum Direction { forward, stationary, backward }

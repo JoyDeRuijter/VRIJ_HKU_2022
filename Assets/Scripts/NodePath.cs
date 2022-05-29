@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -6,10 +5,10 @@ public class NodePath : MonoBehaviour
 {
     #region Variables
 
-    [Header ("Path Properties")]
+    [Header("Path Properties")]
     public Color lineColor;
     public int ID;
-    
+
     [HideInInspector] public List<Transform> nodes = new List<Transform>();
 
     #endregion

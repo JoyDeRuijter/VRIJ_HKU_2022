@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class RotatingDoor : Door
@@ -32,7 +31,7 @@ public class RotatingDoor : Door
         if (movableObject.rotationState == 0)
             yield break;
 
-            _exitDoor.isBlocked = true;
+        _exitDoor.isBlocked = true;
         ChangeMaterial(useMaterial);
         _exitDoor.ChangeMaterial(useMaterial);
         gameManager.DestroyCharacter();

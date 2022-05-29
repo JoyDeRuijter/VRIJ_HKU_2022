@@ -66,6 +66,7 @@ public class ObstacleEffects : MonoBehaviour
             switch (tileEffect)
             {
                 case TileEffect.death:
+                    character.deathBehaviour();
                     Debug.Log("you died!");
                     break;
 
