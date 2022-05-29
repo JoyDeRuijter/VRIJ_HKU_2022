@@ -69,7 +69,6 @@ public class Character : MonoBehaviour
             FlipDirection();
 
         GroundCheck();
-
         if (transform.position.y < diesBelowYLevel)
             deathBehaviour();
     }
@@ -234,7 +233,7 @@ public class Character : MonoBehaviour
         {
             boundToPath = false;
             rb.useGravity = true;
-            Invoke("PathSearchingDelay", 2.5f);
+            Invoke("PathSearchingDelay", 1.5f);
         }
     }
 
