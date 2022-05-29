@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerCamera : MonoBehaviour
@@ -12,6 +10,7 @@ public class PlayerCamera : MonoBehaviour
     [Range(1f, 10f), SerializeField] float minCamOffset;
     [SerializeField] float minCamHeight;
     [SerializeField] float maxCamHeight;
+    [SerializeField] int startingNode;
 
     [Header("Camera looks at player or a centerObject")]
     [SerializeField] bool looksAtPlayer;
@@ -29,6 +28,7 @@ public class PlayerCamera : MonoBehaviour
     private void Start()
     {
         camNodesObject.transform.position = new Vector3(camNodesObject.transform.position.x, characterTransform.position.y + 2, camNodesObject.transform.position.z);
+        transform.position = camNodesObject.GetComponent<CameraNodes>().nodes[startingNode].position;
     }
 
     private void Update()

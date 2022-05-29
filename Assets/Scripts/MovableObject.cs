@@ -44,6 +44,10 @@ public class MovableObject : MonoBehaviour
     private GameManager gameManager;
 
     #endregion
+    private void OnEnable()
+    {
+        DOTween.Clear(true);
+    }
 
     private void Awake()
     {
