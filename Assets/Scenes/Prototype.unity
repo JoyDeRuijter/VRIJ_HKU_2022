@@ -13181,9 +13181,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   characterPrefab: {fileID: 6483646236678325386, guid: 1efedc3bef340ab468a111285e3677a9,
     type: 3}
-  startPathID: 6
-  startNode: 9
-  startDirection: 0
+  startPathID: 0
+  startNode: 2
+  startDirection: 2
   paths: []
   character: {fileID: 0}
 --- !u!4 &1504053329

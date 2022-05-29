@@ -37,6 +37,7 @@ public class Character : MonoBehaviour
 
     private bool canFindPath = false;
     private bool isGrounded = true;
+    private bool isFalling;
 
     private Rigidbody rb;
     #endregion
@@ -77,6 +78,23 @@ public class Character : MonoBehaviour
     {
         //StartCoroutine(CheckForMovement());
         Move();
+
+        if (rb.velocity.y <= -0.1f)
+        {
+            isFalling = true;
+            anim.SetBool("IsFalling", true);
+        }
+
+        if (isFalling && rb.velocity.y >= 0)
+        {
+            isFalling = false;
+            Invoke("PlayLandAnimation", 0.1f);
+        }
+    }
+
+    private void PlayLandAnimation()
+    {
+        anim.SetBool("IsFalling", false);
     }
 
     #region Helper Functions
@@ -226,7 +244,7 @@ public class Character : MonoBehaviour
     private void LastNodeBehaviour()
     {
         // CAUSES PLAYER TO STOP WALKING AFTER ONE NODE IF THEY LANDED ON A LAST/FIRST NODE
-        // EITHER FIX THIS OR NEVER LET A PLAYER LAND ON A LAST/FIST NODE
+        // EITHER FIX THIS OR NEVER LET A PLAYER LAND ON A LAST/FIRST NODE
         if (WallCheck(0.6f))
             FlipDirection();
         else
@@ -262,7 +280,7 @@ public class Character : MonoBehaviour
             currentNode = int.Parse(temp);
             boundToPath = true;
             canFindPath = false;
-            direction = Direction.stationary;
+            direction = Direction.stationary; // Sorry Yvar, heb dit ff ui gezet want het ziet er heel poepie uit als hij steeds stopt en blijft animeren
             rb.useGravity = false;
         }
     }
