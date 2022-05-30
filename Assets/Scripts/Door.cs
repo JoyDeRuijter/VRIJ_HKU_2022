@@ -32,8 +32,8 @@ public class Door : MonoBehaviour
     public virtual void Awake()
     {
         //Set the material of the whole object to the material provided in the inspector
-        meshRenderers = GetComponentsInChildren<MeshRenderer>();
-        ChangeMaterial(normalMaterial);
+        //meshRenderers = GetComponentsInChildren<MeshRenderer>();
+        //ChangeMaterial(normalMaterial);
     }
 
     private void Start()
@@ -57,15 +57,15 @@ public class Door : MonoBehaviour
     {
         isBlocked = true;
         exitDoor.isBlocked = true;
-        ChangeMaterial(useMaterial);
-        exitDoor.ChangeMaterial(useMaterial);
+        //ChangeMaterial(useMaterial);
+        //exitDoor.ChangeMaterial(useMaterial);
         yield return new WaitForSeconds(0.3f);
 
         StartCoroutine(gameManager.SwitchCharacterPath(exitPathID, exitNode, enterNode, exitDirection, _useDuration));
         yield return new WaitForSeconds(_useDuration + 1f);
 
-        ChangeMaterial(normalMaterial);
-        exitDoor.ChangeMaterial(normalMaterial);
+        //ChangeMaterial(normalMaterial);
+        //exitDoor.ChangeMaterial(normalMaterial);
 
         yield return new WaitForSeconds(_useDuration + 0.5f);
 
