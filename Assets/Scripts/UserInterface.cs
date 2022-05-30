@@ -5,6 +5,7 @@ public class UserInterface : MonoBehaviour
 {
     private bool gameIsPaused;
     [SerializeField] GameObject PauseMenuObject;
+    [SerializeField] GameObject PlayUIObject;
 
     private void Update()
     {
@@ -18,12 +19,14 @@ public class UserInterface : MonoBehaviour
             // pause rules
             Time.timeScale = 0f;
             PauseMenuObject.SetActive(true);
+            PlayUIObject.SetActive(false);
         }
         else
         {
             // play rules
             Time.timeScale = 1;
             PauseMenuObject.SetActive(false);
+            PlayUIObject.SetActive(true);
         }
 
     }
@@ -46,5 +49,11 @@ public class UserInterface : MonoBehaviour
     public static void reloadScene()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    }
+
+    public void Move()
+    {
+        Character character = FindObjectOfType<Character>();
+        if (character != null) character.MoveNext();
     }
 }
