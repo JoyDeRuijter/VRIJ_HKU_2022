@@ -25,7 +25,7 @@ public class Character : MonoBehaviour
     [Header("Other...")]
     [SerializeField] LayerMask onlyPathLayer;
     [SerializeField] Animator anim;
-   
+
     [HideInInspector] public int xPos, yPos, zPos;
     [HideInInspector] public Vector3Int position;
     [HideInInspector] public bool isMoving;
@@ -38,6 +38,7 @@ public class Character : MonoBehaviour
     private bool canFindPath = false;
     private bool isGrounded = true;
     private bool isFalling;
+    private bool isWalking = true;
 
     private Rigidbody rb;
     #endregion
@@ -78,23 +79,24 @@ public class Character : MonoBehaviour
     {
         //StartCoroutine(CheckForMovement());
         Move();
+        PlayAnimations();
 
+    }
+
+    private void PlayAnimations()
+    {
         if (rb.velocity.y <= -0.1f)
         {
             isFalling = true;
+            isWalking = false;
+            anim.SetBool("IsWalking", false);
             anim.SetBool("IsFalling", true);
         }
-
         if (isFalling && rb.velocity.y >= 0)
-        {
+        { 
             isFalling = false;
-            Invoke("PlayLandAnimation", 0.1f);
+            anim.SetBool("IsFalling", false);
         }
-    }
-
-    private void PlayLandAnimation()
-    {
-        anim.SetBool("IsFalling", false);
     }
 
     #region Helper Functions
@@ -260,6 +262,11 @@ public class Character : MonoBehaviour
         canFindPath = true;
     }
 
+    private void SwitchOffGravity()
+    {
+        rb.useGravity = false;
+    }
+
     private void SearchForPath()
     {
         // IF WE USE UBEAT TEMPO, THIS SEARCHING AND BINDING TO A PATH HAS TO COME IN PULSES INSTEAD OF EVERY UPDATE
@@ -280,9 +287,17 @@ public class Character : MonoBehaviour
             currentNode = int.Parse(temp);
             boundToPath = true;
             canFindPath = false;
-            direction = Direction.stationary; // Sorry Yvar, heb dit ff ui gezet want het ziet er heel poepie uit als hij steeds stopt en blijft animeren
-            rb.useGravity = false;
+            direction = Direction.stationary;
+            Invoke("SwitchOffGravity", 0.2f);
+            isWalking = true;
+            anim.SetBool("IsWalking", true);
+            Invoke("StartWalkingAgain", 6f);
         }
+    }
+
+    private void StartWalkingAgain()
+    {
+        direction = Direction.forward;
     }
 
     private bool WallCheck(float castDistance)
