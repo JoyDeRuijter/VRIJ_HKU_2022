@@ -46,7 +46,7 @@ Light:
   m_Shape: 0
   m_Color: {r: 1, g: 0.09978981, b: 0.02352941, a: 1}
   m_Intensity: 0.44
-  m_Range: 3
+  m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
   m_CookieSize: 10
@@ -125,7 +125,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5489993974258943149}
   m_Layer: 7
-  m_Name: Wall1
+  m_Name: Wall1Color
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -193,7 +193,7 @@ Light:
   m_Shape: 0
   m_Color: {r: 1, g: 0.09978981, b: 0.02352941, a: 1}
   m_Intensity: 0.44
-  m_Range: 3
+  m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
   m_CookieSize: 10
@@ -339,11 +339,26 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -5507129206516918373, guid: 38af89dc5bea9c84ba43c53be93e3db3,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 318b0a49a190603469320cd7aea2579b, type: 2}
+    - target: {fileID: -5507129206516918373, guid: 38af89dc5bea9c84ba43c53be93e3db3,
+        type: 3}
+      propertyPath: m_Materials.Array.data[1]
+      value: 
+      objectReference: {fileID: 2100000, guid: 3cb9232ad06f9914f8cbe8f7c2107048, type: 2}
     - target: {fileID: 919132149155446097, guid: 38af89dc5bea9c84ba43c53be93e3db3,
         type: 3}
       propertyPath: m_Name
       value: Wall_1 (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 4253280567622488715, guid: 38af89dc5bea9c84ba43c53be93e3db3,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 318b0a49a190603469320cd7aea2579b, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 38af89dc5bea9c84ba43c53be93e3db3, type: 3}
 --- !u!4 &4504914973607514721 stripped
