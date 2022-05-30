@@ -8,6 +8,7 @@ public class NodePath : MonoBehaviour
     [Header("Path Properties")]
     public Color lineColor;
     public int ID;
+    public Direction preferedDirection;
 
     [HideInInspector] public List<Transform> nodes = new List<Transform>();
 

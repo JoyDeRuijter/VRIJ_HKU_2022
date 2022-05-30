@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 6553379469918835757}
   - component: {fileID: 6553379469918835756}
   - component: {fileID: 6553379469918835747}
-  m_Layer: 2
+  m_Layer: 7
   m_Name: EffectTile
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -66,6 +66,8 @@ MonoBehaviour:
   draftSpeed: 1
   draftHeight: 1
   activateTileColor: {fileID: 2100000, guid: ceac337cf17678849b4861db112f04c2, type: 2}
+  activatedObject: []
+  deactivateAfterTime: 0
 --- !u!1 &6553379470947336917
 GameObject:
   m_ObjectHideFlags: 0
@@ -78,7 +80,7 @@ GameObject:
   - component: {fileID: 6553379470947336913}
   - component: {fileID: 6553379470947336912}
   - component: {fileID: 6553379470947336919}
-  m_Layer: 2
+  m_Layer: 7
   m_Name: Tile
   m_TagString: Untagged
   m_Icon: {fileID: 0}
