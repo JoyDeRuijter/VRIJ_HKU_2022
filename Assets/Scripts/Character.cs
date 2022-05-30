@@ -65,7 +65,7 @@ public class Character : MonoBehaviour
 
     private void Update()
     {
-        Debug.Log("boundToPath: " + boundToPath + ", isGrounded: " + isGrounded);
+        Debug.Log("boundToPath: " + boundToPath + ", PathID: " + currentPathID + ", isGrounded: " + isGrounded);
         UpdatePosition();
 
         if (Input.GetKeyDown(KeyCode.Space))
@@ -86,6 +86,9 @@ public class Character : MonoBehaviour
             CancelInvoke("SwitchOffGravity");
             rb.useGravity = true;
         }
+
+        if (Vector3.Distance(transform.position, GetNodePosition(currentNode)) > 2.0f)
+            LosePathing();
     }
 
     private void FixedUpdate()
@@ -167,9 +170,11 @@ public class Character : MonoBehaviour
         }
         else
         {
-            SearchForPath();
             if (isGrounded)
+            {
+                SearchForPath();
                 MoveFreely();
+            }
         }
     }
 
@@ -188,7 +193,7 @@ public class Character : MonoBehaviour
 
     private void GroundCheck()
     {
-        isGrounded = Physics.SphereCast(transform.position + (transform.rotation * (Vector3.up * capsuleCollider.height / 2 + capsuleCollider.center)), transform.localScale.x / 8, -transform.up, out RaycastHit hit, capsuleCollider.height + 0.1f, LayerMask.GetMask("Terrain")); // Layermask 7 is terrain
+        isGrounded = Physics.SphereCast(transform.position + (transform.rotation * (Vector3.up * capsuleCollider.height / 2 + capsuleCollider.center)), transform.localScale.x / 8, -transform.up, out RaycastHit hit, capsuleCollider.height + 0.01f, LayerMask.GetMask("Terrain")); // Layermask 7 is terrain
     }
 
     // Make the character change directions and move to the nodes in opposite order
@@ -272,9 +277,8 @@ public class Character : MonoBehaviour
         if (Vector3.Distance(lostNodePotition, transform.position) < 0.99f) return;
 
         RaycastHit hit;
-        float minCastdistance = 1f;
         float castScale = transform.localScale.x / 2;
-        Physics.SphereCast(transform.position + (transform.rotation * (Vector3.up * capsuleCollider.height / 2 + capsuleCollider.center)), castScale, -transform.up, out hit, minCastdistance, LayerMask.GetMask("Path"), QueryTriggerInteraction.UseGlobal);
+        Physics.SphereCast(transform.position + (transform.rotation * (Vector3.up * capsuleCollider.height / 2 + capsuleCollider.center)), castScale, -transform.up, out hit, capsuleCollider.height + 0.01f, LayerMask.GetMask("Path"), QueryTriggerInteraction.UseGlobal);
         if (hit.collider != null)
         {
             NodePath foundPath = hit.transform.GetComponentInParent<NodePath>();

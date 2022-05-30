@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2688854106576341442}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Stairs
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -43,7 +43,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7942078450206531777}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: basic_stairs
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -77,7 +77,7 @@ GameObject:
   - component: {fileID: 2375874101239326649}
   - component: {fileID: 272379809735243596}
   - component: {fileID: 1083032498756010807}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: SM_Env_Stairs_01
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -161,6 +161,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: StairsWallRight
       objectReference: {fileID: 0}
+    - target: {fileID: 2621914557545740267, guid: 53f8df3a5d69b1f40b7900a78930f692,
+        type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     - target: {fileID: 3776053860241705020, guid: 53f8df3a5d69b1f40b7900a78930f692,
         type: 3}
       propertyPath: m_RootOrder
@@ -231,6 +236,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6173855778306863049, guid: 53f8df3a5d69b1f40b7900a78930f692,
+        type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 53f8df3a5d69b1f40b7900a78930f692, type: 3}
 --- !u!4 &8892742966541791844 stripped
@@ -246,6 +256,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 2688854106576341442}
     m_Modifications:
+    - target: {fileID: 141471378588851188, guid: 7b2f64f1dbdc36f4187ffbcbde54580f,
+        type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     - target: {fileID: 773858087971586382, guid: 7b2f64f1dbdc36f4187ffbcbde54580f,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -330,6 +345,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: StairsWallLeft
+      objectReference: {fileID: 0}
+    - target: {fileID: 8669036192623702247, guid: 7b2f64f1dbdc36f4187ffbcbde54580f,
+        type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7b2f64f1dbdc36f4187ffbcbde54580f, type: 3}
