@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7025644049511485983}
   m_Layer: 7
-  m_Name: Wall5
+  m_Name: Wall5Color
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -420,6 +420,16 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -7511558181221131132, guid: c774d0f9f3753c142a9aa890aca80b70,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 318b0a49a190603469320cd7aea2579b, type: 2}
+    - target: {fileID: -7511558181221131132, guid: c774d0f9f3753c142a9aa890aca80b70,
+        type: 3}
+      propertyPath: m_Materials.Array.data[1]
+      value: 
+      objectReference: {fileID: 2100000, guid: 3cb9232ad06f9914f8cbe8f7c2107048, type: 2}
     - target: {fileID: 919132149155446097, guid: c774d0f9f3753c142a9aa890aca80b70,
         type: 3}
       propertyPath: m_Name
