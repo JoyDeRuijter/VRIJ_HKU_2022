@@ -52,8 +52,8 @@ public class MovableObject : MonoBehaviour, IActivateable
     private void Awake()
     {
         //Set the material of the whole object to the material provided in the inspector
-        meshRenderers = this.transform.Find("Structure").GetComponentsInChildren<MeshRenderer>();
-        ChangeMaterial(unActivatedMaterial);
+        //meshRenderers = this.transform.Find("Structure").GetComponentsInChildren<MeshRenderer>();
+        //ChangeMaterial(unActivatedMaterial);
 
         if(isRotation)
             baseRotation = gameObject.transform.rotation;
@@ -82,7 +82,7 @@ public class MovableObject : MonoBehaviour, IActivateable
 
     private void ActivateObject()
     {
-        ChangeMaterial(activatedMaterial);
+        //ChangeMaterial(activatedMaterial);
 
         if (!isRotation)
         {
@@ -101,7 +101,7 @@ public class MovableObject : MonoBehaviour, IActivateable
         {
             moveState = 0;
             MoveObject(basePosition, 4f);
-            ChangeMaterial(unActivatedMaterial);
+            //ChangeMaterial(unActivatedMaterial);
         }
         else
             RotateObject(3f);
