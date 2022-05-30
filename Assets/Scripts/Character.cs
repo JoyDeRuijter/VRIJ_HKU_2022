@@ -88,12 +88,10 @@ public class Character : MonoBehaviour
         if (rb.velocity.y <= -0.1f)
         {
             isFalling = true;
-            isWalking = false;
-            anim.SetBool("IsWalking", false);
             anim.SetBool("IsFalling", true);
         }
         if (isFalling && rb.velocity.y >= 0)
-        { 
+        {
             isFalling = false;
             anim.SetBool("IsFalling", false);
         }
@@ -288,10 +286,9 @@ public class Character : MonoBehaviour
             boundToPath = true;
             canFindPath = false;
             direction = Direction.stationary;
+
             Invoke("SwitchOffGravity", 0.2f);
-            isWalking = true;
-            anim.SetBool("IsWalking", true);
-            Invoke("StartWalkingAgain", 6f);
+            Invoke("StartWalkingAgain", 5.5f);
         }
     }
 
