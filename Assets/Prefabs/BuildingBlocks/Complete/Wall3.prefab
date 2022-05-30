@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 5537563087240522566}
   - component: {fileID: 8896504670273823971}
   - component: {fileID: 6670478202203705385}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: wall_naturel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -93,7 +93,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8264120233606640248}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Wall3
   m_TagString: Untagged
   m_Icon: {fileID: 0}

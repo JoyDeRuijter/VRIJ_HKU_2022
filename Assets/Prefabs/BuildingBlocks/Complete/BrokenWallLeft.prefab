@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 263756774119943478}
   - component: {fileID: 3748920092864979603}
   - component: {fileID: 1432744739179484761}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Broken_wall
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -93,7 +93,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1255495875100717317}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: BrokenWallLeft
   m_TagString: Untagged
   m_Icon: {fileID: 0}

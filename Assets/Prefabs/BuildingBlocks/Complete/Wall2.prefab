@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1623669583095454885}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Wall2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -43,7 +43,7 @@ GameObject:
   - component: {fileID: 1487528860255948805}
   - component: {fileID: 7872930742686820842}
   - component: {fileID: 8183940194459301552}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Point Light
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -158,7 +158,7 @@ GameObject:
   - component: {fileID: 1501812477758061602}
   - component: {fileID: 7221544508506859023}
   - component: {fileID: 7030686247702782789}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: polySurface1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -243,7 +243,7 @@ GameObject:
   - component: {fileID: 8582345091618362903}
   - component: {fileID: 2344321785115492163}
   - component: {fileID: 7567750425082390101}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: SM_Env_Wall_01
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -325,7 +325,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6709812302432228901}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Wall_2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -360,7 +360,7 @@ GameObject:
   - component: {fileID: 63194827365861830}
   - component: {fileID: 2684224281281690325}
   - component: {fileID: 1998296421529230410}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Point Light (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}

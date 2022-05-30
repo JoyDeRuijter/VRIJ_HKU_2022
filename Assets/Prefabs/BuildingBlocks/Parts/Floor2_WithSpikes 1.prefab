@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 8387377085610058972}
   - component: {fileID: 1498212999097142172}
   - component: {fileID: 1925581095433679168}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: SM_Env_Tiles_01
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -93,7 +93,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4763554754127472338}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Floor2_WithSpikes 1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -128,7 +128,7 @@ GameObject:
   - component: {fileID: 3889429742716077581}
   - component: {fileID: 1957372824201709259}
   - component: {fileID: 2638163088688729323}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: SM_Prop_Trap_Spikes_01
   m_TagString: Untagged
   m_Icon: {fileID: 0}

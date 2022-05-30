@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 597570928837367254}
   - component: {fileID: 4604125788210240115}
   - component: {fileID: 1729896052329049785}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Door_withBars (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -95,7 +95,7 @@ GameObject:
   - component: {fileID: 2885251938763148346}
   - component: {fileID: 8329135835916290618}
   - component: {fileID: 1104801367852606315}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Point Light
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -209,7 +209,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1796207340998192864}
   - component: {fileID: 9182475426757820709}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: DoorTower
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -271,7 +271,7 @@ GameObject:
   - component: {fileID: 1437343150504302518}
   - component: {fileID: 205435864369594651}
   - component: {fileID: 3605072910216923453}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Plane
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -366,7 +366,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6984413927959561855}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: DoorPivot
   m_TagString: Untagged
   m_Icon: {fileID: 0}

@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 4133411866153396002}
   - component: {fileID: 8108677429408494162}
   - component: {fileID: 5565412833288598478}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Point Light
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -124,7 +124,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4869301310791832028}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: FloorBars
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -160,7 +160,7 @@ GameObject:
   - component: {fileID: 5690803402708871388}
   - component: {fileID: 8743193449484052345}
   - component: {fileID: 6823770748500579251}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Floor_withBars
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -245,7 +245,7 @@ GameObject:
   - component: {fileID: 6841119853000119781}
   - component: {fileID: 2365086640981646347}
   - component: {fileID: 3477827316283608212}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Plane
   m_TagString: Untagged
   m_Icon: {fileID: 0}
