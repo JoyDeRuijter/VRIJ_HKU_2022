@@ -38,7 +38,10 @@ public class Character : MonoBehaviour
     private bool isGrounded = true;
     private CapsuleCollider capsuleCollider;
     private bool isHittingObstacle;
+    private bool justFell = false;
+    private bool routineIsRunning = false;
     [HideInInspector] public bool isMoving;
+    private Vector3 lostPathNodePosition;
 
     private Rigidbody rb;
     #endregion
@@ -91,14 +94,27 @@ public class Character : MonoBehaviour
             rb.useGravity = true;
         }
 
-        if (Vector3.Distance(transform.position, GetNodePosition(currentNode)) > 2.0f || isHittingObstacle)
+        if (GetVerticalDistance(transform.position, GetNodePosition(currentNode)) > 1.5f || isHittingObstacle)
             LosePathing();
+
+        if (justFell && isGrounded && !routineIsRunning)
+        {
+            Debug.Log("here");
+            routineIsRunning = true;
+            StartCoroutine(StartWalkingAgain(Direction.stationary, 5.5f));
+        }
+    }
+    private IEnumerator StartWalkingAgain(Direction newDirection, float afterSeconds)
+    {
+        yield return new WaitForSeconds(afterSeconds);
+        justFell = false;
+        direction = newDirection;
+        routineIsRunning = false;
     }
 
     private void FixedUpdate()
     {
-        //StartCoroutine(CheckForMovement());
-        if (isGrounded)
+        if (isGrounded && !justFell)
             Move();
     }
 
@@ -134,6 +150,20 @@ public class Character : MonoBehaviour
     public void deathBehaviour()
     {
         UserInterface.reloadScene();
+    }
+
+    private float GetHorizontalDistance(Vector3 a, Vector3 b)
+    {
+        Vector3 newA = new Vector3(a.x, 0, a.z);
+        Vector3 newB = new Vector3(b.x, 0, b.z);
+        return Vector3.Distance(newA, newB);
+    }
+
+    private float GetVerticalDistance(Vector3 a, Vector3 b)
+    {
+        Vector3 newA = new Vector3(0, a.y, 0);
+        Vector3 newB = new Vector3(0, b.y, 0);
+        return Vector3.Distance(newA, newB);
     }
     #endregion
 
@@ -186,12 +216,22 @@ public class Character : MonoBehaviour
 
     private void GroundCheck()
     {
-        isGrounded = Physics.SphereCast(transform.position + (transform.rotation * (Vector3.up * capsuleCollider.height / 2 + capsuleCollider.center)), transform.localScale.x / 8, -transform.up, out RaycastHit hit, capsuleCollider.height + 0.3f, LayerMask.GetMask("Terrain")); // Layermask 7 is terrain
+        if (Physics.SphereCast(transform.position + (transform.rotation * (Vector3.up * capsuleCollider.height / 2 + capsuleCollider.center)), transform.localScale.x / 8, -transform.up, out RaycastHit hit, capsuleCollider.height + 0.3f, LayerMask.GetMask("Terrain"))) // Layermask 7 is terrain
+        {
+            isGrounded = true;
+        }
+        else
+        {
+            isGrounded = false;
+            justFell = true;
+        }
+
     }
 
     // Make the character change directions and move to the nodes in opposite order
     private void FlipDirection()
     {
+        Debug.Log("Me flippin");
         if (direction == Direction.stationary)
         {
             if (lastDirection == Direction.forward)
@@ -212,7 +252,7 @@ public class Character : MonoBehaviour
 
     private void flipToForward()
     {
-        if ((currentNode == nodes.Count - 1 && Vector3.Distance(transform.position, nodes[currentNode].position) >= 0.05f) || currentNode != nodes.Count - 1)
+        if ((currentNode == nodes.Count - 1 && GetHorizontalDistance(transform.position, nodes[currentNode].position) >= 0.05f) || currentNode != nodes.Count - 1)
         {
             direction = Direction.forward;
             currentNode++;
@@ -221,7 +261,7 @@ public class Character : MonoBehaviour
 
     private void flipToBackward()
     {
-        if ((currentNode == 0 && Vector3.Distance(transform.position, nodes[currentNode].position) >= 0.05f) || currentNode != 0)
+        if ((currentNode == 0 && GetHorizontalDistance(transform.position, nodes[currentNode].position) >= 0.05f) || currentNode != 0)
         {
             direction = Direction.backward;
             currentNode--;
@@ -232,7 +272,7 @@ public class Character : MonoBehaviour
     private void CheckWaypointDistance()
     {
         // If char is on node then...
-        if (Vector3.Distance(transform.position, nodes[currentNode].position) < 0.05f)
+        if (GetHorizontalDistance(transform.position, nodes[currentNode].position) < 0.05f)
         {
             // First, if we stand still then we don't do anything
             if (direction == Direction.stationary && !toTheBeat)
@@ -246,11 +286,9 @@ public class Character : MonoBehaviour
                 if ((currentNode == nodes.Count - 1 && direction == Direction.forward) || (currentNode == 0 && direction == Direction.backward))
                 {
                     LastNodeBehaviour();
+                    return;
                 }
             }
-
-            // If the char lost the path, then we don't have to increase/decrease to update the current since there is none
-            if (!boundToPath) return;
 
             // And if the char is on the path, then this will decide, based of direction, where to go next
             if (direction == Direction.forward)
@@ -261,10 +299,11 @@ public class Character : MonoBehaviour
             if (toTheBeat)
             {
                 isMoving = false;
+                lastDirection = direction;
+                direction = Direction.stationary;
             }
         }
     }
-
 
     private void LastNodeBehaviour()
     {
@@ -280,6 +319,7 @@ public class Character : MonoBehaviour
 
     private void LosePathing()
     {
+        lostPathNodePosition = nodes[currentNode].position;
         boundToPath = false;
     }
 
@@ -291,8 +331,9 @@ public class Character : MonoBehaviour
     private void SearchForPath()
     {
         // IF WE USE UBEAT TEMPO, THIS SEARCHING AND BINDING TO A PATH HAS TO COME IN PULSES INSTEAD OF EVERY UPDATE
+        if (GetHorizontalDistance(transform.position, lostPathNodePosition) < 1f) return;
         RaycastHit hit;
-        float castScale = transform.localScale.x / 2;
+        float castScale = transform.localScale.x / 8;
         Physics.SphereCast(transform.position + (transform.rotation * (Vector3.up * capsuleCollider.height / 2 + capsuleCollider.center)), castScale, -transform.up, out hit, capsuleCollider.height + 0.01f, LayerMask.GetMask("Path"), QueryTriggerInteraction.UseGlobal);
         if (hit.collider != null)
         {
@@ -307,12 +348,16 @@ public class Character : MonoBehaviour
             direction = Direction.stationary;
             Debug.Log("Found the path");
 
-            if (rb.useGravity)
+            if (justFell)
             {
                 StartCoroutine(StartWalkingAgain(foundPath.preferedDirection, 5.5f));
             }
             else
             {
+                if (foundPath.preferedDirection == Direction.stationary)
+                {
+                    StartWalkingAgain(lastDirection);
+                }
                 StartWalkingAgain(foundPath.preferedDirection);
             }
         }
@@ -323,17 +368,12 @@ public class Character : MonoBehaviour
         direction = newDirection;
     }
 
-    private IEnumerator StartWalkingAgain(Direction newDirection, float afterSeconds)
-    {
-        yield return new WaitForSeconds(afterSeconds);
-        direction = newDirection;
-    }
-
-
     private bool WallCheck(float castDistance)
     {
+        Debug.DrawRay(transform.position, transform.forward, Color.yellow);
         if (Physics.Raycast(transform.position, transform.forward, castDistance))
         {
+            Debug.Log("Seems there is a wall here...");
             return true;
         }
         return false;
