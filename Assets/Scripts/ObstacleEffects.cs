@@ -27,6 +27,12 @@ public class ObstacleEffects : MonoBehaviour
     private BoxCollider hitBox;
     private MeshRenderer mr;
 
+    private void OnEnable()
+    {
+        if (Application.isPlaying)
+            GetComponentInChildren<MeshRenderer>().enabled = false;
+    }
+
     private void Awake()
     {
         hitBox = GetComponent<BoxCollider>();
@@ -84,7 +90,6 @@ public class ObstacleEffects : MonoBehaviour
             {
                 case TileEffect.death:
                     character.deathBehaviour();
-                    Debug.Log("you died!");
                     break;
 
                 case TileEffect.drafting:

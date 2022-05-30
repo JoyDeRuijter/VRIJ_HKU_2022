@@ -25,7 +25,7 @@ public class Door : MonoBehaviour
 
     private MeshRenderer[] meshRenderers;
     protected GameManager gameManager;
-    protected bool isBlocked;
+    [HideInInspector] public bool isBlocked;
 
     #endregion
 
@@ -43,8 +43,12 @@ public class Door : MonoBehaviour
 
     public virtual void OnTriggerEnter(Collider other)
     {
+        Debug.Log(gameObject.name + "is being used");
         if (other.gameObject.GetComponent<Character>() != null && !isBlocked)
+        {
+            Debug.Log("By the player");
             StartCoroutine(Use(usageTime));
+        }
     }
 
     public void ChangeMaterial(Material _material)
