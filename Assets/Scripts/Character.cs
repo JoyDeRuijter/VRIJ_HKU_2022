@@ -69,7 +69,7 @@ public class Character : MonoBehaviour
 
     private void Update()
     {
-        Debug.Log("boundToPath: " + boundToPath + ", PathID: " + currentPathID + ", isGrounded: " + isGrounded);
+        //Debug.Log("boundToPath: " + boundToPath + ", PathID: " + currentPathID + ", isGrounded: " + isGrounded);
         UpdatePosition();
 
         if (Input.GetKeyDown(KeyCode.Space))

@@ -38,7 +38,7 @@ public class MovableObject : MonoBehaviour, IActivateable
     [HideInInspector] public bool isRotating;
     private Vector3 basePosition;
     private Quaternion baseRotation;
-    [HideInInspector] public int rotationState = 0; // 0 = base, 1 = right, 2 = left
+    [HideInInspector] public int rotationState = 0; // 0 = base, 1 = left, 2 = abyss
     [HideInInspector] public int moveState = 0; // 0 = base, 1 = moved forward
 
     private GameManager gameManager;
@@ -174,12 +174,12 @@ public class MovableObject : MonoBehaviour, IActivateable
 
         if (rotationState == 0)
         {
-            transform.DORotateQuaternion(rightRotation, _rotateTime);
+            transform.DORotateQuaternion(leftRotation, _rotateTime);
             rotationState = 1;
         }
         else if (rotationState == 1)
         {
-            transform.DORotateQuaternion(leftRotation, _rotateTime * 2);
+            transform.DORotateQuaternion(rightRotation, _rotateTime * 2);
             rotationState = 2;
         }
         else if (rotationState == 2)
