@@ -21,6 +21,7 @@ public class Character : MonoBehaviour
     [SerializeField] KeyCode directionChangeKey;
     private Direction lastDirection;
     [SerializeField] float diesBelowYLevel;
+    [SerializeField] bool toTheBeat;
 
     [Space(10)]
     [Header("Other...")]
@@ -28,7 +29,6 @@ public class Character : MonoBehaviour
 
     [HideInInspector] public int xPos, yPos, zPos;
     [HideInInspector] public Vector3Int position;
-    [HideInInspector] public bool isMoving;
     [HideInInspector] public int currentPathID;
     [HideInInspector] public bool boundToPath;
 
@@ -37,7 +37,8 @@ public class Character : MonoBehaviour
 
     private bool isGrounded = true;
     private CapsuleCollider capsuleCollider;
-    private Vector3 lostNodePotition;
+    private bool isHittingObstacle;
+    [HideInInspector] public bool isMoving;
 
     private Rigidbody rb;
     #endregion
@@ -87,7 +88,7 @@ public class Character : MonoBehaviour
             rb.useGravity = true;
         }
 
-        if (Vector3.Distance(transform.position, GetNodePosition(currentNode)) > 2.0f)
+        if (Vector3.Distance(transform.position, GetNodePosition(currentNode)) > 2.0f || isHittingObstacle)
             LosePathing();
     }
 
@@ -115,17 +116,6 @@ public class Character : MonoBehaviour
         yPos = (int)((transform.position.y) - 0.6f);
         zPos = (int)transform.position.z;
         position = new Vector3Int(xPos, yPos, zPos);
-    }
-
-    private IEnumerator CheckForMovement()
-    {
-        Vector3 startPosition = transform.position;
-        yield return new WaitForSeconds(0.3f);
-
-        if (transform.position != startPosition)
-            isMoving = true;
-        else
-            isMoving = false;
     }
 
     private int GetPathID()
@@ -166,7 +156,7 @@ public class Character : MonoBehaviour
         if (boundToPath)
         {
             CheckWaypointDistance();
-            MoveToNode();
+            if (isMoving) MoveToNode();
         }
         else
         {
@@ -193,7 +183,7 @@ public class Character : MonoBehaviour
 
     private void GroundCheck()
     {
-        isGrounded = Physics.SphereCast(transform.position + (transform.rotation * (Vector3.up * capsuleCollider.height / 2 + capsuleCollider.center)), transform.localScale.x / 8, -transform.up, out RaycastHit hit, capsuleCollider.height + 0.01f, LayerMask.GetMask("Terrain")); // Layermask 7 is terrain
+        isGrounded = Physics.SphereCast(transform.position + (transform.rotation * (Vector3.up * capsuleCollider.height / 2 + capsuleCollider.center)), transform.localScale.x / 8, -transform.up, out RaycastHit hit, capsuleCollider.height + 0.3f, LayerMask.GetMask("Terrain")); // Layermask 7 is terrain
     }
 
     // Make the character change directions and move to the nodes in opposite order
@@ -202,20 +192,36 @@ public class Character : MonoBehaviour
         if (direction == Direction.stationary)
         {
             if (lastDirection == Direction.forward)
-                direction = Direction.backward;
+                flipToBackward();
             else
-                direction = Direction.forward;
+                flipToForward();
         }
 
         if (direction == Direction.forward)
         {
-            direction = Direction.backward;
-            lastDirection = Direction.forward;
+            flipToBackward();
         }
         else if (direction == Direction.backward)
         {
+            flipToForward();
+        }
+    }
+
+    private void flipToForward()
+    {
+        if ((currentNode == nodes.Count - 1 && Vector3.Distance(transform.position, nodes[currentNode].position) >= 0.05f) || currentNode != nodes.Count - 1)
+        {
             direction = Direction.forward;
-            lastDirection = Direction.backward;
+            currentNode++;
+        }
+    }
+
+    private void flipToBackward()
+    {
+        if ((currentNode == 0 && Vector3.Distance(transform.position, nodes[currentNode].position) >= 0.05f) || currentNode != 0)
+        {
+            direction = Direction.backward;
+            currentNode--;
         }
     }
 
@@ -230,21 +236,13 @@ public class Character : MonoBehaviour
             {
                 return;
             }
-            // If there was no wall, and the current node is a last/first node, then...
+            // If we don't stand still then...
             else
             {
-                // If the character is on the last node and is moving forward
-                if (currentNode == nodes.Count - 1 && direction == Direction.forward)
+                // If the character is on the last or first node then...
+                if ((currentNode == nodes.Count - 1 && direction == Direction.forward) || (currentNode == 0 && direction == Direction.backward))
                 {
-                    // If the char is on the last node of a path, he should lose this path if he didn't turn around earlier
-                    LosePathing();
-                }
-
-                // Or if the character is on the first node and is moving backwards
-                else if (currentNode == 0 && direction == Direction.backward)
-                {
-                    // Again, lose the path
-                    LosePathing();
+                    LastNodeBehaviour();
                 }
             }
 
@@ -256,14 +254,27 @@ public class Character : MonoBehaviour
                 currentNode++;
             else if (direction == Direction.backward)
                 currentNode--;
+
+            if (toTheBeat) isMoving = false;
+        }
+    }
+
+
+    private void LastNodeBehaviour()
+    {
+        if (WallCheck(1.0f))
+        {
+            FlipDirection();
+        }
+        else
+        {
+            LosePathing();
         }
     }
 
     private void LosePathing()
     {
-        lostNodePotition = GetNodePosition(currentNode);
         boundToPath = false;
-        rb.useGravity = true;
     }
 
     private void SwitchOffGravity()
@@ -274,8 +285,6 @@ public class Character : MonoBehaviour
     private void SearchForPath()
     {
         // IF WE USE UBEAT TEMPO, THIS SEARCHING AND BINDING TO A PATH HAS TO COME IN PULSES INSTEAD OF EVERY UPDATE
-        if (Vector3.Distance(lostNodePotition, transform.position) < 0.99f) return;
-
         RaycastHit hit;
         float castScale = transform.localScale.x / 2;
         Physics.SphereCast(transform.position + (transform.rotation * (Vector3.up * capsuleCollider.height / 2 + capsuleCollider.center)), castScale, -transform.up, out hit, capsuleCollider.height + 0.01f, LayerMask.GetMask("Path"), QueryTriggerInteraction.UseGlobal);
@@ -325,13 +334,27 @@ public class Character : MonoBehaviour
     }
     #endregion
 
-    private void OnCollisionEnter(Collision collision)
+    private void OnCollisionStay(Collision collision)
     {
         if (collision.collider.CompareTag("MoveableObject"))
         {
-            // If a moving object hits the player then it should lose his pathing
-            LosePathing();
+            if (collision.transform.position.y > transform.position.y)
+                isHittingObstacle = true;
         }
+    }
+
+    private void OnCollisionExit(Collision collision)
+    {
+        if (collision.collider.CompareTag("MoveableObject"))
+        {
+            isHittingObstacle = false;
+        }
+    }
+
+    public void MoveNext()
+    {
+        // If beatMove is enabled, then when this function is called, the char moves to the next node (if it's not lost of course)
+        isMoving = true;
     }
 }
 

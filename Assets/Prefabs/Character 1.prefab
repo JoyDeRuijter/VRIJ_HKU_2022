@@ -55,17 +55,15 @@ MonoBehaviour:
   direction: 0
   directionChangeKey: 0
   diesBelowYLevel: 0
-  onlyPathLayer:
-    serializedVersion: 2
-    m_Bits: 64
+  toTheBeat: 1
   anim: {fileID: 7793405117191003535}
   xPos: 0
   yPos: 0
   zPos: 0
   position: {x: 0, y: 0, z: 0}
-  isMoving: 0
   currentPathID: 0
   boundToPath: 0
+  isMoving: 0
 --- !u!136 &5835882199091116707
 CapsuleCollider:
   m_ObjectHideFlags: 0

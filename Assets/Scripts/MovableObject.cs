@@ -61,8 +61,23 @@ public class MovableObject : MonoBehaviour, IActivateable
             basePosition = gameObject.transform.position;
     }
 
+    private void GiveAllChildrenTag(GameObject obj, string tagName)
+    {
+        foreach (Transform t in obj.transform)
+        {
+            if (t.childCount > 0)
+            {
+                GiveAllChildrenTag(t.gameObject, tagName);
+            }
+
+            t.tag = tagName;
+        }
+    }
+
     private void Start()
     {
+        GiveAllChildrenTag(gameObject, "MoveableObject");
+
         gameManager = GameManager.instance;
     }
 
