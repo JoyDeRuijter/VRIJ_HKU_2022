@@ -72,7 +72,7 @@ public class Character : MonoBehaviour
 
     private void Update()
     {
-        //Debug.Log("boundToPath: " + boundToPath + ", PathID: " + currentPathID + ", isGrounded: " + isGrounded);
+        Debug.Log("boundToPath: " + boundToPath + ", PathID: " + currentPathID + ", isGrounded: " + isGrounded);
         UpdatePosition();
 
         if (Input.GetKeyDown(KeyCode.Space))
@@ -99,7 +99,6 @@ public class Character : MonoBehaviour
 
         if (justFell && isGrounded && !routineIsRunning)
         {
-            Debug.Log("here");
             routineIsRunning = true;
             StartCoroutine(StartWalkingAgain(Direction.stationary, 5.5f));
         }
@@ -379,6 +378,18 @@ public class Character : MonoBehaviour
         return false;
     }
     #endregion
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.collider.CompareTag("MoveableObject"))
+        {
+            if (collision.transform.position.y > transform.position.y)
+            {
+                isHittingObstacle = true;
+                LastNodeBehaviour();
+            }
+        }
+    }
 
     private void OnCollisionStay(Collision collision)
     {
