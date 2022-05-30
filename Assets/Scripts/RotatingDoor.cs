@@ -9,10 +9,14 @@ public class RotatingDoor : Door
     [Header("Rotated Exits")]
     public int exit2PathID;
     public int exit2Node;
+    public Door exit2Door;
     public Vector3 exit3Position;
     public Direction exit2Direction;
 
     private MovableObject movableObject;
+    private RotatingDoor currentExitDoor;
+    private Door currentExitDoor2;
+
 
     #endregion
 
@@ -26,34 +30,46 @@ public class RotatingDoor : Door
 
     public override IEnumerator Use(float _useDuration)
     {
-        RotatingDoor _exitDoor = exitDoor as RotatingDoor;
-
         if (movableObject.rotationState == 0)
+        {
+            currentExitDoor = exitDoor as RotatingDoor;
+            currentExitDoor.isBlocked = true;
+        }
+        else if (movableObject.rotationState == 1)
+        { 
+            currentExitDoor2 = exit2Door;
+        }
+
+        if (movableObject.rotationState == 2)
             yield break;
 
-        _exitDoor.isBlocked = true;
-        ChangeMaterial(useMaterial);
-        _exitDoor.ChangeMaterial(useMaterial);
+        //ChangeMaterial(useMaterial);
+        //_exitDoor.ChangeMaterial(useMaterial);
         gameManager.DestroyCharacter();
         yield return new WaitForSeconds(_useDuration);
+
+        Debug.Log("Is using door");
 
         if (!movableObject.isRotation)
             yield return new WaitUntil(() => !movableObject.isMoving);
         else
             yield return new WaitUntil(() => !movableObject.isRotating);
 
-        if (movableObject.rotationState == 0) // Base
+        if (movableObject.rotationState == 2) // Above an abyss
             gameManager.DropCharacter(exit3Position);
-        else if (movableObject.rotationState == 1) // Right
+        else if (movableObject.rotationState == 1) // Left
             gameManager.SpawnCharacter(exitPathID, exitNode, exitDirection);
-        else if (movableObject.rotationState == 2) // Left
+        else if (movableObject.rotationState == 0) // Base
             gameManager.SpawnCharacter(exit2PathID, exit2Node, exit2Direction);
 
 
         yield return new WaitForSeconds(_useDuration / 4 * 3);
 
-        ChangeMaterial(normalMaterial);
-        _exitDoor.ChangeMaterial(normalMaterial);
-        _exitDoor.isBlocked = false;
+        //ChangeMaterial(normalMaterial);
+        //_exitDoor.ChangeMaterial(normalMaterial);
+        if (movableObject.rotationState == 0)
+            currentExitDoor.isBlocked = false;
+        else if (movableObject.rotationState == 1)
+            currentExitDoor2.isBlocked = false;
     }
 }

@@ -209,6 +209,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1796207340998192864}
   - component: {fileID: 9182475426757820709}
+  - component: {fileID: 3711289533160301112}
   m_Layer: 7
   m_Name: DoorTower
   m_TagString: Untagged
@@ -249,16 +250,29 @@ MonoBehaviour:
   normalMaterial: {fileID: 0}
   useMaterial: {fileID: 0}
   usageTime: 3
-  enterPathID: 0
-  exitPathID: 0
+  enterPathID: 3
+  exitPathID: 2
   enterNode: 0
-  exitNode: 0
-  exitDirection: 0
+  exitNode: 8
+  exitDirection: 2
   exitDoor: {fileID: 0}
-  exit2PathID: 0
+  exit2PathID: 3
   exit2Node: 0
-  exit3Position: {x: 0, y: 0, z: 0}
+  exit3Position: {x: 5, y: 2.5, z: 5}
   exit2Direction: 0
+--- !u!65 &3711289533160301112
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5034466828042237823}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.2982428, y: 0.428764, z: 0.42572808}
+  m_Center: {x: 0.014380574, y: -0.28561836, z: 0.17702591}
 --- !u!1 &5285596884393996159
 GameObject:
   m_ObjectHideFlags: 0
