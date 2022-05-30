@@ -61,6 +61,9 @@ public class Character : MonoBehaviour
 
         lastDirection = Direction.forward;
 
+        if (toTheBeat) isMoving = false;
+        else isMoving = true;
+
         //anim.SetBool("IsWalking", true);
     }
 
@@ -232,7 +235,7 @@ public class Character : MonoBehaviour
         if (Vector3.Distance(transform.position, nodes[currentNode].position) < 0.05f)
         {
             // First, if we stand still then we don't do anything
-            if (direction == Direction.stationary)
+            if (direction == Direction.stationary && !toTheBeat)
             {
                 return;
             }
@@ -255,7 +258,10 @@ public class Character : MonoBehaviour
             else if (direction == Direction.backward)
                 currentNode--;
 
-            if (toTheBeat) isMoving = false;
+            if (toTheBeat)
+            {
+                isMoving = false;
+            }
         }
     }
 
@@ -353,8 +359,9 @@ public class Character : MonoBehaviour
 
     public void MoveNext()
     {
-        // If beatMove is enabled, then when this function is called, the char moves to the next node (if it's not lost of course)
+        // If toTheBeat is enabled, then when this function is called, the char moves to the next node (if it's not lost of course)
         isMoving = true;
+        direction = lastDirection;
     }
 }
 

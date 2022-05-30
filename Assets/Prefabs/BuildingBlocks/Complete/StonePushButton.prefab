@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 6362590328781644531}
   - component: {fileID: 6362590328781644524}
   - component: {fileID: 6362590328781644525}
-  m_Layer: 7
+  m_Layer: 6
   m_Name: Cube
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -126,7 +126,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6123976120657621987}
-  m_Layer: 7
+  m_Layer: 6
   m_Name: StonePushButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -225,12 +225,12 @@ PrefabInstance:
     - target: {fileID: 7880022935858215197, guid: b884f4387e270694d97c97d3b288856b,
         type: 3}
       propertyPath: m_Layer
-      value: 7
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 9111978772765708074, guid: b884f4387e270694d97c97d3b288856b,
         type: 3}
       propertyPath: m_Layer
-      value: 7
+      value: 6
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b884f4387e270694d97c97d3b288856b, type: 3}
@@ -310,12 +310,12 @@ PrefabInstance:
     - target: {fileID: 7880022935858215197, guid: b884f4387e270694d97c97d3b288856b,
         type: 3}
       propertyPath: m_Layer
-      value: 7
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 9111978772765708074, guid: b884f4387e270694d97c97d3b288856b,
         type: 3}
       propertyPath: m_Layer
-      value: 7
+      value: 6
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b884f4387e270694d97c97d3b288856b, type: 3}
@@ -395,12 +395,12 @@ PrefabInstance:
     - target: {fileID: 7880022935858215197, guid: b884f4387e270694d97c97d3b288856b,
         type: 3}
       propertyPath: m_Layer
-      value: 7
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 9111978772765708074, guid: b884f4387e270694d97c97d3b288856b,
         type: 3}
       propertyPath: m_Layer
-      value: 7
+      value: 6
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b884f4387e270694d97c97d3b288856b, type: 3}
@@ -480,12 +480,12 @@ PrefabInstance:
     - target: {fileID: 7880022935858215197, guid: b884f4387e270694d97c97d3b288856b,
         type: 3}
       propertyPath: m_Layer
-      value: 7
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 9111978772765708074, guid: b884f4387e270694d97c97d3b288856b,
         type: 3}
       propertyPath: m_Layer
-      value: 7
+      value: 6
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b884f4387e270694d97c97d3b288856b, type: 3}
@@ -565,12 +565,12 @@ PrefabInstance:
     - target: {fileID: 7880022935858215197, guid: b884f4387e270694d97c97d3b288856b,
         type: 3}
       propertyPath: m_Layer
-      value: 7
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 9111978772765708074, guid: b884f4387e270694d97c97d3b288856b,
         type: 3}
       propertyPath: m_Layer
-      value: 7
+      value: 6
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b884f4387e270694d97c97d3b288856b, type: 3}
@@ -650,12 +650,12 @@ PrefabInstance:
     - target: {fileID: 7880022935858215197, guid: b884f4387e270694d97c97d3b288856b,
         type: 3}
       propertyPath: m_Layer
-      value: 7
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 9111978772765708074, guid: b884f4387e270694d97c97d3b288856b,
         type: 3}
       propertyPath: m_Layer
-      value: 7
+      value: 6
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b884f4387e270694d97c97d3b288856b, type: 3}
