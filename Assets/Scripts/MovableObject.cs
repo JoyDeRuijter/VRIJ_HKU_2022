@@ -38,7 +38,7 @@ public class MovableObject : MonoBehaviour, IActivateable
     [HideInInspector] public bool isRotating;
     private Vector3 basePosition;
     private Quaternion baseRotation;
-    [HideInInspector] public int rotationState = 0; // 0 = base, 1 = left, 2 = abyss
+    public int rotationState = 0; // 0 = base, 1 = left, 2 = abyss
     [HideInInspector] public int moveState = 0; // 0 = base, 1 = moved forward
 
     private GameManager gameManager;
@@ -105,7 +105,7 @@ public class MovableObject : MonoBehaviour, IActivateable
             MoveObject(movedPosition, 4f);
         }
         else
-            RotateObject(2f);
+            RotateObject(3f);
 
         isActivated = true;
     }
@@ -155,6 +155,7 @@ public class MovableObject : MonoBehaviour, IActivateable
         yield return new WaitForSeconds(_rotateTime);
 
         isRotating = false;
+        Debug.Log(isRotating);
     }
 
     // THESE FREEZE THE WHOLE GAME, FIND OUT WHY
@@ -170,6 +171,7 @@ public class MovableObject : MonoBehaviour, IActivateable
 
     private void RotateObject(float _rotateTime)
     {
+        StopAllCoroutines();
         StartCoroutine(WhileRotating(_rotateTime));
 
         if (rotationState == 0)
@@ -185,7 +187,7 @@ public class MovableObject : MonoBehaviour, IActivateable
         else if (rotationState == 2)
         {
             transform.DORotateQuaternion(baseRotation, _rotateTime);
-            ChangeMaterial(unActivatedMaterial);
+            //ChangeMaterial(unActivatedMaterial);
             rotationState = 0;
         }
     }

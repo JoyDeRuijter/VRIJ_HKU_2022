@@ -43,10 +43,8 @@ public class Door : MonoBehaviour
 
     public virtual void OnTriggerEnter(Collider other)
     {
-        Debug.Log(gameObject.name + "is being used");
         if (other.gameObject.GetComponent<Character>() != null && !isBlocked)
         {
-            Debug.Log("By the player");
             StartCoroutine(Use(usageTime));
         }
     }

@@ -23,8 +23,7 @@ public class RotatingDoor : Door
     public override void Awake()
     {
         base.Awake();
-        movableObject = this.gameObject.GetComponentInParent<MovableObject>();
-        usageTime = 5f;
+        movableObject = gameObject.GetComponentInParent<MovableObject>();
         exit3Position = transform.position;
     }
 
@@ -48,13 +47,11 @@ public class RotatingDoor : Door
         gameManager.DestroyCharacter();
         yield return new WaitForSeconds(_useDuration);
 
-        Debug.Log("Is using door");
-
         if (!movableObject.isRotation)
             yield return new WaitUntil(() => !movableObject.isMoving);
         else
             yield return new WaitUntil(() => !movableObject.isRotating);
-
+        Debug.Log(movableObject.isRotating);
         if (movableObject.rotationState == 2) // Above an abyss
             gameManager.DropCharacter(exit3Position);
         else if (movableObject.rotationState == 1) // Left
@@ -64,12 +61,9 @@ public class RotatingDoor : Door
 
 
         yield return new WaitForSeconds(_useDuration / 4 * 3);
-
         //ChangeMaterial(normalMaterial);
         //_exitDoor.ChangeMaterial(normalMaterial);
-        if (movableObject.rotationState == 0)
-            currentExitDoor.isBlocked = false;
-        else if (movableObject.rotationState == 1)
-            currentExitDoor2.isBlocked = false;
+        if (exitDoor != null) exitDoor.isBlocked = false;
+        if (exit2Door != null) exit2Door.isBlocked = false;
     }
 }
