@@ -41,6 +41,7 @@ public class Character : MonoBehaviour
     private bool routineIsRunning = false;
     [HideInInspector] public bool isMoving;
     private Vector3 lostPathNodePosition;
+    private int lastNode;
 
     private Rigidbody rb;
     #endregion
@@ -85,12 +86,19 @@ public class Character : MonoBehaviour
 
         if (isGrounded)
         {
-            Invoke("SwitchOffGravity", 0.2f);
+            if (GetVerticalDistance(nodes[currentNode].position, nodes[lastNode].position) > 0.2f && nodes[currentNode].position.y > nodes[lastNode].position.y)
+            {
+                rb.useGravity = false;
+            }
+            else
+            {
+                rb.useGravity = true;
+            }
         }
         else
         {
-            CancelInvoke("SwitchOffGravity");
             rb.useGravity = true;
+            justFell = true;
         }
 
         if (GetVerticalDistance(transform.position, GetNodePosition(currentNode)) > 1.5f)
@@ -252,6 +260,7 @@ public class Character : MonoBehaviour
     {
         if ((currentNode == nodes.Count - 1 && GetHorizontalDistance(transform.position, nodes[currentNode].position) >= 0.05f) || currentNode != nodes.Count - 1)
         {
+            lastNode = currentNode;
             direction = Direction.forward;
             currentNode++;
         }
@@ -261,6 +270,7 @@ public class Character : MonoBehaviour
     {
         if ((currentNode == 0 && GetHorizontalDistance(transform.position, nodes[currentNode].position) >= 0.05f) || currentNode != 0)
         {
+            lastNode = currentNode;
             direction = Direction.backward;
             currentNode--;
         }
@@ -290,9 +300,15 @@ public class Character : MonoBehaviour
 
             // And if the char is on the path, then this will decide, based of direction, where to go next
             if (direction == Direction.forward)
+            {
+                lastNode = currentNode;
                 currentNode++;
+            }
             else if (direction == Direction.backward)
+            {
+                lastNode = currentNode;
                 currentNode--;
+            }
 
             if (toTheBeat)
             {
@@ -321,18 +337,17 @@ public class Character : MonoBehaviour
         boundToPath = false;
     }
 
-    private void SwitchOffGravity()
-    {
-        rb.useGravity = false;
-    }
-
     private void SearchForPath()
     {
         // IF WE USE UBEAT TEMPO, THIS SEARCHING AND BINDING TO A PATH HAS TO COME IN PULSES INSTEAD OF EVERY UPDATE
-        if (GetHorizontalDistance(transform.position, lostPathNodePosition) < 1f) return;
+        if (GetVerticalDistance(transform.position, lostPathNodePosition) < 1.0f)
+            if (GetHorizontalDistance(transform.position, lostPathNodePosition) < 1f) 
+                return;
+
         RaycastHit hit;
-        float castScale = transform.localScale.x / 8;
+        float castScale = transform.localScale.x / 2 - 0.01f;
         Physics.SphereCast(transform.position + (transform.rotation * (Vector3.up * capsuleCollider.height / 2 + capsuleCollider.center)), castScale, -transform.up, out hit, capsuleCollider.height + 0.01f, LayerMask.GetMask("Path"), QueryTriggerInteraction.UseGlobal);
+        Debug.DrawLine(transform.position + (transform.rotation * (Vector3.up * capsuleCollider.height / 2 + capsuleCollider.center)), transform.position - transform.up * 100, Color.yellow);
         if (hit.collider != null)
         {
             NodePath foundPath = hit.transform.GetComponentInParent<NodePath>();
@@ -342,9 +357,9 @@ public class Character : MonoBehaviour
             temp = temp.Remove(0, 6);
             temp = temp.Remove(temp.Length - 1);
             currentNode = int.Parse(temp);
+            lastNode = currentNode;
             boundToPath = true;
             direction = Direction.stationary;
-            Debug.Log("Found the path");
 
             if (justFell)
             {

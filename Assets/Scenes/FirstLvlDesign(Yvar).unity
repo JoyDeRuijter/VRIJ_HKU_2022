@@ -23885,6 +23885,16 @@ PrefabInstance:
       propertyPath: m_Name
       value: DoorTower2
       objectReference: {fileID: 0}
+    - target: {fileID: 9182475426757820709, guid: 0c6568318cd87d64f9118da71faf7c42,
+        type: 3}
+      propertyPath: exitDoor
+      value: 
+      objectReference: {fileID: 1363269554}
+    - target: {fileID: 9182475426757820709, guid: 0c6568318cd87d64f9118da71faf7c42,
+        type: 3}
+      propertyPath: exitDirection
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0c6568318cd87d64f9118da71faf7c42, type: 3}
 --- !u!4 &1949185394 stripped
