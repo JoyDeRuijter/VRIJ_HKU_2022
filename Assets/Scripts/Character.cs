@@ -384,7 +384,10 @@ public class Character : MonoBehaviour
         {
             if (collision.transform.position.y + collision.transform.localScale.y / 2 > transform.position.y)
             {
-                LastNodeBehaviour();
+                if  (WallCheck(1.0f))
+                {
+                    FlipDirection();
+                }
             }
         }
     }
