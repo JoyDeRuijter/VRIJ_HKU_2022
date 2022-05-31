@@ -944,6 +944,7 @@ MonoBehaviour:
   affectedNodeIDs: 
   unActivatedMaterial: {fileID: 2100000, guid: 1b41f7e5ada7d1748acee03356f09699, type: 2}
   activatedMaterial: {fileID: 2100000, guid: 19cae2918e797434bbc88fe721e9a0a9, type: 2}
+  isActivated: 0
   isMoving: 0
   isRotating: 0
   rotationState: 0
@@ -3217,6 +3218,7 @@ MonoBehaviour:
   affectedNodeIDs: 
   unActivatedMaterial: {fileID: 2100000, guid: 19cae2918e797434bbc88fe721e9a0a9, type: 2}
   activatedMaterial: {fileID: 2100000, guid: 1b41f7e5ada7d1748acee03356f09699, type: 2}
+  isActivated: 0
   isMoving: 0
   isRotating: 0
   rotationState: 0
@@ -6454,6 +6456,7 @@ MonoBehaviour:
   affectedNodeIDs: 
   unActivatedMaterial: {fileID: 2100000, guid: 19cae2918e797434bbc88fe721e9a0a9, type: 2}
   activatedMaterial: {fileID: 2100000, guid: 1b41f7e5ada7d1748acee03356f09699, type: 2}
+  isActivated: 0
   isMoving: 0
   isRotating: 0
   rotationState: 0
@@ -9133,6 +9136,7 @@ MonoBehaviour:
   affectedNodeIDs: 
   unActivatedMaterial: {fileID: 2100000, guid: 318b0a49a190603469320cd7aea2579b, type: 2}
   activatedMaterial: {fileID: 2100000, guid: 318b0a49a190603469320cd7aea2579b, type: 2}
+  isActivated: 0
   isMoving: 0
   isRotating: 0
   rotationState: 0
@@ -17431,6 +17435,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c829125ce2646fa45a2171cc356de1de, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  serialPortName: 2
 --- !u!1001 &1505378193
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -17877,6 +17882,7 @@ MonoBehaviour:
   affectedNodeIDs: 
   unActivatedMaterial: {fileID: 2100000, guid: 1b41f7e5ada7d1748acee03356f09699, type: 2}
   activatedMaterial: {fileID: 2100000, guid: 19cae2918e797434bbc88fe721e9a0a9, type: 2}
+  isActivated: 0
   isMoving: 0
   isRotating: 0
   rotationState: 0
@@ -19610,6 +19616,7 @@ MonoBehaviour:
   affectedNodeIDs: 
   unActivatedMaterial: {fileID: 2100000, guid: 1b41f7e5ada7d1748acee03356f09699, type: 2}
   activatedMaterial: {fileID: 2100000, guid: 19cae2918e797434bbc88fe721e9a0a9, type: 2}
+  isActivated: 0
   isMoving: 0
   isRotating: 0
   rotationState: 0

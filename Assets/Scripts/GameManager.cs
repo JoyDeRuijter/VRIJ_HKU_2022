@@ -24,6 +24,7 @@ public class GameManager : MonoBehaviour
 
     private Stairs stairs;
     private GameObject characterGameObject;
+    private MovableObject[] movableObjects;
 
     #endregion
 
@@ -33,11 +34,17 @@ public class GameManager : MonoBehaviour
         stairs = FindObjectOfType<Stairs>();
         InitializePaths();
         SpawnCharacter(startPathID, startNode, startDirection);
+        InitializeMovableObjects();
     }
 
     private void Start()
     {
         SaveWalkableCubes();
+    }
+
+    private void InitializeMovableObjects()
+    {
+        movableObjects = FindObjectsOfType<MovableObject>();
     }
 
     #region Cubes
@@ -51,7 +58,7 @@ public class GameManager : MonoBehaviour
         {
             _cubes[i].name = "Cube_" + i;
             Vector3Int _cubePosition = _cubes[i].position;
-            if (_cubes[i].isWalkable && !walkableCubes.ContainsKey(_cubePosition)) 
+            if (_cubes[i].isWalkable && !walkableCubes.ContainsKey(_cubePosition))
                 walkableCubes.Add(_cubePosition, _cubes[i]);
         }
     }
@@ -99,14 +106,14 @@ public class GameManager : MonoBehaviour
         for (int i = 0; i < paths[_pathID].nodes.Count - 1; i++)
         {
             for (int j = 0; j < _nodeIDs.Length; i++)
-            { 
+            {
                 if (i == _nodeIDs[j])
                     paths[_pathID].nodes.RemoveAt(i);
             }
         }
     }
 
-    public void AddNodesToPath(int _pathID, int[] _nodeIDs) 
+    public void AddNodesToPath(int _pathID, int[] _nodeIDs)
     {
         foreach (int _node in _nodeIDs)
             paths[_pathID].nodes.Add(paths[_pathID].transform.Find("Node_" + _node));
@@ -118,7 +125,7 @@ public class GameManager : MonoBehaviour
 
     #region Spawning & Destroying
 
-    public void SpawnCharacter(int _pathID, int _startNode, Direction _startDirection) 
+    public void SpawnCharacter(int _pathID, int _startNode, Direction _startDirection)
     {
         if (characterGameObject == null)
         {
@@ -138,14 +145,14 @@ public class GameManager : MonoBehaviour
     public void DropCharacter(Vector3 _dropPosition)
     {
         if (characterGameObject == null)
-        { 
+        {
             characterGameObject = Instantiate(characterPrefab, _dropPosition, Quaternion.identity);
             character = characterGameObject.GetComponent<Character>();
             character.gameObject.GetComponent<Rigidbody>().useGravity = true;
             character.path = null;
             character.currentNode = 0;
             character.direction = Direction.stationary;
-            character.boundToPath = false; 
+            character.boundToPath = false;
         }
 
         CamFollowsPlayer(characterGameObject);
@@ -171,5 +178,60 @@ public class GameManager : MonoBehaviour
         Destroy(characterGameObject);
     }
 
+    #endregion
+
+    #region InputManagement
+
+    public void ReceiveInput(int _inputIndex)
+    {
+        switch (_inputIndex)
+        {
+            case 0:
+
+                // No input
+                break;
+
+            case 1: // fluit pijp 1
+
+                // Switch character direction
+                character.FlipDirection();
+                break;
+
+            case 2: // fluit pijp 2
+
+                // Move movable objects
+                foreach (MovableObject movableObject in movableObjects)
+                {
+                    if (movableObject.isRotation)
+                        break;
+
+                    if (!movableObject.isActivated)
+                        movableObject.ActivateObject();
+                    else
+                        movableObject.DeactivateObject();
+                }
+                break;
+
+            case 3: // fluit pijp 3
+
+                // Rotate tower
+                foreach (MovableObject movableObject in movableObjects)
+                {
+                    if (!movableObject.isRotation)
+                        break;
+
+                    if (!movableObject.isActivated)
+                        movableObject.ActivateObject();
+                    else
+                        movableObject.DeactivateObject();
+                }
+                break;
+
+            case 4: // fluit pijp 4
+
+                // Another functionality can be added here...
+                break;
+        }
+    }
     #endregion
 }
