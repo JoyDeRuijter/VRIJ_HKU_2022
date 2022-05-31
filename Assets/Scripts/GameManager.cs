@@ -141,10 +141,11 @@ public class GameManager : MonoBehaviour
         { 
             characterGameObject = Instantiate(characterPrefab, _dropPosition, Quaternion.identity);
             character = characterGameObject.GetComponent<Character>();
+            character.gameObject.GetComponent<Rigidbody>().useGravity = true;
             character.path = null;
             character.currentNode = 0;
             character.direction = Direction.stationary;
-            character.boundToPath = true;
+            character.boundToPath = false; 
         }
 
         CamFollowsPlayer(characterGameObject);

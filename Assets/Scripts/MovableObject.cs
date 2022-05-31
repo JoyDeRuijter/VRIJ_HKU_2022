@@ -181,7 +181,7 @@ public class MovableObject : MonoBehaviour, IActivateable
         }
         else if (rotationState == 1)
         {
-            transform.DORotateQuaternion(rightRotation, _rotateTime * 2);
+            transform.DORotateQuaternion(rightRotation, _rotateTime);
             rotationState = 2;
         }
         else if (rotationState == 2)
