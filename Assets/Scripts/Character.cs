@@ -37,7 +37,6 @@ public class Character : MonoBehaviour
 
     private bool isGrounded = true;
     private CapsuleCollider capsuleCollider;
-    private bool isHittingObstacle;
     private bool justFell = false;
     private bool routineIsRunning = false;
     [HideInInspector] public bool isMoving;
@@ -94,7 +93,7 @@ public class Character : MonoBehaviour
             rb.useGravity = true;
         }
 
-        if (GetVerticalDistance(transform.position, GetNodePosition(currentNode)) > 1.5f || isHittingObstacle)
+        if (GetVerticalDistance(transform.position, GetNodePosition(currentNode)) > 1.5f)
             LosePathing();
 
         if (justFell && isGrounded && !routineIsRunning)
@@ -383,28 +382,10 @@ public class Character : MonoBehaviour
     {
         if (collision.collider.CompareTag("MoveableObject"))
         {
-            if (collision.transform.position.y > transform.position.y)
+            if (collision.transform.position.y + collision.transform.localScale.y / 2 > transform.position.y)
             {
-                isHittingObstacle = true;
                 LastNodeBehaviour();
             }
-        }
-    }
-
-    private void OnCollisionStay(Collision collision)
-    {
-        if (collision.collider.CompareTag("MoveableObject"))
-        {
-            if (collision.transform.position.y > transform.position.y)
-                isHittingObstacle = true;
-        }
-    }
-
-    private void OnCollisionExit(Collision collision)
-    {
-        if (collision.collider.CompareTag("MoveableObject"))
-        {
-            isHittingObstacle = false;
         }
     }
 
