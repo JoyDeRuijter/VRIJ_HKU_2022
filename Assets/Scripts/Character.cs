@@ -235,7 +235,7 @@ public class Character : MonoBehaviour
     }
 
     // Make the character change directions and move to the nodes in opposite order
-    private void FlipDirection()
+    public void FlipDirection()
     {
         Debug.Log("Me flippin");
         if (direction == Direction.stationary)
@@ -322,13 +322,9 @@ public class Character : MonoBehaviour
     private void LastNodeBehaviour()
     {
         if (WallCheck(1.0f))
-        {
             FlipDirection();
-        }
         else
-        {
             LosePathing();
-        }
     }
 
     private void LosePathing()

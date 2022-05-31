@@ -33,7 +33,7 @@ public class MovableObject : MonoBehaviour, IActivateable
     [SerializeField] Material activatedMaterial;
 
     private MeshRenderer[] meshRenderers;
-    private bool isActivated;
+    [HideInInspector] public bool isActivated;
     [HideInInspector] public bool isMoving;
     [HideInInspector] public bool isRotating;
     private Vector3 basePosition;
@@ -95,7 +95,7 @@ public class MovableObject : MonoBehaviour, IActivateable
             mr.material = _material;
     }
 
-    private void ActivateObject()
+    public void ActivateObject()
     {
         //ChangeMaterial(activatedMaterial);
 
@@ -110,7 +110,7 @@ public class MovableObject : MonoBehaviour, IActivateable
         isActivated = true;
     }
 
-    private void DeactivateObject()
+    public void DeactivateObject()
     {
         if (!isRotation)
         {

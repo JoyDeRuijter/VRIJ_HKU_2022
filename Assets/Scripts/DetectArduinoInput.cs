@@ -4,15 +4,36 @@ using UnityEngine;
 using System.IO.Ports;
 
 
-public class Move : MonoBehaviour
+public class DetectArduinoInput : MonoBehaviour
 {
-
-    SerialPort sp = new SerialPort("COM3", 9600);
+    private GameManager gameManager;
+    private enum SerialPortName {COM2, COM3, COM4, COM5, COM6}
+    [SerializeField] private SerialPortName serialPortName = SerialPortName.COM4;
+    private string serialPort;
+    private SerialPort sp;
 
     void Start()
     {
+        ConvertSerialPort();
+        sp = new SerialPort(serialPort, 9600);
+        gameManager = GameManager.instance;
         sp.Open();
         sp.ReadTimeout = 100;
+        Debug.Log("Selected port: " + serialPort);
+    }
+
+    private void ConvertSerialPort()
+    {
+        if (serialPortName == SerialPortName.COM2)
+            serialPort = "COM2";
+        else if (serialPortName == SerialPortName.COM3)
+            serialPort = "COM3";
+        else if (serialPortName == SerialPortName.COM4)
+            serialPort = "COM4";
+        else if (serialPortName == SerialPortName.COM5)
+            serialPort = "COM5";
+        else if (serialPortName == SerialPortName.COM6)
+            serialPort = "COM6";
     }
 
 
@@ -22,39 +43,13 @@ public class Move : MonoBehaviour
         {
             try
             {
-                // Buis 1 wordt in geblazen
-                if (sp.ReadByte() == 1)
-                {
-                    print(sp.ReadByte());
-                    transform.Translate(Vector3.left * Time.deltaTime * 5);
-
-                }
-                // Buis 2 wordt in geblazen
-                if (sp.ReadByte() == 2)
-                {
-                    print(sp.ReadByte());
-                    transform.Translate(Vector3.right * Time.deltaTime * 5);
-
-                }
-                // Buis 3 wordt in geblazen
-                if (sp.ReadByte() == 3)
-                {
-                    print(sp.ReadByte());
-
-                    Destroy(gameObject);
-                }
-                // Buis 4 wordt in geblazen
-                if (sp.ReadByte() == 4)
-                {
-                    print(sp.ReadByte());
-                    Destroy(gameObject);
-                }
+                print(sp.ReadByte());
+                gameManager.ReceiveInput(sp.ReadByte());
             }
             catch (System.Exception)
             {
-
+                Debug.Log("Could not receive Arduino input, exception error!");
             }
-
         }
     }
 }
