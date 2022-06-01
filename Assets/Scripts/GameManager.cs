@@ -26,6 +26,8 @@ public class GameManager : MonoBehaviour
     private GameObject characterGameObject;
     private MovableObject[] movableObjects;
 
+    private bool gaveInput;
+
     #endregion
 
     private void Awake()
@@ -184,6 +186,11 @@ public class GameManager : MonoBehaviour
 
     public void ReceiveInput(int _inputIndex)
     {
+        Debug.Log(_inputIndex, this);
+
+        if (gaveInput)
+            return;
+
         switch (_inputIndex)
         {
             case 0:
@@ -192,9 +199,11 @@ public class GameManager : MonoBehaviour
                 break;
 
             case 1: // fluit pijp 1
-
+                
                 // Switch character direction
                 character.FlipDirection();
+
+                InputHandler();
                 break;
 
             case 2: // fluit pijp 2
@@ -210,6 +219,8 @@ public class GameManager : MonoBehaviour
                     else
                         movableObject.DeactivateObject();
                 }
+
+                InputHandler();
                 break;
 
             case 3: // fluit pijp 3
@@ -225,13 +236,32 @@ public class GameManager : MonoBehaviour
                     else
                         movableObject.DeactivateObject();
                 }
+
+                InputHandler();
                 break;
 
             case 4: // fluit pijp 4
 
                 // Another functionality can be added here...
+
+                InputHandler();
                 break;
         }
+    }
+
+    private void InputHandler()
+    {
+        if (!gaveInput)
+        {
+            gaveInput = true;
+
+        }
+    }
+
+    private IEnumerator WaitTillNextInput(float time)
+    {
+        yield return new WaitForSeconds(time);
+        gaveInput = false;
     }
     #endregion
 }

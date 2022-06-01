@@ -5703,6 +5703,7 @@ MonoBehaviour:
   affectedNodeIDs: 
   unActivatedMaterial: {fileID: 2100000, guid: 1b41f7e5ada7d1748acee03356f09699, type: 2}
   activatedMaterial: {fileID: 2100000, guid: 19cae2918e797434bbc88fe721e9a0a9, type: 2}
+  isActivated: 0
   isMoving: 0
   isRotating: 0
   rotationState: 0
@@ -8246,6 +8247,7 @@ MonoBehaviour:
   affectedNodeIDs: 
   unActivatedMaterial: {fileID: 2100000, guid: 1b41f7e5ada7d1748acee03356f09699, type: 2}
   activatedMaterial: {fileID: 2100000, guid: 19cae2918e797434bbc88fe721e9a0a9, type: 2}
+  isActivated: 0
   isMoving: 0
   isRotating: 0
   rotationState: 0
@@ -10098,6 +10100,7 @@ MonoBehaviour:
   affectedNodeIDs: 
   unActivatedMaterial: {fileID: 2100000, guid: 1b41f7e5ada7d1748acee03356f09699, type: 2}
   activatedMaterial: {fileID: 2100000, guid: 19cae2918e797434bbc88fe721e9a0a9, type: 2}
+  isActivated: 0
   isMoving: 0
   isRotating: 0
   rotationState: 0
@@ -11138,6 +11141,7 @@ MonoBehaviour:
   affectedNodeIDs: 
   unActivatedMaterial: {fileID: 2100000, guid: 318b0a49a190603469320cd7aea2579b, type: 2}
   activatedMaterial: {fileID: 2100000, guid: 318b0a49a190603469320cd7aea2579b, type: 2}
+  isActivated: 0
   isMoving: 0
   isRotating: 0
   rotationState: 0
@@ -12731,6 +12735,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1018361405}
   - component: {fileID: 1018361404}
+  - component: {fileID: 1018361406}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -12753,8 +12758,8 @@ MonoBehaviour:
   characterPrefab: {fileID: 6483646236678325386, guid: 1efedc3bef340ab468a111285e3677a9,
     type: 3}
   startPathID: 0
-  startNode: 7
-  startDirection: 0
+  startNode: 3
+  startDirection: 2
   paths: []
   character: {fileID: 0}
 --- !u!4 &1018361405
@@ -12772,6 +12777,19 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1018361406
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1018361403}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c829125ce2646fa45a2171cc356de1de, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  serialPortName: 4
 --- !u!1001 &1019553051
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -14297,7 +14315,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1178671002}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 2, y: 1, z: 5}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -21211,6 +21229,7 @@ MonoBehaviour:
   affectedNodeIDs: 
   unActivatedMaterial: {fileID: 2100000, guid: 19cae2918e797434bbc88fe721e9a0a9, type: 2}
   activatedMaterial: {fileID: 2100000, guid: 1b41f7e5ada7d1748acee03356f09699, type: 2}
+  isActivated: 0
   isMoving: 0
   isRotating: 0
   rotationState: 0
@@ -23659,6 +23678,7 @@ MonoBehaviour:
   affectedNodeIDs: 
   unActivatedMaterial: {fileID: 2100000, guid: 19cae2918e797434bbc88fe721e9a0a9, type: 2}
   activatedMaterial: {fileID: 2100000, guid: 1b41f7e5ada7d1748acee03356f09699, type: 2}
+  isActivated: 0
   isMoving: 0
   isRotating: 0
   rotationState: 0

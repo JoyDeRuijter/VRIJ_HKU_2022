@@ -55,7 +55,7 @@ MonoBehaviour:
   direction: 0
   directionChangeKey: 0
   diesBelowYLevel: 0
-  toTheBeat: 0
+  toTheBeat: 1
   anim: {fileID: 7793405117191003535}
   xPos: 0
   yPos: 0

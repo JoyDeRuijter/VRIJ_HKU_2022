@@ -15,7 +15,7 @@ public class DetectArduinoInput : MonoBehaviour
     void Start()
     {
         ConvertSerialPort();
-        sp = new SerialPort(serialPort, 9600);
+        sp = new SerialPort(serialPort, 4800);
         gameManager = GameManager.instance;
         sp.Open();
         sp.ReadTimeout = 100;
@@ -36,6 +36,7 @@ public class DetectArduinoInput : MonoBehaviour
             serialPort = "COM6";
     }
 
+    int lastinput = 0;
 
     void Update()
     {
@@ -43,13 +44,27 @@ public class DetectArduinoInput : MonoBehaviour
         {
             try
             {
-                print(sp.ReadByte());
-                gameManager.ReceiveInput(sp.ReadByte());
+                string line = sp.ReadLine();
+                Debug.Log(line);
+                if (int.TryParse(line, out int pipe))
+                {
+                    if (pipe > -1 && pipe != lastinput) //is controller connected? and is button pressed only once
+                        gameManager.ReceiveInput(pipe);
+                    lastinput = pipe;
+                }
+                sp.BaseStream.Flush();
             }
-            catch (System.Exception)
+            catch (System.TimeoutException) { }
+            catch (System.Exception e)
             {
+                Debug.LogException(e);
                 Debug.Log("Could not receive Arduino input, exception error!");
             }
         }
+    }
+
+    private void OnApplicationQuit()
+    {
+        sp.Close();
     }
 }
