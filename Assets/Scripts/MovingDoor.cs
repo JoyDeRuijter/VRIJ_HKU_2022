@@ -9,7 +9,7 @@ public class MovingDoor : Door
     [Header("Moved Exit")]
     public int exit2PathID;
     public int exit2Node;
-    public Direction exit2Direction;
+    public WalkDirection exit2Direction;
 
     private MovableObject movableObject;
 

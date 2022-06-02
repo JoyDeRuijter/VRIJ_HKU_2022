@@ -11,7 +11,7 @@ public class RotatingDoor : Door
     public int exit2Node;
     public Door exit2Door;
     public Vector3 exit3Position;
-    public Direction exit2Direction;
+    public WalkDirection exit2Direction;
 
     private MovableObject movableObject;
     private RotatingDoor currentExitDoor;

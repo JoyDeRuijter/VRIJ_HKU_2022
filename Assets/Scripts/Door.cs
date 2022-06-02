@@ -20,7 +20,7 @@ public class Door : MonoBehaviour
     public int exitPathID;
     public int enterNode;
     public int exitNode;
-    public Direction exitDirection;
+    public WalkDirection exitDirection;
     [SerializeField] protected Door exitDoor;
 
     private MeshRenderer[] meshRenderers;

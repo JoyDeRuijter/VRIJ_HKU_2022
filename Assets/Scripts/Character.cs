@@ -17,9 +17,9 @@ public class Character : MonoBehaviour
     [SerializeField] private float movementSpeed = 1.2f;
     public Transform path;
     public int currentNode;
-    public Direction direction;
+    public WalkDirection direction;
     [SerializeField] KeyCode directionChangeKey;
-    private Direction lastDirection;
+    private WalkDirection lastDirection;
     [SerializeField] float diesBelowYLevel;
     [SerializeField] bool toTheBeat;
 
@@ -62,7 +62,7 @@ public class Character : MonoBehaviour
         InitializePath();
         currentPathID = GetPathID();
 
-        lastDirection = Direction.forward;
+        lastDirection = WalkDirection.forward;
 
         if (toTheBeat) isMoving = false;
         else isMoving = true;
@@ -107,10 +107,10 @@ public class Character : MonoBehaviour
         if (justFell && isGrounded && !routineIsRunning)
         {
             routineIsRunning = true;
-            StartCoroutine(StartWalkingAgain(Direction.stationary, 5.5f));
+            StartCoroutine(StartWalkingAgain(WalkDirection.stationary, 5.5f));
         }
     }
-    private IEnumerator StartWalkingAgain(Direction newDirection, float afterSeconds)
+    private IEnumerator StartWalkingAgain(WalkDirection newDirection, float afterSeconds)
     {
         yield return new WaitForSeconds(afterSeconds);
         justFell = false;
@@ -153,6 +153,11 @@ public class Character : MonoBehaviour
         return nodes[_node].position;
     }
 
+    public bool isPathLooped()
+    {
+        return path.gameObject.GetComponent<NodePath>().isLoop;
+    }
+
     public void deathBehaviour()
     {
         UserInterface.reloadScene();
@@ -178,7 +183,7 @@ public class Character : MonoBehaviour
     // Initialize the first path the character has to follow
     private void InitializePath()
     {
-        if (direction == Direction.stationary)
+        if (direction == WalkDirection.stationary)
             return;
 
         Transform[] pathTransforms = path.GetComponentsInChildren<Transform>();
@@ -238,19 +243,19 @@ public class Character : MonoBehaviour
     public void FlipDirection()
     {
         Debug.Log("Me flippin");
-        if (direction == Direction.stationary)
+        if (direction == WalkDirection.stationary)
         {
-            if (lastDirection == Direction.forward)
+            if (lastDirection == WalkDirection.forward)
                 flipToBackward();
             else
                 flipToForward();
         }
 
-        if (direction == Direction.forward)
+        if (direction == WalkDirection.forward)
         {
             flipToBackward();
         }
-        else if (direction == Direction.backward)
+        else if (direction == WalkDirection.backward)
         {
             flipToForward();
         }
@@ -261,8 +266,11 @@ public class Character : MonoBehaviour
         if ((currentNode == nodes.Count - 1 && GetHorizontalDistance(transform.position, nodes[currentNode].position) >= 0.05f) || currentNode != nodes.Count - 1)
         {
             lastNode = currentNode;
-            direction = Direction.forward;
-            currentNode++;
+            direction = WalkDirection.forward;
+            if (isPathLooped() && currentNode == nodes.Count - 1)
+                currentNode = 0;
+            else
+                currentNode++;
         }
     }
 
@@ -271,8 +279,11 @@ public class Character : MonoBehaviour
         if ((currentNode == 0 && GetHorizontalDistance(transform.position, nodes[currentNode].position) >= 0.05f) || currentNode != 0)
         {
             lastNode = currentNode;
-            direction = Direction.backward;
-            currentNode--;
+            direction = WalkDirection.backward;
+            if (isPathLooped() && currentNode == 0)
+                currentNode = nodes.Count - 1;
+            else
+                currentNode--;
         }
     }
 
@@ -283,7 +294,7 @@ public class Character : MonoBehaviour
         if (GetHorizontalDistance(transform.position, nodes[currentNode].position) < 0.05f)
         {
             // First, if we stand still then we don't do anything
-            if (direction == Direction.stationary && !toTheBeat)
+            if (direction == WalkDirection.stationary && !toTheBeat)
             {
                 return;
             }
@@ -291,20 +302,39 @@ public class Character : MonoBehaviour
             else
             {
                 // If the character is on the last or first node then...
-                if ((currentNode == nodes.Count - 1 && direction == Direction.forward) || (currentNode == 0 && direction == Direction.backward))
+                if (currentNode == nodes.Count - 1 && direction == WalkDirection.forward)
                 {
-                    LastNodeBehaviour();
-                    return;
+                    if (isPathLooped())
+                    {
+                        currentNode = 0;
+                    }
+                    else
+                    {
+                        LastNodeBehaviour();
+                        return;
+                    }
+                }
+                else if (currentNode == 0 && direction == WalkDirection.backward)
+                {
+                    if (isPathLooped())
+                    {
+                        currentNode = nodes.Count - 1;
+                    }
+                    else
+                    {
+                        LastNodeBehaviour();
+                        return;
+                    }
                 }
             }
 
             // And if the char is on the path, then this will decide, based of direction, where to go next
-            if (direction == Direction.forward)
+            if (direction == WalkDirection.forward)
             {
                 lastNode = currentNode;
                 currentNode++;
             }
-            else if (direction == Direction.backward)
+            else if (direction == WalkDirection.backward)
             {
                 lastNode = currentNode;
                 currentNode--;
@@ -314,7 +344,7 @@ public class Character : MonoBehaviour
             {
                 isMoving = false;
                 lastDirection = direction;
-                direction = Direction.stationary;
+                direction = WalkDirection.stationary;
             }
         }
     }
@@ -337,7 +367,7 @@ public class Character : MonoBehaviour
     {
         // IF WE USE UBEAT TEMPO, THIS SEARCHING AND BINDING TO A PATH HAS TO COME IN PULSES INSTEAD OF EVERY UPDATE
         if (GetVerticalDistance(transform.position, lostPathNodePosition) < 1.0f)
-            if (GetHorizontalDistance(transform.position, lostPathNodePosition) < 1f) 
+            if (GetHorizontalDistance(transform.position, lostPathNodePosition) < 0.9f)
                 return;
 
         RaycastHit hit;
@@ -355,7 +385,7 @@ public class Character : MonoBehaviour
             currentNode = int.Parse(temp);
             lastNode = currentNode;
             boundToPath = true;
-            direction = Direction.stationary;
+            direction = WalkDirection.stationary;
 
             if (justFell)
             {
@@ -363,7 +393,7 @@ public class Character : MonoBehaviour
             }
             else
             {
-                if (foundPath.preferedDirection == Direction.stationary)
+                if (foundPath.preferedDirection == WalkDirection.stationary)
                 {
                     StartWalkingAgain(lastDirection);
                 }
@@ -372,7 +402,7 @@ public class Character : MonoBehaviour
         }
     }
 
-    private void StartWalkingAgain(Direction newDirection)
+    private void StartWalkingAgain(WalkDirection newDirection)
     {
         direction = newDirection;
     }
@@ -395,7 +425,7 @@ public class Character : MonoBehaviour
         {
             if (collision.transform.position.y + collision.transform.localScale.y / 2 > transform.position.y)
             {
-                if  (WallCheck(1.0f))
+                if (WallCheck(1.0f))
                 {
                     FlipDirection();
                 }
@@ -411,4 +441,4 @@ public class Character : MonoBehaviour
     }
 }
 
-public enum Direction { forward, stationary, backward }
+public enum WalkDirection { forward, stationary, backward }
