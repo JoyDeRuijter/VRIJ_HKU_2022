@@ -16,7 +16,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject characterPrefab;
     [SerializeField] private int startPathID;
     [SerializeField] private int startNode;
-    [SerializeField] private Direction startDirection;
+    [SerializeField] private WalkDirection startDirection;
 
     public Dictionary<Vector3Int, Cube> walkableCubes = new Dictionary<Vector3Int, Cube>();
     public NodePath[] paths;
@@ -96,7 +96,7 @@ public class GameManager : MonoBehaviour
         return newNodes;
     }
 
-    public IEnumerator SwitchCharacterPath(int _newPathID, int _startNode, int _doorNode, Direction _startDirection, float _delay)
+    public IEnumerator SwitchCharacterPath(int _newPathID, int _startNode, int _doorNode, WalkDirection _startDirection, float _delay)
     {
         DestroyCharacter();
         yield return new WaitForSeconds(_delay);
@@ -127,7 +127,7 @@ public class GameManager : MonoBehaviour
 
     #region Spawning & Destroying
 
-    public void SpawnCharacter(int _pathID, int _startNode, Direction _startDirection)
+    public void SpawnCharacter(int _pathID, int _startNode, WalkDirection _startDirection)
     {
         if (characterGameObject == null)
         {
@@ -153,7 +153,7 @@ public class GameManager : MonoBehaviour
             character.gameObject.GetComponent<Rigidbody>().useGravity = true;
             character.path = null;
             character.currentNode = 0;
-            character.direction = Direction.stationary;
+            character.direction = WalkDirection.stationary;
             character.boundToPath = false;
         }
 
