@@ -27,7 +27,17 @@ public class GravityPoints : MonoBehaviour
             box = GetComponent<BoxCollider>();
             box.isTrigger = true;
             box.size = new Vector3(1, boxScale, boxScale);
-            box.center = new Vector3(0, -boxScale / 2 - charterOffset, boxScale / 2 + charterOffset);
+
+            switch (inOrOut)
+            {
+                case inOrOutsideRotation.inside:
+                    box.center = new Vector3(0, -boxScale / 2 - charterOffset, boxScale / 2 + charterOffset);
+                    break;
+
+                case inOrOutsideRotation.outside:
+                    box.center = new Vector3(0, -boxScale / 2, boxScale / 2);
+                    break;
+            }
         }
 
     }

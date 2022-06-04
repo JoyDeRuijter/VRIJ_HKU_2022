@@ -36,6 +36,8 @@ public class Character : MonoBehaviour
     private Vector3 lostPathNodePosition;
     private float minDistanceBetweenPoints = 0.05f;
 
+    private float heightOfCurrentNodeRelativeToCharacter;
+
     private Rigidbody rb;
     #endregion
 
@@ -61,7 +63,6 @@ public class Character : MonoBehaviour
 
     private void Update()
     {
-        Debug.Log("boundToPath: " + boundToPath + " PathID: " + currentPathID);
         // Is only for debugging, will be removed later
         if (Input.GetKeyDown(KeyCode.Space))
             FlipDirection();
@@ -81,9 +82,16 @@ public class Character : MonoBehaviour
             StartCoroutine(StartWalkingAgain(WalkDirection.stationary, 5.5f));
         }
 
-        // For now, if there is no ground below us we instantly die
-        //if (!Physics.Raycast(transform.position, -transform.up))
-        //    deathBehaviour();
+        // If we want to walk stairs (even if we are on walls on the side) then we want to turn off the gravity
+        heightOfCurrentNodeRelativeToCharacter = heightRelativeToTransformVector(GetCharacterFeet(), nodePath.GetNodeFloorPointPosition(currentNode), transform.forward);
+        if (heightOfCurrentNodeRelativeToCharacter > 0.1f && isGrounded && !justFell)
+        {
+            UseGravity(false);
+        }
+        else
+        {
+            UseGravity(true);
+        }
     }
 
     private void FixedUpdate()
@@ -106,6 +114,23 @@ public class Character : MonoBehaviour
     #endregion
 
     #region Helper Functions
+    private float heightRelativeToTransformVector(Vector3 relativeVector, Vector3 otherVector, Vector3 transformDirection)
+    {
+        Vector3 resultVector = otherVector - relativeVector;
+        float angle = Vector3.Angle(transformDirection, resultVector);
+        return Mathf.Sin(angle * Mathf.Deg2Rad) * Vector3.Distance(Vector3.zero, resultVector);
+    }
+
+    private Vector3 relativeToGravityHorizontalDirectionVector(Vector3 a, Vector3 b)
+    {
+        Vector3 resultVector = b - a;
+        Quaternion.FromToRotation(a, b);
+        float angle = Vector3.Angle(-Physics.gravity, resultVector);
+        float distanceVector = Mathf.Cos(angle * Mathf.Deg2Rad) * Vector3.Distance(Vector3.zero, resultVector);
+        Vector3 heightVector = Physics.gravity * distanceVector;
+        return resultVector + heightVector;
+    }
+
     public void UseGravity(bool condition)
     {
         rb.useGravity = condition;
@@ -220,7 +245,7 @@ public class Character : MonoBehaviour
 
     private void GroundCheck()
     {
-        if (Physics.SphereCast(GetCharacterTop(), capsuleCollider.radius / 2 - 0.01f, -transform.up, out RaycastHit hit, capsuleCollider.height + 0.3f, LayerMask.GetMask("Terrain")))
+        if (Physics.SphereCast(GetCharacterTop(), capsuleCollider.radius / 2 + .1f, -transform.up, out RaycastHit hit, capsuleCollider.height + 0.3f, LayerMask.GetMask("Terrain")))
         {
             isGrounded = true;
         }
@@ -300,35 +325,34 @@ public class Character : MonoBehaviour
         {
             if (currentNode == 0)
             {
-                walkingDirectionVector = (nodePath.GetNodeFloorPointPosition(currentNode + 1) - nodePath.GetNodeFloorPointPosition(currentNode)).normalized;
+                //walkingDirectionVector = (nodePath.GetNodeFloorPointPosition(currentNode + 1) - nodePath.GetNodeFloorPointPosition(currentNode)).normalized;
+                walkingDirectionVector = relativeToGravityHorizontalDirectionVector(nodes[currentNode].position, nodes[currentNode + 1].position);
             }
             else
             {
-                walkingDirectionVector = (nodePath.GetNodeFloorPointPosition(currentNode) - nodePath.GetNodeFloorPointPosition(currentNode - 1)).normalized;
+                //walkingDirectionVector = (nodePath.GetNodeFloorPointPosition(currentNode) - nodePath.GetNodeFloorPointPosition(currentNode - 1)).normalized;
+                walkingDirectionVector = relativeToGravityHorizontalDirectionVector(nodes[currentNode - 1].position, nodes[currentNode].position);
             }
         }
         else
         {
             if (currentNode == nodes.Count - 1)
             {
-                walkingDirectionVector = (nodePath.GetNodeFloorPointPosition(currentNode - 1) - nodePath.GetNodeFloorPointPosition(currentNode)).normalized;
+                //walkingDirectionVector = (nodePath.GetNodeFloorPointPosition(currentNode - 1) - nodePath.GetNodeFloorPointPosition(currentNode)).normalized;
+                walkingDirectionVector = relativeToGravityHorizontalDirectionVector(nodes[currentNode].position, nodes[currentNode - 1].position);
             }
             else
             {
-                walkingDirectionVector = (nodePath.GetNodeFloorPointPosition(currentNode) - nodePath.GetNodeFloorPointPosition(currentNode + 1)).normalized;
+                //walkingDirectionVector = (nodePath.GetNodeFloorPointPosition(currentNode) - nodePath.GetNodeFloorPointPosition(currentNode + 1)).normalized;
+                walkingDirectionVector = relativeToGravityHorizontalDirectionVector(nodes[currentNode + 1].position, nodes[currentNode].position);
             }
         }
 
-        float xPos = walkingDirectionVector.x;
-        float yPos = walkingDirectionVector.y;
-        float zPos = walkingDirectionVector.z;
-
-        walkingDirectionVector = FindBiggestDirection(xPos, yPos, zPos);
-
-        transform.rotation = Quaternion.LookRotation(walkingDirectionVector, -Physics.gravity.normalized);
-
+        Debug.DrawLine(transform.position, transform.position + walkingDirectionVector);
         Debug.Log(walkingDirectionVector);
-        
+
+        Quaternion targetRotation = Quaternion.LookRotation(walkingDirectionVector, -Physics.gravity.normalized);
+        transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * 50f);
     }
 
     private void MoveFreely()
@@ -534,20 +558,6 @@ public class Character : MonoBehaviour
         }
     }
     #endregion
-
-    private void OnCollisionEnter(Collision collision)
-    {
-        if (collision.collider.CompareTag("MoveableObject"))
-        {
-            if (collision.transform.position.y + collision.transform.localScale.y / 2 > transform.position.y)
-            {
-                if (WallCheck(1.0f))
-                {
-                    FlipDirection();
-                }
-            }
-        }
-    }
 
     public void MoveNext()
     {

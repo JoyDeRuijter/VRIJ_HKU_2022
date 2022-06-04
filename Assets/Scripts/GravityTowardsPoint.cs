@@ -33,7 +33,7 @@ public class GravityTowardsPoint : MonoBehaviour
                 Physics.gravity = (transform.position - point.transform.position).normalized * gravityStrenght;
                 break;
         }
-        transform.rotation = targetRotation;
+        transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * 50f);
     }
 
 
