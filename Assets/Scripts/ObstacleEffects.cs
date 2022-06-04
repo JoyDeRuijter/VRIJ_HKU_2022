@@ -3,7 +3,7 @@ using UnityEngine;
 [SelectionBase, ExecuteAlways]
 public class ObstacleEffects : MonoBehaviour
 {
-    public enum TileEffect { none, death, drafting, activating }
+    public enum TileEffect { none, death, drafting, activating, noGravity }
 
     public TileEffect tileEffect;
 
@@ -22,7 +22,10 @@ public class ObstacleEffects : MonoBehaviour
     [SerializeField] Material activateTileColor;
     [SerializeField] GameObject[] activatedObject;
     [SerializeField] float deactivateAfterTime;
-    
+
+    // No gravity stuff
+    [SerializeField] Material noGravityTileColor;
+    [SerializeField] float hitbox = 1;
 
     private BoxCollider hitBox;
     private MeshRenderer mr;
@@ -79,6 +82,12 @@ public class ObstacleEffects : MonoBehaviour
                     // do stuff...
                 }
                 break;
+
+            case TileEffect.noGravity:
+                if (noGravityTileColor != null) mr.material = noGravityTileColor;
+                hitBox.center = new Vector3(0, hitbox / 2, 0);
+                hitBox.size = new Vector3(1, hitbox, 1);
+                break;
         }
     }
 
@@ -107,6 +116,10 @@ public class ObstacleEffects : MonoBehaviour
                         }
                     }
                     break;
+
+                case TileEffect.noGravity:
+                    character.UseGravity(false);
+                    break;
             }
         }
     }
@@ -130,6 +143,17 @@ public class ObstacleEffects : MonoBehaviour
         }
     }
 
+    private void OnTriggerExit(Collider other)
+    {
+        Character character = other.GetComponent<Character>();
+        switch (tileEffect)
+        {
+            case TileEffect.noGravity:
+                character.UseGravity(true);
+                break;
+        }
+    }
+
     private void OnDrawGizmosSelected()
     {
         switch (tileEffect)
@@ -148,6 +172,10 @@ public class ObstacleEffects : MonoBehaviour
 
             case TileEffect.activating:
                 Gizmos.color = new Color(255 / 255f, 255 / 255f, 0 / 255f, 0.4f);
+                break;
+
+            case TileEffect.noGravity:
+                Gizmos.color = new Color(1, 1, 1, 0.4f);
                 break;
 
         }

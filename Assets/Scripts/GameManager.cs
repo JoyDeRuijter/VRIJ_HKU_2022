@@ -11,7 +11,6 @@ public class GameManager : MonoBehaviour
     #endregion
 
     #region Variables
-
     [Header("Character")]
     [SerializeField] private GameObject characterPrefab;
     [SerializeField] private int startPathID;
@@ -27,7 +26,6 @@ public class GameManager : MonoBehaviour
     private MovableObject[] movableObjects;
 
     private bool gaveInput;
-
     #endregion
 
     private void Awake()
@@ -41,7 +39,7 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-        SaveWalkableCubes();
+        Physics.gravity = paths[startPathID].gravityDirection * GravityTowardsPoint.gravityStrenght;
     }
 
     private void InitializeMovableObjects()
@@ -49,22 +47,6 @@ public class GameManager : MonoBehaviour
         movableObjects = FindObjectsOfType<MovableObject>();
     }
 
-    #region Cubes
-
-    // Find all the cubes that are walkable in the scene and store them in a list
-    private void SaveWalkableCubes()
-    {
-        Cube[] _cubes = FindObjectsOfType<Cube>();
-
-        for (int i = 0; i < _cubes.Length; i++)
-        {
-            _cubes[i].name = "Cube_" + i;
-            Vector3Int _cubePosition = _cubes[i].position;
-            if (_cubes[i].isWalkable && !walkableCubes.ContainsKey(_cubePosition))
-                walkableCubes.Add(_cubePosition, _cubes[i]);
-        }
-    }
-    #endregion
 
     #region Paths & Path Switching
 
@@ -131,7 +113,8 @@ public class GameManager : MonoBehaviour
     {
         if (characterGameObject == null)
         {
-            Vector3 spawnPosition = paths[_pathID].gameObject.GetComponent<NodePath>().nodes[_startNode].position;
+            NodePath spawnPath = paths[_pathID].gameObject.GetComponent<NodePath>();
+            Vector3 spawnPosition = spawnPath.nodes[_startNode].position;
 
             characterGameObject = Instantiate(characterPrefab, spawnPosition, Quaternion.identity);
             character = characterGameObject.GetComponent<Character>();
@@ -139,6 +122,7 @@ public class GameManager : MonoBehaviour
             character.currentNode = _startNode;
             character.direction = _startDirection;
             character.boundToPath = true;
+            character.nodePath = spawnPath;
         }
 
         CamFollowsPlayer(characterGameObject);

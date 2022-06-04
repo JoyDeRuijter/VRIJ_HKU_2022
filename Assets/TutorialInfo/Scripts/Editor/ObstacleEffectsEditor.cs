@@ -21,7 +21,11 @@ public class ObstacleEffectsEditor : Editor
         // properties for activating
         activateTileColor_prop,
         activatedObject_prop,
-        deactivateAfterTime_prop;
+        deactivateAfterTime_prop,
+
+        // properties for no gravity
+        noGravityTileColor_prop,
+        hitboxHeight_prop;
 
     private void OnEnable()
     {
@@ -42,6 +46,10 @@ public class ObstacleEffectsEditor : Editor
         activateTileColor_prop = serializedObject.FindProperty("activateTileColor");
         activatedObject_prop = serializedObject.FindProperty("activatedObject");
         deactivateAfterTime_prop = serializedObject.FindProperty("deactivateAfterTime");
+
+        // properties for gravity
+        noGravityTileColor_prop = serializedObject.FindProperty("noGravityTileColor");
+        hitboxHeight_prop = serializedObject.FindProperty("hitboxHeight");
     }
 
     public override void OnInspectorGUI()
@@ -71,6 +79,11 @@ public class ObstacleEffectsEditor : Editor
                 EditorGUILayout.PropertyField(activateTileColor_prop, new GUIContent("Tile color"));
                 EditorGUILayout.PropertyField(activatedObject_prop, new GUIContent("Activated object(s)"));
                 EditorGUILayout.PropertyField(deactivateAfterTime_prop, new GUIContent("Deactivate after time"));
+                break;
+
+            case ObstacleEffects.TileEffect.noGravity:
+                EditorGUILayout.PropertyField(noGravityTileColor_prop, new GUIContent("Tile color"));
+                EditorGUILayout.Slider(hitboxHeight_prop, 1, 10, new GUIContent("Hitbox height"));
                 break;
 
         }

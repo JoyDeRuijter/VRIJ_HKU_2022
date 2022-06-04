@@ -6,11 +6,8 @@ using UnityEngine;
 public class Character : MonoBehaviour
 {
     #region Variables
-
+    // Bool needed by effect tile for floating effect
     public static bool isFloating = false;
-
-    [Header("Character Material")]
-    [SerializeField] Material material;
 
     [Space(10)]
     [Header("Character Movement & Pathfinding")]
@@ -18,22 +15,18 @@ public class Character : MonoBehaviour
     public Transform path;
     public int currentNode;
     public WalkDirection direction;
-    [SerializeField] KeyCode directionChangeKey;
     private WalkDirection lastDirection;
-    [SerializeField] float diesBelowYLevel;
-    [SerializeField] bool toTheBeat;
+    [SerializeField] bool toTheBeat = false;
 
     [Space(10)]
     [Header("Other...")]
     [SerializeField] Animator anim;
 
-    [HideInInspector] public int xPos, yPos, zPos;
-    [HideInInspector] public Vector3Int position;
     [HideInInspector] public int currentPathID;
     [HideInInspector] public bool boundToPath;
+    [HideInInspector] public NodePath nodePath;
 
     private List<Transform> nodes = new List<Transform>();
-    private MeshRenderer meshRenderer;
 
     private bool isGrounded = true;
     private CapsuleCollider capsuleCollider;
@@ -41,26 +34,22 @@ public class Character : MonoBehaviour
     private bool routineIsRunning = false;
     [HideInInspector] public bool isMoving;
     private Vector3 lostPathNodePosition;
-    private int lastNode;
+    private float minDistanceBetweenPoints = 0.05f;
 
     private Rigidbody rb;
     #endregion
 
+    #region Awake/Start/Update etc...
     private void Awake()
     {
         capsuleCollider = GetComponent<CapsuleCollider>();
-        UpdatePosition();
-
-        //Set the material of the whole object to the material provided in the inspector
-        //meshRenderer = GetComponentInChildren<MeshRenderer>();
-        //meshRenderer.material = material;
         rb = GetComponent<Rigidbody>();
     }
 
     private void Start()
     {
         InitializePath();
-        currentPathID = GetPathID();
+        currentPathID = nodePath.ID;
 
         lastDirection = WalkDirection.forward;
 
@@ -72,58 +61,40 @@ public class Character : MonoBehaviour
 
     private void Update()
     {
-        Debug.Log("boundToPath: " + boundToPath + ", PathID: " + currentPathID + ", isGrounded: " + isGrounded);
-        UpdatePosition();
-
+        Debug.Log("boundToPath: " + boundToPath + " PathID: " + currentPathID);
+        // Is only for debugging, will be removed later
         if (Input.GetKeyDown(KeyCode.Space))
             FlipDirection();
 
-        GroundCheck();
-        if (transform.position.y < diesBelowYLevel)
-            deathBehaviour();
-
         PlayAnimations();
 
-        if (isGrounded)
-        {
-            if (GetVerticalDistance(nodes[currentNode].position, nodes[lastNode].position) > 0.2f && nodes[currentNode].position.y > nodes[lastNode].position.y)
-            {
-                rb.useGravity = false;
-            }
-            else
-            {
-                rb.useGravity = true;
-            }
-        }
-        else
-        {
-            rb.useGravity = true;
+        // Do a check to find the ground, if there is no ground then the player is falling
+        GroundCheck();
+        // If he lands then...
+        if (!isGrounded)
             justFell = true;
-        }
 
-        if (GetVerticalDistance(transform.position, GetNodePosition(currentNode)) > 1.5f)
-            LosePathing();
-
+        // then perform a function with a delay to play the landing animation
         if (justFell && isGrounded && !routineIsRunning)
         {
             routineIsRunning = true;
             StartCoroutine(StartWalkingAgain(WalkDirection.stationary, 5.5f));
         }
-    }
-    private IEnumerator StartWalkingAgain(WalkDirection newDirection, float afterSeconds)
-    {
-        yield return new WaitForSeconds(afterSeconds);
-        justFell = false;
-        direction = newDirection;
-        routineIsRunning = false;
+
+        // For now, if there is no ground below us we instantly die
+        //if (!Physics.Raycast(transform.position, -transform.up))
+        //    deathBehaviour();
     }
 
     private void FixedUpdate()
     {
+        // If the player is on the ground (and the landing animation has finished), then we can move (again)
         if (isGrounded && !justFell)
             Move();
     }
+    #endregion
 
+    #region Player animations
     private void PlayAnimations()
     {
         if (!isGrounded)
@@ -132,30 +103,114 @@ public class Character : MonoBehaviour
         if (isGrounded)
             anim.SetBool("IsFalling", false);
     }
+    #endregion
 
     #region Helper Functions
-
-    private void UpdatePosition()
+    public void UseGravity(bool condition)
     {
-        xPos = (int)transform.position.x;
-        yPos = (int)((transform.position.y) - 0.6f);
-        zPos = (int)transform.position.z;
-        position = new Vector3Int(xPos, yPos, zPos);
+        rb.useGravity = condition;
     }
 
-    private int GetPathID()
+    private Vector3 FindBiggestDirection(float xPos, float yPos, float zPos)
     {
-        return path.gameObject.GetComponent<NodePath>().ID;
-    }
+        float newX = 0;
+        float newY = 0;
+        float newZ = 0;
 
-    public Vector3 GetNodePosition(int _node)
-    {
-        return nodes[_node].position;
-    }
+        if (Mathf.Abs(xPos) > 0)
+        {
+            if (Mathf.Abs(xPos) > Mathf.Abs(yPos))
+            {
+                if (Mathf.Abs(xPos) > Mathf.Abs(zPos))
+                {
+                    if (xPos < 0) newX = -1;
+                    else newX = 1;
+                }
+                else
+                {
+                    if (zPos < 0) newZ = -1;
+                    else newZ = 1;
+                }
+            }
+            else
+            {
+                if (Mathf.Abs(yPos) > Mathf.Abs(zPos))
+                {
+                    if (yPos < 0) newY = -1;
+                    else newY = 1;
+                }
+                else
+                {
+                    if (zPos < 0) newZ = -1;
+                    else newZ = 1;
+                }
+            }
+            return new Vector3(newX, newY, newZ);
+        }
 
-    public bool isPathLooped()
-    {
-        return path.gameObject.GetComponent<NodePath>().isLoop;
+        if (Mathf.Abs(yPos) > 0)
+        {
+            if (Mathf.Abs(yPos) > Mathf.Abs(xPos))
+            {
+                if (Mathf.Abs(yPos) > Mathf.Abs(zPos))
+                {
+                    if (yPos < 0) newY = -1;
+                    else newY = 1;
+                }
+                else
+                {
+                    if (zPos < 0) newZ = -1;
+                    else newZ = 1;
+                }
+            }
+            else
+            {
+                if (Mathf.Abs(xPos) > Mathf.Abs(zPos))
+                {
+                    if (xPos < 0) newX = -1;
+                    else newX = 1;
+                }
+                else
+                {
+                    newZ = 1;
+                }
+            }
+            return new Vector3(newX, newY, newZ);
+        }
+
+        if (Mathf.Abs(zPos) > 0)
+        {
+            if (Mathf.Abs(zPos) > Mathf.Abs(xPos))
+            {
+                if (Mathf.Abs(zPos) > Mathf.Abs(yPos))
+                {
+                    if (zPos < 0) newZ = -1;
+                    else newZ = 1;
+                }
+                else
+                {
+                    if (yPos < 0) newY = -1;
+                    else newY = 1;
+                }
+            }
+            else
+            {
+                if (Mathf.Abs(xPos) > Mathf.Abs(yPos))
+                {
+                    if (xPos < 0) newX = -1;
+                    else newX = 1;
+                }
+                else
+                {
+                    if (yPos < 0) newY = -1;
+                    else newY = 1;
+                }
+            }
+            return new Vector3(newX, newY, newZ);
+        }
+
+        return new Vector3(newX, newY, newZ);
+
     }
 
     public void deathBehaviour()
@@ -163,45 +218,54 @@ public class Character : MonoBehaviour
         UserInterface.reloadScene();
     }
 
-    private float GetHorizontalDistance(Vector3 a, Vector3 b)
+    private void GroundCheck()
     {
-        Vector3 newA = new Vector3(a.x, 0, a.z);
-        Vector3 newB = new Vector3(b.x, 0, b.z);
-        return Vector3.Distance(newA, newB);
+        if (Physics.SphereCast(GetCharacterTop(), transform.localScale.x / 8, -transform.up, out RaycastHit hit, capsuleCollider.height + 0.3f, LayerMask.GetMask("Terrain")))
+        {
+            isGrounded = true;
+        }
+        else
+        {
+            isGrounded = false;
+            justFell = true;
+        }
     }
 
-    private float GetVerticalDistance(Vector3 a, Vector3 b)
+    private Vector3 GetCharacterFeet()
     {
-        Vector3 newA = new Vector3(0, a.y, 0);
-        Vector3 newB = new Vector3(0, b.y, 0);
-        return Vector3.Distance(newA, newB);
+        return transform.position + (transform.rotation * (Vector3.down * capsuleCollider.height / 2 + capsuleCollider.center));
+    }
+
+    private Vector3 GetCharacterTop()
+    {
+        return transform.position + (transform.rotation * (Vector3.up * capsuleCollider.height / 2 + capsuleCollider.center));
+    }
+
+    private bool WallCheck(float castDistance)
+    {
+        if (Physics.Raycast(transform.position, transform.forward, castDistance))
+        {
+            Debug.Log("Seems there is a wall here...");
+            return true;
+        }
+        return false;
     }
     #endregion
 
-    #region Movement & Pathfinding
-
-    // Initialize the first path the character has to follow
-    private void InitializePath()
-    {
-        if (direction == WalkDirection.stationary)
-            return;
-
-        Transform[] pathTransforms = path.GetComponentsInChildren<Transform>();
-
-        for (int i = 0; i < pathTransforms.Length; i++)
-        {
-            if (pathTransforms[i] != path.transform)
-                nodes.Add(pathTransforms[i]);
-        }
-    }
-
+    #region Movement
     private void Move()
     {
+        // When the character has a path to follow then we check for each upcomming node and move/rotate towards them
         if (boundToPath)
         {
             CheckWaypointDistance();
-            if (isMoving) MoveToNode();
+            if (isMoving)
+            {
+                MoveToNode();
+                RotateTowardsNode();
+            }
         }
+        // When we don't have a path, we move in a straigt line from where we left, and look for a new path
         else
         {
             if (isGrounded)
@@ -212,12 +276,59 @@ public class Character : MonoBehaviour
         }
     }
 
+    private IEnumerator StartWalkingAgain(WalkDirection newDirection, float afterSeconds)
+    {
+        yield return new WaitForSeconds(afterSeconds);
+        justFell = false;
+        direction = newDirection;
+        routineIsRunning = false;
+    }
+
     // Make the character move towards the current node position
     private void MoveToNode()
     {
         transform.position = Vector3.MoveTowards(transform.position, nodes[currentNode].position, Time.deltaTime * movementSpeed);
-        transform.LookAt(nodes[currentNode].position);
-        transform.rotation = Quaternion.Euler(0, transform.localEulerAngles.y, 0);
+    }
+
+    private void RotateTowardsNode()
+    {
+        if (nodes.Count < 2)
+            return;
+
+        Vector3 walkingDirectionVector;
+        if (direction == WalkDirection.forward)
+        {
+            if (currentNode == 0)
+            {
+                walkingDirectionVector = (nodePath.GetNodeFloorPointPosition(currentNode + 1) - nodePath.GetNodeFloorPointPosition(currentNode)).normalized;
+            }
+            else
+            {
+                walkingDirectionVector = (nodePath.GetNodeFloorPointPosition(currentNode) - nodePath.GetNodeFloorPointPosition(currentNode - 1)).normalized;
+            }
+        }
+        else
+        {
+            if (currentNode == nodes.Count - 1)
+            {
+                walkingDirectionVector = (nodePath.GetNodeFloorPointPosition(currentNode - 1) - nodePath.GetNodeFloorPointPosition(currentNode)).normalized;
+            }
+            else
+            {
+                walkingDirectionVector = (nodePath.GetNodeFloorPointPosition(currentNode) - nodePath.GetNodeFloorPointPosition(currentNode + 1)).normalized;
+            }
+        }
+
+        float xPos = walkingDirectionVector.x;
+        float yPos = walkingDirectionVector.y;
+        float zPos = walkingDirectionVector.z;
+
+        walkingDirectionVector = FindBiggestDirection(xPos, yPos, zPos);
+
+        transform.rotation = Quaternion.LookRotation(walkingDirectionVector, -Physics.gravity.normalized);
+
+        Debug.Log(walkingDirectionVector);
+        
     }
 
     private void MoveFreely()
@@ -225,24 +336,9 @@ public class Character : MonoBehaviour
         transform.position += transform.forward * Time.deltaTime * movementSpeed;
     }
 
-    private void GroundCheck()
-    {
-        if (Physics.SphereCast(transform.position + (transform.rotation * (Vector3.up * capsuleCollider.height / 2 + capsuleCollider.center)), transform.localScale.x / 8, -transform.up, out RaycastHit hit, capsuleCollider.height + 0.3f, LayerMask.GetMask("Terrain"))) // Layermask 7 is terrain
-        {
-            isGrounded = true;
-        }
-        else
-        {
-            isGrounded = false;
-            justFell = true;
-        }
-
-    }
-
     // Make the character change directions and move to the nodes in opposite order
     public void FlipDirection()
     {
-        Debug.Log("Me flippin");
         if (direction == WalkDirection.stationary)
         {
             if (lastDirection == WalkDirection.forward)
@@ -263,11 +359,10 @@ public class Character : MonoBehaviour
 
     private void flipToForward()
     {
-        if ((currentNode == nodes.Count - 1 && GetHorizontalDistance(transform.position, nodes[currentNode].position) >= 0.05f) || currentNode != nodes.Count - 1)
+        if ((currentNode == nodes.Count - 1 && Vector3.Distance(transform.position, nodes[currentNode].position) >= minDistanceBetweenPoints) || currentNode != nodes.Count - 1)
         {
-            lastNode = currentNode;
             direction = WalkDirection.forward;
-            if (isPathLooped() && currentNode == nodes.Count - 1)
+            if (nodePath.isLoop && currentNode == nodes.Count - 1)
                 currentNode = 0;
             else
                 currentNode++;
@@ -276,14 +371,32 @@ public class Character : MonoBehaviour
 
     private void flipToBackward()
     {
-        if ((currentNode == 0 && GetHorizontalDistance(transform.position, nodes[currentNode].position) >= 0.05f) || currentNode != 0)
+        if ((currentNode == 0 && Vector3.Distance(transform.position, nodes[currentNode].position) >= minDistanceBetweenPoints) || currentNode != 0)
         {
-            lastNode = currentNode;
             direction = WalkDirection.backward;
-            if (isPathLooped() && currentNode == 0)
+            if (nodePath.isLoop && currentNode == 0)
                 currentNode = nodes.Count - 1;
             else
                 currentNode--;
+        }
+    }
+
+    #endregion
+
+    #region Pathfinding
+    // Initialize the first path the character has to follow
+    private void InitializePath()
+    {
+
+        if (direction == WalkDirection.stationary)
+            return;
+
+        Transform[] pathTransforms = path.GetComponentsInChildren<Transform>();
+
+        for (int i = 0; i < pathTransforms.Length; i++)
+        {
+            if (pathTransforms[i] != path.transform)
+                nodes.Add(pathTransforms[i]);
         }
     }
 
@@ -291,7 +404,7 @@ public class Character : MonoBehaviour
     private void CheckWaypointDistance()
     {
         // If char is on node then...
-        if (GetHorizontalDistance(transform.position, nodes[currentNode].position) < 0.05f)
+        if (CheckDistanceToNode() < minDistanceBetweenPoints)
         {
             // First, if we stand still then we don't do anything
             if (direction == WalkDirection.stationary && !toTheBeat)
@@ -304,7 +417,7 @@ public class Character : MonoBehaviour
                 // If the character is on the last or first node then...
                 if (currentNode == nodes.Count - 1 && direction == WalkDirection.forward)
                 {
-                    if (isPathLooped())
+                    if (nodePath.isLoop)
                     {
                         currentNode = 0;
                     }
@@ -316,7 +429,7 @@ public class Character : MonoBehaviour
                 }
                 else if (currentNode == 0 && direction == WalkDirection.backward)
                 {
-                    if (isPathLooped())
+                    if (nodePath.isLoop)
                     {
                         currentNode = nodes.Count - 1;
                     }
@@ -331,12 +444,10 @@ public class Character : MonoBehaviour
             // And if the char is on the path, then this will decide, based of direction, where to go next
             if (direction == WalkDirection.forward)
             {
-                lastNode = currentNode;
                 currentNode++;
             }
             else if (direction == WalkDirection.backward)
             {
-                lastNode = currentNode;
                 currentNode--;
             }
 
@@ -346,6 +457,18 @@ public class Character : MonoBehaviour
                 lastDirection = direction;
                 direction = WalkDirection.stationary;
             }
+        }
+    }
+
+    private float CheckDistanceToNode()
+    {
+        if (boundToPath)
+        {
+            return Vector3.Distance(GetCharacterFeet(), nodePath.GetNodeFloorPointPosition(currentNode));
+        }
+        else
+        {
+            return Vector3.Distance(GetCharacterFeet(), lostPathNodePosition);
         }
     }
 
@@ -359,63 +482,57 @@ public class Character : MonoBehaviour
 
     private void LosePathing()
     {
-        lostPathNodePosition = nodes[currentNode].position;
+        lostPathNodePosition = nodePath.GetNodeFloorPointPosition(currentNode);
         boundToPath = false;
     }
 
     private void SearchForPath()
     {
-        // IF WE USE UBEAT TEMPO, THIS SEARCHING AND BINDING TO A PATH HAS TO COME IN PULSES INSTEAD OF EVERY UPDATE
-        if (GetVerticalDistance(transform.position, lostPathNodePosition) < 1.0f)
-            if (GetHorizontalDistance(transform.position, lostPathNodePosition) < 0.9f)
-                return;
+        if (CheckDistanceToNode() < 0.9f || GravityTowardsPoint.boundToPoint || !isGrounded)
+            return;
 
         RaycastHit hit;
-        float castScale = transform.localScale.x / 2 - 0.01f;
-        Physics.SphereCast(transform.position + (transform.rotation * (Vector3.up * capsuleCollider.height / 2 + capsuleCollider.center)), castScale, -transform.up, out hit, capsuleCollider.height + 0.01f, LayerMask.GetMask("Path"), QueryTriggerInteraction.UseGlobal);
-        Debug.DrawLine(transform.position + (transform.rotation * (Vector3.up * capsuleCollider.height / 2 + capsuleCollider.center)), transform.position - transform.up * 100, Color.yellow);
+        float castScale = capsuleCollider.radius / 2 - 0.01f;
+        Physics.SphereCast(transform.position + (transform.rotation * (Vector3.up * capsuleCollider.height / 2 + capsuleCollider.center)), castScale, -transform.up, out hit, capsuleCollider.height + 0.1f, LayerMask.GetMask("Path"), QueryTriggerInteraction.UseGlobal);
+        Debug.DrawLine(transform.position + (transform.rotation * (Vector3.up * capsuleCollider.height / 2 + capsuleCollider.center)), transform.position - transform.up, Color.green);
         if (hit.collider != null)
         {
-            NodePath foundPath = hit.transform.GetComponentInParent<NodePath>();
-            nodes = foundPath.nodes;
-            currentPathID = foundPath.ID;
+            Debug.Log("Path found!");
+            nodePath = hit.transform.GetComponentInParent<NodePath>();
+            nodes = nodePath.nodes;
+            currentPathID = nodePath.ID;
             string temp = hit.transform.name;
             temp = temp.Remove(0, 6);
             temp = temp.Remove(temp.Length - 1);
             currentNode = int.Parse(temp);
-            lastNode = currentNode;
             boundToPath = true;
             direction = WalkDirection.stationary;
 
-            if (justFell)
+            Physics.gravity = nodePath.gravityDirection * GravityTowardsPoint.gravityStrenght;
+
+            WalkDirection startingPathDirection;
+
+            if (currentNode == nodes.Count - 1)
             {
-                StartCoroutine(StartWalkingAgain(foundPath.preferedDirection, 5.5f));
+                startingPathDirection = WalkDirection.backward;
+            }
+            else if (currentNode == 0)
+            {
+                startingPathDirection = WalkDirection.forward;
+            }
+            else if (nodePath.preferedDirection == WalkDirection.stationary)
+            {
+                startingPathDirection = lastDirection;
             }
             else
             {
-                if (foundPath.preferedDirection == WalkDirection.stationary)
-                {
-                    StartWalkingAgain(lastDirection);
-                }
-                StartWalkingAgain(foundPath.preferedDirection);
+                startingPathDirection = nodePath.preferedDirection;
             }
+            if (justFell)
+                StartCoroutine(StartWalkingAgain(startingPathDirection, 5.5f));
+            else
+                direction = startingPathDirection;
         }
-    }
-
-    private void StartWalkingAgain(WalkDirection newDirection)
-    {
-        direction = newDirection;
-    }
-
-    private bool WallCheck(float castDistance)
-    {
-        Debug.DrawRay(transform.position, transform.forward, Color.yellow);
-        if (Physics.Raycast(transform.position, transform.forward, castDistance))
-        {
-            Debug.Log("Seems there is a wall here...");
-            return true;
-        }
-        return false;
     }
     #endregion
 

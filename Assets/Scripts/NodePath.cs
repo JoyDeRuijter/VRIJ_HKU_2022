@@ -16,6 +16,8 @@ public class NodePath : MonoBehaviour
 
     [HideInInspector] public List<Transform> nodes = new List<Transform>();
 
+    [HideInInspector] public Vector3 gravityDirection;
+
     private void Update()
     {
         for (int i = 0; i < transform.childCount; i++)
@@ -27,40 +29,62 @@ public class NodePath : MonoBehaviour
             }
             else
             {
+                child.isTrigger = true;
                 switch (faceDirection)
                 {
                     case FaceDirection.xForward:
-                        child.center = new Vector3(0, -.5f, 0);
-                        child.size = new Vector3(.6f, 1, 1);
+                        gravityDirection = Vector3.right;
+                        child.center = new Vector3(-.5f, 0, 0);
+                        child.size = new Vector3(.5f, 1, 1);
                         break;
 
                     case FaceDirection.xBackward:
-                        child.center = new Vector3(0, -.5f, 0);
-                        child.size = new Vector3(.6f, 1, 1);
+                        gravityDirection = Vector3.left;
+                        child.center = new Vector3(.5f, 0, 0);
+                        child.size = new Vector3(.5f, 1, 1);
                         break;
 
                     case FaceDirection.yUp:
+                        gravityDirection = Vector3.up;
                         child.center = new Vector3(0, -.5f, 0);
                         child.size = new Vector3(1, .5f, 1);
                         break;
 
                     case FaceDirection.yDown:
-                        child.center = new Vector3(0, -.5f, 0);
+                        gravityDirection = Vector3.down;
+                        child.center = new Vector3(0, .5f, 0);
                         child.size = new Vector3(1, .5f, 1);
                         break;
 
                     case FaceDirection.zForward:
-                        child.center = new Vector3(0, -.5f, 0f);
-                        child.size = new Vector3(1, 1, .6f);
+                        gravityDirection = Vector3.forward;
+                        child.center = new Vector3(0, 0f, -.5f);
+                        child.size = new Vector3(1, 1, .5f);
                         break;
 
                     case FaceDirection.zBackward:
-                        child.center = new Vector3(0, -.5f, 0);
-                        child.size = new Vector3(1, 1, .6f);
+                        gravityDirection = Vector3.back;
+                        child.center = new Vector3(0, 0, .5f);
+                        child.size = new Vector3(1, 1, .5f);
+                        break;
+
+                    case FaceDirection.custom:
+                        gravityDirection = child.center - transform.position;
                         break;
                 }
+                Debug.DrawLine(child.transform.position, child.transform.position + gravityDirection);
             }
         }
+    }
+
+    public Vector3 GetNodeFloorPointPosition(int _node)
+    {
+        return nodes[_node].position + GetNodeCollider(_node).center;
+    }
+
+    public BoxCollider GetNodeCollider(int _node)
+    {
+        return nodes[_node].GetComponent<BoxCollider>();
     }
 
     #endregion
@@ -87,8 +111,8 @@ public class NodePath : MonoBehaviour
             else if (i == 0 && nodes.Count > 1)
                 previousNode = nodes[nodes.Count - 1].position;
 
-            Vector3 gizmoPosCurrent = new Vector3(currentNode.x, currentNode.y - 0.5f, currentNode.z);
-            Vector3 gizmoPosPrevious = new Vector3(previousNode.x, previousNode.y - 0.5f, previousNode.z);
+            Vector3 gizmoPosCurrent = new Vector3(currentNode.x, currentNode.y, currentNode.z);
+            Vector3 gizmoPosPrevious = new Vector3(previousNode.x, previousNode.y, previousNode.z);
 
             if (isLoop)
             {
@@ -106,4 +130,4 @@ public class NodePath : MonoBehaviour
     }
 }
 
-public enum FaceDirection { xForward, xBackward, yUp, yDown, zForward, zBackward }
+public enum FaceDirection { xForward, xBackward, yUp, yDown, zForward, zBackward, custom }
