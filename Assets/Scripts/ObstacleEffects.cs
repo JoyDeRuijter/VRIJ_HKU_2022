@@ -25,7 +25,7 @@ public class ObstacleEffects : MonoBehaviour
 
     // No gravity stuff
     [SerializeField] Material noGravityTileColor;
-    [SerializeField] float hitbox = 1;
+    [SerializeField] float hitboxHeight = 1;
 
     private BoxCollider hitBox;
     private MeshRenderer mr;
@@ -85,8 +85,8 @@ public class ObstacleEffects : MonoBehaviour
 
             case TileEffect.noGravity:
                 if (noGravityTileColor != null) mr.material = noGravityTileColor;
-                hitBox.center = new Vector3(0, hitbox / 2, 0);
-                hitBox.size = new Vector3(1, hitbox, 1);
+                hitBox.center = new Vector3(0, hitboxHeight / 2, 0);
+                hitBox.size = new Vector3(1, hitboxHeight, 1);
                 break;
         }
     }

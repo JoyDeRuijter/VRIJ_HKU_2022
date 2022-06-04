@@ -220,7 +220,7 @@ public class Character : MonoBehaviour
 
     private void GroundCheck()
     {
-        if (Physics.SphereCast(GetCharacterTop(), transform.localScale.x / 8, -transform.up, out RaycastHit hit, capsuleCollider.height + 0.3f, LayerMask.GetMask("Terrain")))
+        if (Physics.SphereCast(GetCharacterTop(), capsuleCollider.radius / 2 - 0.01f, -transform.up, out RaycastHit hit, capsuleCollider.height + 0.3f, LayerMask.GetMask("Terrain")))
         {
             isGrounded = true;
         }
@@ -494,7 +494,6 @@ public class Character : MonoBehaviour
         RaycastHit hit;
         float castScale = capsuleCollider.radius / 2 - 0.01f;
         Physics.SphereCast(transform.position + (transform.rotation * (Vector3.up * capsuleCollider.height / 2 + capsuleCollider.center)), castScale, -transform.up, out hit, capsuleCollider.height + 0.1f, LayerMask.GetMask("Path"), QueryTriggerInteraction.UseGlobal);
-        Debug.DrawLine(transform.position + (transform.rotation * (Vector3.up * capsuleCollider.height / 2 + capsuleCollider.center)), transform.position - transform.up, Color.green);
         if (hit.collider != null)
         {
             Debug.Log("Path found!");
