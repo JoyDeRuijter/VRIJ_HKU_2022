@@ -88,6 +88,10 @@ public class Character : MonoBehaviour
         {
             UseGravity(false);
         }
+        else if (Mathf.Abs(heightOfCurrentNodeRelativeToCharacter) > 1.5f)
+        {
+            LosePathing();
+        }
         else
         {
             UseGravity(true);
@@ -123,119 +127,27 @@ public class Character : MonoBehaviour
 
     private Vector3 relativeToGravityHorizontalDirectionVector(Vector3 a, Vector3 b)
     {
-        Vector3 resultVector = b - a;
-        Quaternion.FromToRotation(a, b);
-        float angle = Vector3.Angle(-Physics.gravity, resultVector);
-        float distanceVector = Mathf.Cos(angle * Mathf.Deg2Rad) * Vector3.Distance(Vector3.zero, resultVector);
-        Vector3 heightVector = Physics.gravity * distanceVector;
-        return resultVector + heightVector;
+        float angle = Vector3.Angle(-Physics.gravity, b - a);
+        float distanceCloseToAngleVector = Mathf.Cos(angle * Mathf.Deg2Rad) * Vector3.Distance(a, b);
+        Vector3 heightVector = Physics.gravity.normalized * distanceCloseToAngleVector;
+        return (b - a) + heightVector;
+    }
+
+    private float CheckHorizontalDistanceToNode()
+    {
+        if (boundToPath)
+        {
+            return Vector3.Distance(Vector3.zero, relativeToGravityHorizontalDirectionVector(GetCharacterFeet(), nodePath.GetNodeFloorPointPosition(currentNode)));
+        }
+        else
+        {
+            return Vector3.Distance(Vector3.zero, relativeToGravityHorizontalDirectionVector(GetCharacterFeet(), lostPathNodePosition));
+        }
     }
 
     public void UseGravity(bool condition)
     {
         rb.useGravity = condition;
-    }
-
-    private Vector3 FindBiggestDirection(float xPos, float yPos, float zPos)
-    {
-        float newX = 0;
-        float newY = 0;
-        float newZ = 0;
-
-        if (Mathf.Abs(xPos) > 0)
-        {
-            if (Mathf.Abs(xPos) > Mathf.Abs(yPos))
-            {
-                if (Mathf.Abs(xPos) > Mathf.Abs(zPos))
-                {
-                    if (xPos < 0) newX = -1;
-                    else newX = 1;
-                }
-                else
-                {
-                    if (zPos < 0) newZ = -1;
-                    else newZ = 1;
-                }
-            }
-            else
-            {
-                if (Mathf.Abs(yPos) > Mathf.Abs(zPos))
-                {
-                    if (yPos < 0) newY = -1;
-                    else newY = 1;
-                }
-                else
-                {
-                    if (zPos < 0) newZ = -1;
-                    else newZ = 1;
-                }
-            }
-            return new Vector3(newX, newY, newZ);
-        }
-
-        if (Mathf.Abs(yPos) > 0)
-        {
-            if (Mathf.Abs(yPos) > Mathf.Abs(xPos))
-            {
-                if (Mathf.Abs(yPos) > Mathf.Abs(zPos))
-                {
-                    if (yPos < 0) newY = -1;
-                    else newY = 1;
-                }
-                else
-                {
-                    if (zPos < 0) newZ = -1;
-                    else newZ = 1;
-                }
-            }
-            else
-            {
-                if (Mathf.Abs(xPos) > Mathf.Abs(zPos))
-                {
-                    if (xPos < 0) newX = -1;
-                    else newX = 1;
-                }
-                else
-                {
-                    newZ = 1;
-                }
-            }
-            return new Vector3(newX, newY, newZ);
-        }
-
-        if (Mathf.Abs(zPos) > 0)
-        {
-            if (Mathf.Abs(zPos) > Mathf.Abs(xPos))
-            {
-                if (Mathf.Abs(zPos) > Mathf.Abs(yPos))
-                {
-                    if (zPos < 0) newZ = -1;
-                    else newZ = 1;
-                }
-                else
-                {
-                    if (yPos < 0) newY = -1;
-                    else newY = 1;
-                }
-            }
-            else
-            {
-                if (Mathf.Abs(xPos) > Mathf.Abs(yPos))
-                {
-                    if (xPos < 0) newX = -1;
-                    else newX = 1;
-                }
-                else
-                {
-                    if (yPos < 0) newY = -1;
-                    else newY = 1;
-                }
-            }
-            return new Vector3(newX, newY, newZ);
-        }
-
-        return new Vector3(newX, newY, newZ);
-
     }
 
     public void deathBehaviour()
@@ -427,8 +339,9 @@ public class Character : MonoBehaviour
     // Check the distance between the character and the currentNode, and move to the next node if it's close enough
     private void CheckWaypointDistance()
     {
+        Debug.Log(CheckHorizontalDistanceToNode());
         // If char is on node then...
-        if (CheckDistanceToNode() < minDistanceBetweenPoints)
+        if (CheckHorizontalDistanceToNode() < minDistanceBetweenPoints)
         {
             // First, if we stand still then we don't do anything
             if (direction == WalkDirection.stationary && !toTheBeat)
@@ -484,18 +397,6 @@ public class Character : MonoBehaviour
         }
     }
 
-    private float CheckDistanceToNode()
-    {
-        if (boundToPath)
-        {
-            return Vector3.Distance(GetCharacterFeet(), nodePath.GetNodeFloorPointPosition(currentNode));
-        }
-        else
-        {
-            return Vector3.Distance(GetCharacterFeet(), lostPathNodePosition);
-        }
-    }
-
     private void LastNodeBehaviour()
     {
         if (WallCheck(1.0f))
@@ -512,7 +413,7 @@ public class Character : MonoBehaviour
 
     private void SearchForPath()
     {
-        if (CheckDistanceToNode() < 0.9f || GravityTowardsPoint.boundToPoint || !isGrounded)
+        if (CheckHorizontalDistanceToNode() < 0.9f || GravityTowardsPoint.boundToPoint || !isGrounded)
             return;
 
         RaycastHit hit;
