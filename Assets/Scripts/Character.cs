@@ -99,12 +99,12 @@ public class Character : MonoBehaviour
         // multiply it by +1 or -1 based on the vector facing up or down
         heightOfCurrentNodeRelativeToCharacter = heightRelativeToTransformVector(GetCharacterFeet(), 
             nodePath.GetNodeFloorPointPosition(currentNode), transform.forward) * posNegMultiplier;
-
-        if (heightOfCurrentNodeRelativeToCharacter > 0.01f && isGrounded && !justFell)
+        Debug.Log(heightOfCurrentNodeRelativeToCharacter);
+        if (heightOfCurrentNodeRelativeToCharacter > 0.05f && isGrounded && !justFell && boundToPath)
         {
             UseGravity(false);
         }
-        else if (Mathf.Abs(heightOfCurrentNodeRelativeToCharacter) > 1.5f)
+        else if (Mathf.Abs(heightOfCurrentNodeRelativeToCharacter) > 1.5f && boundToPath)
         {
             LosePathing();
         }
@@ -112,7 +112,6 @@ public class Character : MonoBehaviour
         {
             UseGravity(true);
         }
-        Debug.Log(heightOfCurrentNodeRelativeToCharacter);
     }
 
     private void FixedUpdate()
@@ -149,7 +148,7 @@ public class Character : MonoBehaviour
         Vector3 heightVector = Physics.gravity.normalized * distanceCloseToAngleVector;
         return (b - a) + heightVector;
     }
-
+    
     private float CheckHorizontalDistanceToNode()
     {
         if (boundToPath)
@@ -174,7 +173,7 @@ public class Character : MonoBehaviour
 
     private void GroundCheck()
     {
-        if (Physics.SphereCast(GetCharacterTop(), (capsuleCollider.radius / 2) * 0.9f, -transform.up, out RaycastHit hit, capsuleCollider.height + 0.3f, LayerMask.GetMask("Terrain")))
+        if (Physics.SphereCast(GetCharacterTop(), (capsuleCollider.radius / 2) * 0.99f, -transform.up, out RaycastHit hit, capsuleCollider.height + 0.3f, LayerMask.GetMask("Terrain")))
         {
             isGrounded = true;
         }
@@ -197,9 +196,8 @@ public class Character : MonoBehaviour
 
     private bool WallCheck(float castDistance)
     {
-        if (Physics.Raycast(transform.position, transform.forward, castDistance))
+        if (Physics.Raycast(transform.position - (transform.up * capsuleCollider.height * 0.25f), transform.forward, castDistance))
         {
-            Debug.Log("Seems there is a wall here...");
             return true;
         }
         return false;
@@ -433,7 +431,7 @@ public class Character : MonoBehaviour
 
         RaycastHit hit;
         float castScale = capsuleCollider.radius / 2 - 0.01f;
-        Physics.SphereCast(transform.position + (transform.rotation * (Vector3.up * capsuleCollider.height / 2 + capsuleCollider.center)), castScale, -transform.up, out hit, capsuleCollider.height + 0.1f, LayerMask.GetMask("Path"), QueryTriggerInteraction.UseGlobal);
+        Physics.SphereCast(GetCharacterTop(), castScale, -transform.up, out hit, capsuleCollider.height + 0.1f, LayerMask.GetMask("Path"), QueryTriggerInteraction.UseGlobal);
         if (hit.collider != null)
         {
             Debug.Log("Path found!");
@@ -480,6 +478,30 @@ public class Character : MonoBehaviour
         // If toTheBeat is enabled, then when this function is called, the char moves to the next node (if it's not lost of course)
         isMoving = true;
         direction = lastDirection;
+    }
+
+    private bool delayActive = false;
+    private void OnCollisionStay(Collision collision)
+    {
+        MovableObject obj = collision.gameObject.GetComponentInParent<MovableObject>();
+        if (obj != null && !delayActive)
+        {
+            delayActive = true;
+            Invoke("waitTillNewCheck", 0.1f);
+            if (WallCheck(capsuleCollider.radius + 0.1f))
+                FlipDirection();
+        }
+
+        if (obj != null)
+        {
+            if (Mathf.Abs(heightOfCurrentNodeRelativeToCharacter) > 0.5f)
+                LosePathing();
+        }
+    }
+
+    private void waitTillNewCheck()
+    {
+        delayActive = false;
     }
 }
 
