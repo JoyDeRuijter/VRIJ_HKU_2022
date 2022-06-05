@@ -83,8 +83,24 @@ public class Character : MonoBehaviour
         }
 
         // If we want to walk stairs (even if we are on walls on the side) then we want to turn off the gravity
-        heightOfCurrentNodeRelativeToCharacter = heightRelativeToTransformVector(GetCharacterFeet(), nodePath.GetNodeFloorPointPosition(currentNode), transform.forward);
-        if (heightOfCurrentNodeRelativeToCharacter > 0.1f && isGrounded && !justFell)
+        // Here we start of with a method to determine if the vector towards the next node is facing up or down
+        // relative to the character
+        Vector3 vector1 = nodePath.GetNodeFloorPointPosition(currentNode) - GetCharacterFeet();
+        Vector3 vector2 = vector1 + transform.up;
+        float distance1 = Vector3.Magnitude(vector1);
+        float distance2 = Vector3.Magnitude(vector2);
+        int posNegMultiplier;
+        if (distance1 < distance2)
+            posNegMultiplier = 1;
+        else
+            posNegMultiplier = -1;
+
+        // Then we aply a calculation to determine the heigt of the next node (again relative to the character) and
+        // multiply it by +1 or -1 based on the vector facing up or down
+        heightOfCurrentNodeRelativeToCharacter = heightRelativeToTransformVector(GetCharacterFeet(), 
+            nodePath.GetNodeFloorPointPosition(currentNode), transform.forward) * posNegMultiplier;
+
+        if (heightOfCurrentNodeRelativeToCharacter > 0.01f && isGrounded && !justFell)
         {
             UseGravity(false);
         }
@@ -96,6 +112,7 @@ public class Character : MonoBehaviour
         {
             UseGravity(true);
         }
+        Debug.Log(heightOfCurrentNodeRelativeToCharacter);
     }
 
     private void FixedUpdate()
@@ -122,7 +139,7 @@ public class Character : MonoBehaviour
     {
         Vector3 resultVector = otherVector - relativeVector;
         float angle = Vector3.Angle(transformDirection, resultVector);
-        return Mathf.Sin(angle * Mathf.Deg2Rad) * Vector3.Distance(Vector3.zero, resultVector);
+        return Mathf.Sin(angle * Mathf.Deg2Rad) * Vector3.Magnitude(resultVector);
     }
 
     private Vector3 relativeToGravityHorizontalDirectionVector(Vector3 a, Vector3 b)
@@ -157,7 +174,7 @@ public class Character : MonoBehaviour
 
     private void GroundCheck()
     {
-        if (Physics.SphereCast(GetCharacterTop(), capsuleCollider.radius / 2 + .1f, -transform.up, out RaycastHit hit, capsuleCollider.height + 0.3f, LayerMask.GetMask("Terrain")))
+        if (Physics.SphereCast(GetCharacterTop(), (capsuleCollider.radius / 2) * 0.9f, -transform.up, out RaycastHit hit, capsuleCollider.height + 0.3f, LayerMask.GetMask("Terrain")))
         {
             isGrounded = true;
         }
@@ -261,7 +278,6 @@ public class Character : MonoBehaviour
         }
 
         Debug.DrawLine(transform.position, transform.position + walkingDirectionVector);
-        Debug.Log(walkingDirectionVector);
 
         Quaternion targetRotation = Quaternion.LookRotation(walkingDirectionVector, -Physics.gravity.normalized);
         transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * 50f);
@@ -339,7 +355,6 @@ public class Character : MonoBehaviour
     // Check the distance between the character and the currentNode, and move to the next node if it's close enough
     private void CheckWaypointDistance()
     {
-        Debug.Log(CheckHorizontalDistanceToNode());
         // If char is on node then...
         if (CheckHorizontalDistanceToNode() < minDistanceBetweenPoints)
         {

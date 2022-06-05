@@ -127,6 +127,17 @@ public class NodePath : MonoBehaviour
 
             Gizmos.DrawSphere(gizmoPosCurrent, 0.2f);
         }
+
+        for (int i = 0; i < transform.childCount; i++)
+        {
+            GameObject child = transform.GetChild(i).gameObject;
+            BoxCollider childBox = child.GetComponent<BoxCollider>();
+            if (child != null)
+            {
+                Gizmos.color = Color.cyan;
+                Gizmos.DrawSphere(child.transform.position + childBox.center, 0.1f);
+            }
+        }
     }
 }
 
