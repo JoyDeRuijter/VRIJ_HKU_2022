@@ -63,7 +63,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f231da5f71330cb42ada92e6ec46b4cc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  movementSpeed: 0.45
+  movementSpeed: 0.7
   path: {fileID: 0}
   currentNode: 0
   direction: 0
