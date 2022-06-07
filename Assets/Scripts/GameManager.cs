@@ -37,11 +37,6 @@ public class GameManager : MonoBehaviour
         InitializeMovableObjects();
     }
 
-    private void Start()
-    {
-        Physics.gravity = paths[startPathID].gravityDirection * GravityTowardsPoint.gravityStrenght;
-    }
-
     private void InitializeMovableObjects()
     {
         movableObjects = FindObjectsOfType<MovableObject>();
@@ -123,6 +118,8 @@ public class GameManager : MonoBehaviour
             character.direction = _startDirection;
             character.boundToPath = true;
             character.nodePath = spawnPath;
+
+            Physics.gravity = paths[_pathID].gravityDirection * GravityTowardsPoint.gravityStrenght;
         }
 
         CamFollowsPlayer(characterGameObject);
