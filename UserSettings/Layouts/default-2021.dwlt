@@ -129,7 +129,11 @@ MonoBehaviour:
   m_MinSize: {x: 200, y: 100}
   m_MaxSize: {x: 16192, y: 8096}
   vertical: 0
+<<<<<<< HEAD
   controlID: 144
+>>>>>>> Levi
+=======
+  controlID: 101
 >>>>>>> Levi
 --- !u!114 &5
 MonoBehaviour:
@@ -242,7 +246,11 @@ MonoBehaviour:
   m_MinSize: {x: 300, y: 100}
   m_MaxSize: {x: 24288, y: 8096}
   vertical: 0
+<<<<<<< HEAD
   controlID: 58
+>>>>>>> Levi
+=======
+  controlID: 48
 >>>>>>> Levi
 --- !u!114 &8
 MonoBehaviour:
@@ -277,7 +285,11 @@ MonoBehaviour:
   m_MinSize: {x: 300, y: 200}
   m_MaxSize: {x: 24288, y: 16192}
   vertical: 1
+<<<<<<< HEAD
   controlID: 57
+>>>>>>> Levi
+=======
+  controlID: 47
 >>>>>>> Levi
 --- !u!114 &9
 MonoBehaviour:
@@ -316,7 +328,11 @@ MonoBehaviour:
   m_MinSize: {x: 400, y: 200}
   m_MaxSize: {x: 32384, y: 16192}
   vertical: 0
+<<<<<<< HEAD
   controlID: 176
+>>>>>>> Levi
+=======
+  controlID: 46
 >>>>>>> Levi
 --- !u!114 &10
 MonoBehaviour:
@@ -704,13 +720,13 @@ MonoBehaviour:
     m_SkipHidden: 0
     m_SearchArea: 1
     m_Folders:
-    - Assets/Scenes/Levi Scenes
+    - Assets
     m_Globs: []
     m_OriginalText: 
   m_ViewMode: 1
   m_StartGridSize: 64
   m_LastFolders:
-  - Assets/Scenes/Levi Scenes
+  - Assets
   m_LastFoldersGridSize: -1
 <<<<<<< HEAD
   m_LastProjectPath: C:\Users\joyde\Development\VRIJ_HKU_2022
@@ -726,10 +742,17 @@ MonoBehaviour:
   m_LockTracker:
     m_IsLocked: 0
   m_FolderTreeState:
+<<<<<<< HEAD
     scrollPos: {x: 0, y: 50}
     m_SelectedIDs: fa960000
     m_LastClickedID: 38650
     m_ExpandedIDs: 000000008a9200008c92000096940000
+>>>>>>> Levi
+=======
+    scrollPos: {x: 0, y: 31}
+    m_SelectedIDs: fa810000
+    m_LastClickedID: 33274
+    m_ExpandedIDs: 00000000fa810000fc81000022840000
 >>>>>>> Levi
     m_RenameOverlay:
       m_UserAcceptedRename: 0
@@ -764,7 +787,11 @@ MonoBehaviour:
     scrollPos: {x: 0, y: 50}
     m_SelectedIDs: 8e6e0000
     m_LastClickedID: 28302
+<<<<<<< HEAD
     m_ExpandedIDs: 000000008a9200008c920000
+>>>>>>> Levi
+=======
+    m_ExpandedIDs: 00000000fa810000fc810000
 >>>>>>> Levi
     m_RenameOverlay:
       m_UserAcceptedRename: 0
@@ -792,7 +819,7 @@ MonoBehaviour:
   m_ListAreaState:
     m_SelectedInstanceIDs: 
     m_LastClickedInstanceID: 0
-    m_HadKeyboardFocusLastEvent: 1
+    m_HadKeyboardFocusLastEvent: 0
     m_ExpandedInstanceIDs: c6230000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
@@ -901,6 +928,7 @@ MonoBehaviour:
   m_SceneHierarchy:
     m_TreeViewState:
 <<<<<<< HEAD
+<<<<<<< HEAD
       scrollPos: {x: 0, y: 0}
       m_SelectedIDs: 00ad0000
       m_LastClickedID: 0
@@ -910,6 +938,12 @@ MonoBehaviour:
       m_SelectedIDs: d834ffff
       m_LastClickedID: -52008
       m_ExpandedIDs: 2eebffff507c0000a67d0000be7f000092810000dc850000
+>>>>>>> Levi
+=======
+      scrollPos: {x: 0, y: 0}
+      m_SelectedIDs: 
+      m_LastClickedID: 0
+      m_ExpandedIDs: 34fbffff
 >>>>>>> Levi
       m_RenameOverlay:
         m_UserAcceptedRename: 0
@@ -1168,6 +1202,7 @@ MonoBehaviour:
   m_AudioPlay: 0
   m_Position:
 <<<<<<< HEAD
+<<<<<<< HEAD
     m_Target: {x: 3.5907774, y: 6.046748, z: 5.7757425}
     speed: 2
     m_Value: {x: 3.5907774, y: 6.046748, z: 5.7757425}
@@ -1175,6 +1210,11 @@ MonoBehaviour:
     m_Target: {x: 6.3421116, y: 6.551065, z: 6.100316}
     speed: 2
     m_Value: {x: 6.3421116, y: 6.551065, z: 6.100316}
+>>>>>>> Levi
+=======
+    m_Target: {x: -3.349429, y: 8.341074, z: 8.606421}
+    speed: 2
+    m_Value: {x: -3.3494294, y: 8.341074, z: 8.606423}
 >>>>>>> Levi
   m_RenderMode: 0
   m_CameraMode:
@@ -1227,6 +1267,7 @@ MonoBehaviour:
     m_gridOpacity: 0.5
   m_Rotation:
 <<<<<<< HEAD
+<<<<<<< HEAD
     m_Target: {x: -0.20646438, y: -0.72378194, z: 0.24461067, w: -0.61145157}
     speed: 2
     m_Value: {x: -0.21095341, y: -0.71013206, z: 0.23881517, w: -0.62783635}
@@ -1236,12 +1277,19 @@ MonoBehaviour:
     m_Value: 6.954048
 =======
     m_Target: {x: 0.14284365, y: -0.2502317, z: 0.03299621, w: 0.957503}
+=======
+    m_Target: {x: 0.01799804, y: -0.9403189, z: -0.03815285, w: -0.33903846}
+>>>>>>> Levi
     speed: 2
-    m_Value: {x: 0.14272828, y: -0.25155187, z: 0.03319516, w: 0.9566862}
+    m_Value: {x: 0.017932484, y: -0.9403909, z: -0.038162135, w: -0.33747134}
   m_Size:
     m_Target: 4.439471
     speed: 2
+<<<<<<< HEAD
     m_Value: 4.6486607
+>>>>>>> Levi
+=======
+    m_Value: 4.439471
 >>>>>>> Levi
   m_Ortho:
     m_Target: 0
