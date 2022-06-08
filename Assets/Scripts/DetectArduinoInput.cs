@@ -1,4 +1,5 @@
 using System.IO.Ports;
+using System.Threading;
 using UnityEngine;
 
 
@@ -13,12 +14,16 @@ public class DetectArduinoInput : MonoBehaviour
     void Start()
     {
         ConvertSerialPort();
-        sp = new SerialPort(serialPort, 19200);
+        sp = new SerialPort(serialPort, 4800);
         gameManager = GameManager.instance;
         sp.Open();
         sp.ReadTimeout = 100;
         Debug.Log("Selected port: " + serialPort);
         InvokeRepeating("SerialDataReading", 0f, 0.01f);
+
+        Thread sampleThread = new Thread(new ThreadStart(SerialDataReading));
+        sampleThread.IsBackground = true;
+        sampleThread.Start();
     }
 
     private void ConvertSerialPort()
@@ -41,11 +46,13 @@ public class DetectArduinoInput : MonoBehaviour
     {
         if (sp.IsOpen)
         {
-            int pipe = SerialDataReading();
-            if (pipe > -1 && pipe != lastinput) //is controller connected? and is button pressed only once
-                gameManager.ReceiveInput(pipe);
-            lastinput = pipe;
-            sp.BaseStream.Flush();
+            if (int.TryParse(receivedString, out int pipe))
+            {
+                if (pipe > -1 && pipe != lastinput) //is controller connected? and is button pressed only once
+                    gameManager.ReceiveInput(pipe);
+                lastinput = pipe;
+                sp.BaseStream.Flush();
+            }
         }
     }
 
@@ -56,23 +63,24 @@ public class DetectArduinoInput : MonoBehaviour
 
 
     private string receivedString;
-    private int SerialDataReading()
+    private void SerialDataReading()
     {
-
-        try
+        while (true)
         {
-            receivedString = sp.ReadLine();
-            if (int.TryParse(receivedString, out int input))
+
+            if (sp.IsOpen)
             {
-                return input;
+                try
+                {
+                    receivedString = sp.ReadLine();
+                }
+                catch (System.TimeoutException) { }
+                catch (System.Exception e)
+                {
+                    Debug.LogException(e);
+                    Debug.Log("Could not receive Arduino input, exception error!");
+                }
             }
         }
-        catch (System.TimeoutException) { }
-        catch (System.Exception e)
-        {
-            Debug.LogException(e);
-            Debug.Log("Could not receive Arduino input, exception error!");
-        }
-        return 0;
     }
 }

@@ -99,7 +99,6 @@ public class Character : MonoBehaviour
         // multiply it by +1 or -1 based on the vector facing up or down
         heightOfCurrentNodeRelativeToCharacter = heightRelativeToTransformVector(GetCharacterFeet(), 
             nodePath.GetNodeFloorPointPosition(currentNode), transform.forward) * posNegMultiplier;
-        Debug.Log(heightOfCurrentNodeRelativeToCharacter);
         if (heightOfCurrentNodeRelativeToCharacter > 0.05f && isGrounded && !justFell && boundToPath)
         {
             UseGravity(false);
