@@ -41,11 +41,13 @@ public class DetectArduinoInput : MonoBehaviour
     {
         if (sp.IsOpen)
         {
-            int pipe = SerialDataReading();
-            if (pipe > -1 && pipe != lastinput) //is controller connected? and is button pressed only once
-                gameManager.ReceiveInput(pipe);
-            lastinput = pipe;
-            sp.BaseStream.Flush();
+            if (int.TryParse(receivedString, out int pipe))
+            {
+                if (pipe > -1 && pipe != lastinput) //is controller connected? and is button pressed only once
+                    gameManager.ReceiveInput(pipe);
+                lastinput = pipe;
+                sp.BaseStream.Flush();
+            }
         }
     }
 
@@ -56,16 +58,12 @@ public class DetectArduinoInput : MonoBehaviour
 
 
     private string receivedString;
-    private int SerialDataReading()
+    private string SerialDataReading()
     {
 
         try
         {
             receivedString = sp.ReadLine();
-            if (int.TryParse(receivedString, out int input))
-            {
-                return input;
-            }
         }
         catch (System.TimeoutException) { }
         catch (System.Exception e)
@@ -73,6 +71,7 @@ public class DetectArduinoInput : MonoBehaviour
             Debug.LogException(e);
             Debug.Log("Could not receive Arduino input, exception error!");
         }
-        return 0;
+        Debug.Log(receivedString);
+        return receivedString;
     }
 }
