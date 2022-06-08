@@ -1,4 +1,5 @@
 using System.IO.Ports;
+using System.Threading;
 using UnityEngine;
 
 
@@ -13,12 +14,16 @@ public class DetectArduinoInput : MonoBehaviour
     void Start()
     {
         ConvertSerialPort();
-        sp = new SerialPort(serialPort, 19200);
+        sp = new SerialPort(serialPort, 4800);
         gameManager = GameManager.instance;
         sp.Open();
         sp.ReadTimeout = 100;
         Debug.Log("Selected port: " + serialPort);
         InvokeRepeating("SerialDataReading", 0f, 0.01f);
+
+        Thread sampleThread = new Thread(new ThreadStart(SerialDataReading));
+        sampleThread.IsBackground = true;
+        sampleThread.Start();
     }
 
     private void ConvertSerialPort()
@@ -58,20 +63,24 @@ public class DetectArduinoInput : MonoBehaviour
 
 
     private string receivedString;
-    private string SerialDataReading()
+    private void SerialDataReading()
     {
+        while (true)
+        {
 
-        try
-        {
-            receivedString = sp.ReadLine();
+            if (sp.IsOpen)
+            {
+                try
+                {
+                    receivedString = sp.ReadLine();
+                }
+                catch (System.TimeoutException) { }
+                catch (System.Exception e)
+                {
+                    Debug.LogException(e);
+                    Debug.Log("Could not receive Arduino input, exception error!");
+                }
+            }
         }
-        catch (System.TimeoutException) { }
-        catch (System.Exception e)
-        {
-            Debug.LogException(e);
-            Debug.Log("Could not receive Arduino input, exception error!");
-        }
-        Debug.Log(receivedString);
-        return receivedString;
     }
 }
