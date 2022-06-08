@@ -1,13 +1,11 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 using System.IO.Ports;
+using UnityEngine;
 
 
 public class DetectArduinoInput : MonoBehaviour
 {
     private GameManager gameManager;
-    private enum SerialPortName {COM2, COM3, COM4, COM5, COM6}
+    private enum SerialPortName { COM2, COM3, COM4, COM5, COM6 }
     [SerializeField] private SerialPortName serialPortName = SerialPortName.COM4;
     private string serialPort;
     private SerialPort sp;
@@ -15,11 +13,12 @@ public class DetectArduinoInput : MonoBehaviour
     void Start()
     {
         ConvertSerialPort();
-        sp = new SerialPort(serialPort, 4800);
+        sp = new SerialPort(serialPort, 19200);
         gameManager = GameManager.instance;
         sp.Open();
         sp.ReadTimeout = 100;
         Debug.Log("Selected port: " + serialPort);
+        InvokeRepeating("SerialDataReading", 0f, 0.01f);
     }
 
     private void ConvertSerialPort()
@@ -42,29 +41,38 @@ public class DetectArduinoInput : MonoBehaviour
     {
         if (sp.IsOpen)
         {
-            try
-            {
-                string line = sp.ReadLine();
-                Debug.Log(line);
-                if (int.TryParse(line, out int pipe))
-                {
-                    if (pipe > -1 && pipe != lastinput) //is controller connected? and is button pressed only once
-                        gameManager.ReceiveInput(pipe);
-                    lastinput = pipe;
-                }
-                sp.BaseStream.Flush();
-            }
-            catch (System.TimeoutException) { }
-            catch (System.Exception e)
-            {
-                Debug.LogException(e);
-                Debug.Log("Could not receive Arduino input, exception error!");
-            }
+            int pipe = SerialDataReading();
+            if (pipe > -1 && pipe != lastinput) //is controller connected? and is button pressed only once
+                gameManager.ReceiveInput(pipe);
+            lastinput = pipe;
+            sp.BaseStream.Flush();
         }
     }
 
     private void OnApplicationQuit()
     {
         sp.Close();
+    }
+
+
+    private string receivedString;
+    private int SerialDataReading()
+    {
+
+        try
+        {
+            receivedString = sp.ReadLine();
+            if (int.TryParse(receivedString, out int input))
+            {
+                return input;
+            }
+        }
+        catch (System.TimeoutException) { }
+        catch (System.Exception e)
+        {
+            Debug.LogException(e);
+            Debug.Log("Could not receive Arduino input, exception error!");
+        }
+        return 0;
     }
 }
