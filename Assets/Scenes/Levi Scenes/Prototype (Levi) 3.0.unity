@@ -45089,13 +45089,8 @@ MonoBehaviour:
   characterPrefab: {fileID: 6483646236678325386, guid: 1efedc3bef340ab468a111285e3677a9,
     type: 3}
   startPathID: 0
-<<<<<<< HEAD
-  startNode: 0
-  startDirection: 0
-=======
   startNode: 6
   startDirection: 2
->>>>>>> main
   paths:
   - {fileID: 0}
   character: {fileID: 0}
