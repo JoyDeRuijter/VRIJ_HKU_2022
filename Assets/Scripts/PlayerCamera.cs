@@ -27,7 +27,7 @@ public class PlayerCamera : MonoBehaviour
 
     private void Start()
     {
-        camNodesObject.transform.position = new Vector3(camNodesObject.transform.position.x, characterTransform.position.y + 2, camNodesObject.transform.position.z);
+        camNodesObject.transform.position = new Vector3(camNodesObject.transform.position.x, characterTransform.position.y, camNodesObject.transform.position.z);
         transform.position = camNodesObject.GetComponent<CameraNodes>().nodes[startingNode].position;
     }
 
@@ -35,8 +35,22 @@ public class PlayerCamera : MonoBehaviour
     {
         if (!playerIsActive) return;
 
+        float camPlayerOffset;
+        if (Physics.gravity.y < 0)
+        {
+            camPlayerOffset = 2;
+        }
+        else if (Physics.gravity.y > 0)
+        {
+            camPlayerOffset = -2;
+        }
+        else
+        {
+            camPlayerOffset = 0;
+        }
+
         if (camNodesObject.transform.position.y > minCamHeight && camNodesObject.transform.position.y < maxCamHeight)
-            camNodesObject.transform.position = new Vector3(camNodesObject.transform.position.x, characterTransform.position.y + 2, camNodesObject.transform.position.z);
+            camNodesObject.transform.position = new Vector3(camNodesObject.transform.position.x, characterTransform.position.y + camPlayerOffset, camNodesObject.transform.position.z);
 
         // The camera transforms towards the closest node
         CameraNodes camNodes = camNodesObject.GetComponent<CameraNodes>();
