@@ -219,6 +219,7 @@ public class Character : MonoBehaviour
         // When we don't have a path, we move in a straigt line from where we left, and look for a new path
         else
         {
+            transform.rotation = Quaternion.LookRotation(transform.forward, -Physics.gravity);
             if (isGrounded)
             {
                 SearchForPath();

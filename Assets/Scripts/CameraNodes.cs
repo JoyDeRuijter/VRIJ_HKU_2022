@@ -37,12 +37,6 @@ public class CameraNodes : MonoBehaviour
                 previousNode = nodes[nodes.Count - 1].position;
 
             Vector3 gizmoPosCurrent = new Vector3(currentNode.x, currentNode.y, currentNode.z);
-            Vector3 gizmoPosPrevious = new Vector3(previousNode.x, previousNode.y, previousNode.z);
-
-            //if (previousNode != nodes[nodes.Count - 1].position)
-                Gizmos.DrawLine(gizmoPosPrevious, gizmoPosCurrent);
-
-
             Gizmos.DrawSphere(gizmoPosCurrent, 0.2f);
         }
     }
