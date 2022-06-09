@@ -283,6 +283,8 @@ public class Character : MonoBehaviour
     private void MoveFreely()
     {
         transform.position += transform.forward * Time.deltaTime * movementSpeed;
+
+        transform.rotation = Quaternion.LookRotation(transform.forward, -Physics.gravity);
     }
 
     // Make the character change directions and move to the nodes in opposite order
