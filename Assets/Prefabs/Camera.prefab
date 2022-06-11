@@ -287,7 +287,7 @@ MonoBehaviour:
   minCamHeight: 0
   maxCamHeight: 100
   startingNode: 0
-  looksAtPlayer: 0
+  looksAtPlayer: 1
   centerObject: {fileID: 1905269933658964238}
   isRotating: 1
   nodeFollow: 1
