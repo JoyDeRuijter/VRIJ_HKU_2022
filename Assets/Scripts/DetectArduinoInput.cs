@@ -1,86 +1,175 @@
+using System.Collections;
 using System.IO.Ports;
+using System.ServiceProcess;
 using System.Threading;
 using UnityEngine;
-
+using System.Collections.Generic;
+using Microsoft.Win32;
 
 public class DetectArduinoInput : MonoBehaviour
 {
     private GameManager gameManager;
-    private enum SerialPortName { COM2, COM3, COM4, COM5, COM6 }
-    [SerializeField] private SerialPortName serialPortName = SerialPortName.COM4;
-    private string serialPort;
-    private SerialPort sp;
 
-    void Start()
+    string port;
+    [SerializeField] int baudRate;
+
+    private Thread thread;
+
+    private Queue outputQueue;    // From Unity to Arduino
+    private Queue inputQueue;    // From Arduino to Unity
+
+    SerialPort stream;
+
+    private void Awake()
     {
-        ConvertSerialPort();
-        sp = new SerialPort(serialPort, 4800);
-        gameManager = GameManager.instance;
-        sp.Open();
-        sp.ReadTimeout = 100;
-        Debug.Log("Selected port: " + serialPort);
-        InvokeRepeating("SerialDataReading", 0f, 0.01f);
-
-        Thread sampleThread = new Thread(new ThreadStart(SerialDataReading));
-        sampleThread.IsBackground = true;
-        sampleThread.Start();
+        gameManager = GetComponent<GameManager>();
     }
 
-    private void ConvertSerialPort()
+    private void Start()
     {
-        if (serialPortName == SerialPortName.COM2)
-            serialPort = "COM2";
-        else if (serialPortName == SerialPortName.COM3)
-            serialPort = "COM3";
-        else if (serialPortName == SerialPortName.COM4)
-            serialPort = "COM4";
-        else if (serialPortName == SerialPortName.COM5)
-            serialPort = "COM5";
-        else if (serialPortName == SerialPortName.COM6)
-            serialPort = "COM6";
+        port = AutodetectArduinoPort();
+        StartThread();
     }
 
-    int lastinput = 0;
-
-    void Update()
+    private void Update()
     {
-        if (sp.IsOpen)
+        stream.DiscardOutBuffer();
+        stream.DiscardInBuffer();
+        string receivedString = ReadFromArduino();
+        if (receivedString != null)
         {
             if (int.TryParse(receivedString, out int pipe))
             {
-                if (pipe > -1 && pipe != lastinput) //is controller connected? and is button pressed only once
-                    gameManager.ReceiveInput(pipe);
-                lastinput = pipe;
-                sp.BaseStream.Flush();
+                gameManager.ReceiveInput(pipe);
             }
         }
     }
 
-    private void OnApplicationQuit()
+    private void StartThread()
     {
-        sp.Close();
+        outputQueue = Queue.Synchronized(new Queue());
+        inputQueue = Queue.Synchronized(new Queue());
+
+        thread = new Thread(ThreadLoop);
+        thread.Start();
     }
 
-
-    private string receivedString;
-    private void SerialDataReading()
+    private void SendToArduino(string command)
     {
-        while (true)
+        outputQueue.Enqueue(command);
+    }
+
+    public string ReadFromArduino()
+    {
+        if (inputQueue.Count == 0)
+            return null;
+        return (string)inputQueue.Dequeue();
+    }
+
+    private string ReadFromArduino(int timeout = 0)
+    {
+        stream.ReadTimeout = timeout;
+        try
         {
+            return stream.ReadLine();
+        }
+        catch (TimeoutException e)
+        {
+            Debug.LogException(e, this);
+            return null;
+        }
+    }
 
-            if (sp.IsOpen)
+    private void WriteToArduino(string message)
+    {
+        stream.WriteLine(message);
+        stream.BaseStream.Flush();
+    }
+
+    private void ThreadLoop()
+    {
+        // Opens the connection on the serial port
+        stream = new SerialPort(port, baudRate);
+        stream.ReadTimeout = 10000;
+        stream.Open();
+        // Looping
+        while (IsLooping())
+        {
+            // Send to Arduino
+            if (outputQueue.Count != 0)
             {
-                try
+                string command = (string)outputQueue.Dequeue();
+                WriteToArduino(command);
+            }
+            // Read from Arduino
+            string result = ReadFromArduino(10000);
+            if (result != null)
+                inputQueue.Enqueue(result);
+        }
+        stream.Close();
+    }
+
+    private bool looping = true;
+    private bool IsLooping()
+    {
+        lock (this)
+        {
+            return looping;
+        }
+    }
+
+    public void StopThread()
+    {
+        lock (this)
+        {
+            looping = false;
+        }
+    }
+
+    private void OnDisable()
+    {
+        StopThread();
+    }
+
+    public static string AutodetectArduinoPort()
+    {
+        List<string> comports = new List<string>();
+        RegistryKey rk1 = Registry.LocalMachine;
+        RegistryKey rk2 = rk1.OpenSubKey("SYSTEM\\CurrentControlSet\\Enum");
+        string temp;
+        foreach (string s3 in rk2.GetSubKeyNames())
+        {
+            RegistryKey rk3 = rk2.OpenSubKey(s3);
+            foreach (string s in rk3.GetSubKeyNames())
+            {
+                if (s.Contains("VID") && s.Contains("PID"))
                 {
-                    receivedString = sp.ReadLine();
-                }
-                catch (System.TimeoutException) { }
-                catch (System.Exception e)
-                {
-                    Debug.LogException(e);
-                    Debug.Log("Could not receive Arduino input, exception error!");
+                    RegistryKey rk4 = rk3.OpenSubKey(s);
+                    foreach (string s2 in rk4.GetSubKeyNames())
+                    {
+                        RegistryKey rk5 = rk4.OpenSubKey(s2);
+                        if ((temp = (string)rk5.GetValue("FriendlyName")) != null && temp.Contains("Arduino"))
+                        {
+                            RegistryKey rk6 = rk5.OpenSubKey("Device Parameters");
+                            if (rk6 != null && (temp = (string)rk6.GetValue("PortName")) != null)
+                            {
+                                comports.Add(temp);
+                            }
+                        }
+                    }
                 }
             }
         }
+
+        if (comports.Count > 0)
+        {
+            foreach (string s in SerialPort.GetPortNames())
+            {
+                if (comports.Contains(s))
+                    return s;
+            }
+        }
+
+        return "COM9";
     }
 }

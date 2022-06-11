@@ -167,11 +167,6 @@ public class GameManager : MonoBehaviour
 
     public void ReceiveInput(int _inputIndex)
     {
-        Debug.Log(_inputIndex, this);
-
-        if (gaveInput)
-            return;
-
         switch (_inputIndex)
         {
             case 0:
@@ -180,15 +175,13 @@ public class GameManager : MonoBehaviour
                 break;
 
             case 1: // fluit pijp 1
-                
+                Debug.Log("First pipe was blown");
                 // Switch character direction
                 character.FlipDirection();
-
-                InputHandler();
                 break;
 
             case 2: // fluit pijp 2
-
+                Debug.Log("Secoond pipe was blown");
                 // Move movable objects
                 foreach (MovableObject movableObject in movableObjects)
                 {
@@ -200,11 +193,10 @@ public class GameManager : MonoBehaviour
                     else
                         movableObject.DeactivateObject();
                 }
-
-                InputHandler();
                 break;
 
             case 3: // fluit pijp 3
+                Debug.Log("Third pipe was blown");
 
                 // Rotate tower
                 foreach (MovableObject movableObject in movableObjects)
@@ -217,32 +209,15 @@ public class GameManager : MonoBehaviour
                     else
                         movableObject.DeactivateObject();
                 }
-
-                InputHandler();
                 break;
 
             case 4: // fluit pijp 4
+                Debug.Log("Fourth pipe was blown");
 
                 // Another functionality can be added here...
 
-                InputHandler();
                 break;
         }
-    }
-
-    private void InputHandler()
-    {
-        if (!gaveInput)
-        {
-            gaveInput = true;
-
-        }
-    }
-
-    private IEnumerator WaitTillNextInput(float time)
-    {
-        yield return new WaitForSeconds(time);
-        gaveInput = false;
     }
     #endregion
 }
