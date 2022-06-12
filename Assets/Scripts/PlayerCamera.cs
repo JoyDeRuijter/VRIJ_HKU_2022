@@ -1,10 +1,11 @@
 using UnityEngine;
 
+[SelectionBase]
 public class PlayerCamera : MonoBehaviour
 {
     #region Variables
     [Header("Camera information")]
-    [Range(0f, 0.5f), SerializeField] float camSpeed;
+    [Range(10f, 50f), SerializeField] float camSpeed;
     [SerializeField] GameObject camNodesObject;
     [SerializeField] float minCamHeight;
     [SerializeField] float maxCamHeight;
@@ -16,12 +17,13 @@ public class PlayerCamera : MonoBehaviour
 
     [Header("Camera options")]
     [SerializeField] bool isRotating;
-    [SerializeField] bool nodeFollow;
+    //[SerializeField] bool nodeFollow;
     [SerializeField] float rotationOffset;
     [SerializeField] float rotationSpeed;
-    [SerializeField] GameObject cameraCenterOfMass;
     [SerializeField] GameObject cameraNodePath;
-    [SerializeField] GameObject camFollowObject;
+    [SerializeField] Transform COM;
+    [SerializeField, Range(0f, 5f)] float camHeight;
+    [SerializeField] float minDistanceToNode;
 
     private float smallestDistance;
     private Transform closestNode;
@@ -30,28 +32,30 @@ public class PlayerCamera : MonoBehaviour
     public static Transform characterTransform = null;
     public static bool playerIsActive = false;
     private float camPlayerHeightOffset = 0;
+    private Vector3 activePosition = Vector3.zero;
     #endregion
 
     private void Start()
     {
-        //camNodesObject.transform.position = new Vector3(camNodesObject.transform.position.x, characterTransform.position.y, camNodesObject.transform.position.z);
-        //transform.position = camNodesObject.GetComponent<CameraNodes>().nodes[startingNode].position;
+        COM.position = centerObject.position;
+        transform.position = camNodesObject.GetComponent<CameraNodes>().nodes[startingNode].position;
     }
 
     private void Update()
     {
-        if (!playerIsActive) return;
-
-        cameraNodePath.transform.position = new Vector3(0, characterTransform.position.y, 0);
+        if (playerIsActive)
+        {
+            activePosition = characterTransform.position;
+        }
 
         // The camera transforms towards the closest node
         CameraNodes camNodes = camNodesObject.GetComponent<CameraNodes>();
-        smallestDistance = Vector3.Distance(camNodes.nodes[0].position, characterTransform.position);
+        smallestDistance = Vector3.Distance(camNodes.nodes[0].position, activePosition);
         closestNode = camNodes.nodes[0];
 
         foreach (Transform node in camNodes.nodes)
         {
-            float newDistance = Vector3.Distance(node.position, characterTransform.position);
+            float newDistance = Vector3.Distance(node.position, activePosition);
             if (newDistance < smallestDistance)
             {
                 smallestDistance = newDistance;
@@ -60,22 +64,22 @@ public class PlayerCamera : MonoBehaviour
         }
 
         // Rotate around object
-        if (isRotating)
+        if (Vector3.Distance(activePosition, closestNode.position) < minDistanceToNode)
         {
-            CamRotateToNode();
+            CamMoveToNode();
         }
         else
         {
-            CamMoveToNode();
+            CamRotateToNode();
         }
 
         if (Physics.gravity.y < 0)
         {
-            camPlayerHeightOffset = 2;
+            camPlayerHeightOffset = camHeight;
         }
         else if (Physics.gravity.y > 0)
         {
-            camPlayerHeightOffset = -2;
+            camPlayerHeightOffset = -camHeight;
         }
         else
         {
@@ -83,42 +87,30 @@ public class PlayerCamera : MonoBehaviour
         }
 
         if (looksAtPlayer)
-            transform.LookAt(characterTransform.position);
+            transform.LookAt(activePosition);
         else
-            transform.LookAt(cameraCenterOfMass.transform.position);
+            transform.LookAt(centerObject.transform.position);
     }
 
     private void CamMoveToNode()
     {
-        transform.position = Vector3.SmoothDamp(transform.position, closestNode.position, ref zero, camSpeed);
+        transform.position = Vector3.SmoothDamp(transform.position, closestNode.position, ref zero, Time.deltaTime * camSpeed);
     }
 
     private void CamRotateToNode()
     {
-        Quaternion targetRotation;
-        float followScale;
-        cameraCenterOfMass.transform.position = centerObject.transform.position;
-        if (nodeFollow)
+        Vector3 targetVector = GetHorizontalVector(centerObject.position, activePosition);
+        COM.position = Vector3.SmoothDamp(COM.position, Vector3.up * activePosition.y + Vector3.up * camPlayerHeightOffset, ref zero, Time.deltaTime * camSpeed);
+        COM.rotation = Quaternion.Slerp(COM.rotation, Quaternion.LookRotation(targetVector, Vector3.up), rotationSpeed * Time.deltaTime);
+        float distanceToCharacter = Vector3.Distance(centerObject.position, activePosition);
+        if (playerIsActive)
         {
-            Vector3 horizontalVector = cameraCenterOfMass.transform.position + GetHorizontalVector(cameraCenterOfMass.transform.position, closestNode.position);
-            targetRotation = Quaternion.LookRotation(horizontalVector);
-            followScale = horizontalVector.magnitude;
+            transform.localPosition = Vector3.SmoothDamp(transform.localPosition, Vector3.forward * rotationOffset + Vector3.forward * distanceToCharacter, ref zero, Time.deltaTime * camSpeed);
         }
         else
         {
-            Vector3 horizontalVector = cameraCenterOfMass.transform.position + GetHorizontalVector(cameraCenterOfMass.transform.position, characterTransform.position);
-            targetRotation = Quaternion.LookRotation(horizontalVector);
-            followScale = horizontalVector.magnitude;
+            transform.localPosition = Vector3.SmoothDamp(transform.localPosition, Vector3.forward * (2 *rotationOffset) + Vector3.forward * distanceToCharacter, ref zero, Time.deltaTime * camSpeed);
         }
-
-        if (!looksAtPlayer)
-            cameraCenterOfMass.transform.rotation = Quaternion.Slerp(cameraCenterOfMass.transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
-        camFollowObject.transform.position = cameraCenterOfMass.transform.forward.normalized * followScale +
-            cameraCenterOfMass.transform.forward * rotationOffset +
-            Vector3.up * characterTransform.position.y +
-            Vector3.up * camPlayerHeightOffset;
-
-        transform.position = Vector3.SmoothDamp(transform.position, camFollowObject.transform.position, ref zero, camSpeed);
     }
 
     private Vector3 GetHorizontalVector(Vector3 a, Vector3 b)

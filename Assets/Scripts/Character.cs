@@ -23,7 +23,7 @@ public class Character : MonoBehaviour
     [SerializeField] Animator anim;
 
     [HideInInspector] public int currentPathID;
-    [HideInInspector] public bool boundToPath;
+    public bool boundToPath;
     [HideInInspector] public NodePath nodePath;
 
     private List<Transform> nodes = new List<Transform>();
@@ -494,7 +494,7 @@ public class Character : MonoBehaviour
 
         if (obj != null)
         {
-            if (Mathf.Abs(heightOfCurrentNodeRelativeToCharacter) > 0.5f)
+            if (Mathf.Abs(heightOfCurrentNodeRelativeToCharacter) > 0.5f && Mathf.Abs(heightOfCurrentNodeRelativeToCharacter) < 0.6f)
                 LosePathing();
         }
     }
