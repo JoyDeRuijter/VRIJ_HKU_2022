@@ -26,6 +26,7 @@ public class GameManager : MonoBehaviour
     private MovableObject[] movableObjects;
 
     private bool gaveInput;
+    [HideInInspector] public bool playStoneSound;
     #endregion
 
     private void Awake()
@@ -183,25 +184,15 @@ public class GameManager : MonoBehaviour
             case 2: // fluit pijp 2
                 Debug.Log("Secoond pipe was blown");
                 // Move movable objects
-                foreach (MovableObject movableObject in movableObjects)
-                {
-                    if (movableObject.isRotation)
-                        break;
 
-                    if (!movableObject.isActivated)
-                        movableObject.ActivateObject();
-                    else
-                        movableObject.DeactivateObject();
-                }
                 break;
 
             case 3: // fluit pijp 3
                 Debug.Log("Third pipe was blown");
-
-                // Rotate tower
+                playStoneSound = true;
                 foreach (MovableObject movableObject in movableObjects)
                 {
-                    if (!movableObject.isRotation)
+                    if (movableObject.isRotation)
                         break;
 
                     if (!movableObject.isActivated)
