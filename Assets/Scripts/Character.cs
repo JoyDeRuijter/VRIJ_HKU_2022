@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 [RequireComponent(typeof(CapsuleCollider))]
 public class Character : MonoBehaviour
@@ -63,6 +64,11 @@ public class Character : MonoBehaviour
 
     private void Update()
     {
+        // Nasty temporary solution for reloading when the player has fallen off the map
+        Vector3 middleLevel = new Vector3(5, 5, 5);
+        if ((transform.position - middleLevel).magnitude >= 50)
+            ReloadScene();
+
         // Is only for debugging, will be removed later
         if (Input.GetKeyDown(KeyCode.Space))
             FlipDirection();
@@ -502,6 +508,11 @@ public class Character : MonoBehaviour
     private void waitTillNewCheck()
     {
         delayActive = false;
+    }
+
+    private void ReloadScene()
+    {
+        SceneManager.LoadScene("FINAL_GAME");
     }
 }
 
