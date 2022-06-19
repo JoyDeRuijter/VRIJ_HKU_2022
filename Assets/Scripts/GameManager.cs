@@ -16,6 +16,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private int startPathID;
     [SerializeField] private int startNode;
     [SerializeField] private WalkDirection startDirection;
+    [SerializeField] PlayerCamera playerCamera;
 
     public Dictionary<Vector3Int, Cube> walkableCubes = new Dictionary<Vector3Int, Cube>();
     public NodePath[] paths;
@@ -43,6 +44,12 @@ public class GameManager : MonoBehaviour
         movableObjects = FindObjectsOfType<MovableObject>();
     }
 
+    private void Update()
+    {
+        // temp here
+        if (Input.GetKeyDown(KeyCode.Q)) { playerCamera.MoveToPreviousNode(); }
+        if (Input.GetKeyDown(KeyCode.R)) { playerCamera.MoveToNextNode(); }
+    }
 
     #region Paths & Path Switching
 
@@ -145,15 +152,15 @@ public class GameManager : MonoBehaviour
     // If the player spawns in / drops in, the camera has to follow the player
     public void CamFollowsPlayer(GameObject player)
     {
-        PlayerCamera.playerIsActive = true;
-        PlayerCamera.characterTransform = player.transform;
+        playerCamera.playerIsActive = true;
+        playerCamera.character = player.transform;
     }
 
     // And if the player gets destroyed, this function makes sure the PlayerCamera script doesn't create any errors
     public void CamStopsFollowPlayer()
     {
-        PlayerCamera.playerIsActive = false;
-        PlayerCamera.characterTransform = null;
+        playerCamera.playerIsActive = false;
+        playerCamera.character = null;
     }
 
     public void DestroyCharacter()
@@ -177,14 +184,12 @@ public class GameManager : MonoBehaviour
 
             case 1: // fluit pijp 1
                 Debug.Log("First pipe was blown");
-                // Switch character direction
-                character.FlipDirection();
+                playerCamera.MoveToPreviousNode();
                 break;
 
             case 2: // fluit pijp 2
                 Debug.Log("Secoond pipe was blown");
-                // Move movable objects
-
+                character.FlipDirection();
                 break;
 
             case 3: // fluit pijp 3
@@ -204,9 +209,7 @@ public class GameManager : MonoBehaviour
 
             case 4: // fluit pijp 4
                 Debug.Log("Fourth pipe was blown");
-
-                // Another functionality can be added here...
-
+                playerCamera.MoveToNextNode();
                 break;
         }
     }
