@@ -34,38 +34,38 @@ public class NodePath : MonoBehaviour
                 {
                     case FaceDirection.xForward:
                         gravityDirection = Vector3.right;
-                        child.center = new Vector3(-.5f, 0, 0);
-                        child.size = new Vector3(.5f, 1, 1);
+                        child.center = new Vector3(-.3725f, 0, 0);
+                        child.size = new Vector3(.25f, 1, 1);
                         break;
 
                     case FaceDirection.xBackward:
                         gravityDirection = Vector3.left;
-                        child.center = new Vector3(.5f, 0, 0);
-                        child.size = new Vector3(.5f, 1, 1);
+                        child.center = new Vector3(.3725f, 0, 0);
+                        child.size = new Vector3(.25f, 1, 1);
                         break;
 
                     case FaceDirection.yUp:
                         gravityDirection = Vector3.up;
-                        child.center = new Vector3(0, -.5f, 0);
-                        child.size = new Vector3(1, .5f, 1);
+                        child.center = new Vector3(0, -.3725f, 0);
+                        child.size = new Vector3(1, .25f, 1);
                         break;
 
                     case FaceDirection.yDown:
                         gravityDirection = Vector3.down;
-                        child.center = new Vector3(0, .5f, 0);
-                        child.size = new Vector3(1, .5f, 1);
+                        child.center = new Vector3(0, .3725f, 0);
+                        child.size = new Vector3(1, .25f, 1);
                         break;
 
                     case FaceDirection.zForward:
                         gravityDirection = Vector3.forward;
-                        child.center = new Vector3(0, 0f, -.5f);
-                        child.size = new Vector3(1, 1, .5f);
+                        child.center = new Vector3(0, 0f, -.3725f);
+                        child.size = new Vector3(1, 1, .25f);
                         break;
 
                     case FaceDirection.zBackward:
                         gravityDirection = Vector3.back;
-                        child.center = new Vector3(0, 0, .5f);
-                        child.size = new Vector3(1, 1, .5f);
+                        child.center = new Vector3(0, 0, .3725f);
+                        child.size = new Vector3(1, 1, .25f);
                         break;
 
                     case FaceDirection.custom:

@@ -59,6 +59,7 @@ public class Character : MonoBehaviour
         if (toTheBeat) isMoving = false;
         else isMoving = true;
 
+        StopAllCoroutines();
         //anim.SetBool("IsWalking", true);
     }
 
@@ -153,17 +154,35 @@ public class Character : MonoBehaviour
         Vector3 heightVector = Physics.gravity.normalized * distanceCloseToAngleVector;
         return (b - a) + heightVector;
     }
-    
+
+    private bool canBindToSamePath = false;
+    private bool startedInvoke = false;
     private float CheckHorizontalDistanceToNode()
     {
         if (boundToPath)
         {
+            startedInvoke = false;
+            canBindToSamePath = false;
             return Vector3.Distance(Vector3.zero, relativeToGravityHorizontalDirectionVector(GetCharacterFeet(), nodePath.GetNodeFloorPointPosition(currentNode)));
         }
         else
         {
+            if (canBindToSamePath)
+            {
+                return 1;
+            }
+            if (!startedInvoke)
+            {
+                startedInvoke = true;
+                Invoke("CanBindToSamePath", 1f);
+            }
             return Vector3.Distance(Vector3.zero, relativeToGravityHorizontalDirectionVector(GetCharacterFeet(), lostPathNodePosition));
         }
+    }
+
+    private void CanBindToSamePath()
+    {
+        canBindToSamePath = true;
     }
 
     public void UseGravity(bool condition)
@@ -176,16 +195,31 @@ public class Character : MonoBehaviour
         UserInterface.reloadScene();
     }
 
+    private bool keepsFalling = false;
     private void GroundCheck()
     {
-        if (Physics.SphereCast(GetCharacterTop(), (capsuleCollider.radius / 2) * 0.99f, -transform.up, out RaycastHit hit, capsuleCollider.height + 0.3f, LayerMask.GetMask("Terrain")))
+        if (Physics.SphereCast(GetColliderCenterWorldPosition(), (capsuleCollider.radius / 2) * 0.99f, -transform.up, out RaycastHit hit, capsuleCollider.height / 2 + 0.3f, LayerMask.GetMask("Terrain")))
         {
             isGrounded = true;
+            keepsFalling = false;
         }
         else
         {
             isGrounded = false;
             justFell = true;
+            if (!keepsFalling)
+            {
+                StartCoroutine(RespawnAfterSeconds(3f));
+            }
+        }
+    }
+
+    IEnumerator RespawnAfterSeconds(float time)
+    {
+        yield return new WaitForSeconds(time);
+        if (!isGrounded)
+        {
+            deathBehaviour();
         }
     }
 
@@ -197,6 +231,11 @@ public class Character : MonoBehaviour
     private Vector3 GetCharacterTop()
     {
         return transform.position + (transform.rotation * (Vector3.up * capsuleCollider.height / 2 + capsuleCollider.center));
+    }
+
+    private Vector3 GetColliderCenterWorldPosition()
+    {
+        return transform.position + (transform.rotation * capsuleCollider.center);
     }
 
     private bool WallCheck(float castDistance)
@@ -432,12 +471,15 @@ public class Character : MonoBehaviour
 
     private void SearchForPath()
     {
+        if (heightRelativeToTransformVector(GetCharacterFeet(), lostPathNodePosition, transform.forward) < 1.0f)
         if (CheckHorizontalDistanceToNode() < 0.9f || GravityTowardsPoint.boundToPoint || !isGrounded)
+        {
             return;
+        }
 
         RaycastHit hit;
         float castScale = capsuleCollider.radius / 2 - 0.01f;
-        Physics.SphereCast(GetCharacterTop(), castScale, -transform.up, out hit, capsuleCollider.height + 0.1f, LayerMask.GetMask("Path"), QueryTriggerInteraction.UseGlobal);
+        Physics.SphereCast(GetColliderCenterWorldPosition(), castScale, -transform.up, out hit, capsuleCollider.height / 2 + 0.1f, LayerMask.GetMask("Path"), QueryTriggerInteraction.UseGlobal);
         if (hit.collider != null)
         {
             Debug.Log("Path found!");
@@ -449,7 +491,6 @@ public class Character : MonoBehaviour
             temp = temp.Remove(temp.Length - 1);
             currentNode = int.Parse(temp);
             boundToPath = true;
-            direction = WalkDirection.stationary;
 
             Physics.gravity = nodePath.gravityDirection * GravityTowardsPoint.gravityStrenght;
 
@@ -475,6 +516,8 @@ public class Character : MonoBehaviour
                 StartCoroutine(StartWalkingAgain(startingPathDirection, 5.5f));
             else
                 direction = startingPathDirection;
+
+            direction = startingPathDirection;
         }
     }
     #endregion

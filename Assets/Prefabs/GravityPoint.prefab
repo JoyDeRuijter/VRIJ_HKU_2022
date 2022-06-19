@@ -58,6 +58,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c55e9be9263b88d4fad71086ff3d8c57, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  boxScale: 1.5
-  charterOffset: 0.5
+  boxScale: 1.3
+  charterOffset: 0.2
   inOrOut: 1
