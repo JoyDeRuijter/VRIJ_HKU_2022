@@ -334,21 +334,28 @@ public class Character : MonoBehaviour
     // Make the character change directions and move to the nodes in opposite order
     public void FlipDirection()
     {
-        if (direction == WalkDirection.stationary)
+        if (boundToPath)
         {
-            if (lastDirection == WalkDirection.forward)
-                flipToBackward();
-            else
-                flipToForward();
-        }
+            if (direction == WalkDirection.stationary)
+            {
+                if (lastDirection == WalkDirection.forward)
+                    flipToBackward();
+                else
+                    flipToForward();
+            }
 
-        if (direction == WalkDirection.forward)
-        {
-            flipToBackward();
+            if (direction == WalkDirection.forward)
+            {
+                flipToBackward();
+            }
+            else if (direction == WalkDirection.backward)
+            {
+                flipToForward();
+            }
         }
-        else if (direction == WalkDirection.backward)
+        else
         {
-            flipToForward();
+            transform.rotation = transform.rotation * Quaternion.Euler(0, 180, 0);
         }
     }
 
