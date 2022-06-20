@@ -7,7 +7,8 @@ public class PlayerCamera : MonoBehaviour
     [Header("Camera options")]
     [Range(0f, 1f), SerializeField] float camSpeed;
     [SerializeField] GameObject camNodesObject;
-    [SerializeField] int currentNode = 0;
+    [SerializeField] int currentFollowNode = 0;
+    public static int currentAutoNode = 0;
 
     public Transform character = null;
     public bool playerIsActive = false;
@@ -16,16 +17,27 @@ public class PlayerCamera : MonoBehaviour
     Vector3 lastPlayerPos;
 
     CameraNodes camNodes;
+    private GameManager gameManager;
+    private static int lastNode;
     #endregion
 
     private void Start()
     {
         camNodes = camNodesObject.GetComponent<CameraNodes>();
+        gameManager = GameManager.instance;
     }
 
     private void Update()
     {
-        transform.position = Vector3.SmoothDamp(transform.position, camNodes.nodes[currentNode].position, ref zero, camSpeed);
+        if (gameManager.controlCam)
+        {
+            transform.position = Vector3.SmoothDamp(transform.position, camNodes.nodes[currentFollowNode].position, ref zero, camSpeed);
+        }
+        else
+        {
+            transform.position = Vector3.SmoothDamp(transform.position, camNodes.nodes[currentAutoNode].position, ref zero, camSpeed);
+            currentFollowNode = currentAutoNode;
+        }
 
         if (playerIsActive)
         {
@@ -40,17 +52,28 @@ public class PlayerCamera : MonoBehaviour
 
     public void MoveToNextNode()
     {
-        if (currentNode < camNodes.nodes.Count - 1)
+        if (currentFollowNode < camNodes.nodes.Count - 1)
         {
-            currentNode++;
+            currentFollowNode++;
         }
     }
 
     public void MoveToPreviousNode()
     {
-        if (currentNode > 0)
+        if (currentFollowNode > 0)
         {
-            currentNode--;
+            currentFollowNode--;
         }
+    }
+
+    public static void SetAutoCamNode(int current, int last)
+    {
+        lastNode = last;
+        currentAutoNode = current;
+    }
+
+    public static void BackToLastNode()
+    {
+        currentAutoNode = lastNode;
     }
 }

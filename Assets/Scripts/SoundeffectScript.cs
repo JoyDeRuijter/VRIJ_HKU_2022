@@ -5,11 +5,8 @@ using UnityEngine;
 public class SoundeffectScript : MonoBehaviour
 {
     public AudioSource src;
-    public AudioClip sfx1;
+    public AudioClip[] clips;
     private GameManager gameManager;
-   
-    
-    
 
     void Start()
     {
@@ -22,8 +19,8 @@ public class SoundeffectScript : MonoBehaviour
     {
         if (gameManager.playStoneSound)
         {
-            src.clip = sfx1;
-            src.PlayOneShot(sfx1);
+            int r = Random.Range(0, clips.Length - 1);
+            src.PlayOneShot(clips[r]);
             gameManager.playStoneSound = false;
         }
     }

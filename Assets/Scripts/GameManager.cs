@@ -17,23 +17,24 @@ public class GameManager : MonoBehaviour
     [SerializeField] private int startNode;
     [SerializeField] private WalkDirection startDirection;
     [SerializeField] PlayerCamera playerCamera;
+    public bool controlCam;
 
     public Dictionary<Vector3Int, Cube> walkableCubes = new Dictionary<Vector3Int, Cube>();
     public NodePath[] paths;
     [HideInInspector] public Character character;
 
-    private Stairs stairs;
     private GameObject characterGameObject;
     private MovableObject[] movableObjects;
 
-    private bool gaveInput;
     [HideInInspector] public bool playStoneSound;
+    AudioSource source;
+    [SerializeField] AudioClip[] clips;
     #endregion
 
     private void Awake()
     {
+        source = GetComponent<AudioSource>();
         instance = this;
-        stairs = FindObjectOfType<Stairs>();
         InitializePaths();
         SpawnCharacter(startPathID, startNode, startDirection);
         InitializeMovableObjects();
@@ -49,6 +50,8 @@ public class GameManager : MonoBehaviour
         // temp here
         if (Input.GetKeyDown(KeyCode.Q)) { playerCamera.MoveToPreviousNode(); }
         if (Input.GetKeyDown(KeyCode.R)) { playerCamera.MoveToNextNode(); }
+        if (Input.GetKeyDown(KeyCode.E)) { playStoneSound = true; }
+        if (Input.GetKeyDown(KeyCode.C)) { controlCam = !controlCam; }
     }
 
     #region Paths & Path Switching
@@ -178,18 +181,26 @@ public class GameManager : MonoBehaviour
         switch (_inputIndex)
         {
             case 0:
-
                 // No input
                 break;
 
             case 1: // fluit pijp 1
                 Debug.Log("First pipe was blown");
-                playerCamera.MoveToPreviousNode();
+                if (controlCam)
+                {
+                    playerCamera.MoveToPreviousNode();
+                }
+                else
+                {
+                    character.FlipDirection();
+                }
+                source.PlayOneShot(clips[0]);
                 break;
 
             case 2: // fluit pijp 2
                 Debug.Log("Secoond pipe was blown");
                 character.FlipDirection();
+                source.PlayOneShot(clips[1]);
                 break;
 
             case 3: // fluit pijp 3
@@ -205,13 +216,33 @@ public class GameManager : MonoBehaviour
                     else
                         movableObject.DeactivateObject();
                 }
+                source.PlayOneShot(clips[2]);
                 break;
 
             case 4: // fluit pijp 4
                 Debug.Log("Fourth pipe was blown");
-                playerCamera.MoveToNextNode();
+                playStoneSound = true;
+                if (controlCam)
+                {
+                    playerCamera.MoveToNextNode();
+                }
+                else
+                {
+                    foreach (MovableObject movableObject in movableObjects)
+                    {
+                        if (movableObject.isRotation)
+                            break;
+
+                        if (!movableObject.isActivated)
+                            movableObject.ActivateObject();
+                        else
+                            movableObject.DeactivateObject();
+                    }
+                }
+                source.PlayOneShot(clips[3]);
                 break;
         }
+        if (_inputIndex == 0) return;
     }
     #endregion
 }

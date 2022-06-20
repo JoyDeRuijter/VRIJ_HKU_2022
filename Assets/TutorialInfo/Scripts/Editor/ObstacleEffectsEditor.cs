@@ -25,7 +25,12 @@ public class ObstacleEffectsEditor : Editor
 
         // properties for no gravity
         noGravityTileColor_prop,
-        hitboxHeight_prop;
+        hitboxHeight_prop,
+
+        // properties for camera
+        camSwitchTileColor_prop,
+        setCurrentAutoNode_prop,
+        setLastAutoNode_prop;
 
     private void OnEnable()
     {
@@ -50,6 +55,11 @@ public class ObstacleEffectsEditor : Editor
         // properties for gravity
         noGravityTileColor_prop = serializedObject.FindProperty("noGravityTileColor");
         hitboxHeight_prop = serializedObject.FindProperty("hitboxHeight");
+
+        // properties for camera
+        camSwitchTileColor_prop = serializedObject.FindProperty("camSwitchTileColor");
+        setCurrentAutoNode_prop = serializedObject.FindProperty("setCurrentAutoNode");
+        setLastAutoNode_prop = serializedObject.FindProperty("setLastAutoNode");
     }
 
     public override void OnInspectorGUI()
@@ -86,6 +96,11 @@ public class ObstacleEffectsEditor : Editor
                 EditorGUILayout.Slider(hitboxHeight_prop, 1, 10, new GUIContent("Hitbox height"));
                 break;
 
+            case ObstacleEffects.TileEffect.setCamPosition:
+                EditorGUILayout.PropertyField(camSwitchTileColor_prop, new GUIContent("Tile color"));
+                EditorGUILayout.PropertyField(setCurrentAutoNode_prop, new GUIContent("Set the current auto node"));
+                EditorGUILayout.PropertyField(setLastAutoNode_prop, new GUIContent("Set the last auto node"));
+                break;
         }
 
         serializedObject.ApplyModifiedProperties();

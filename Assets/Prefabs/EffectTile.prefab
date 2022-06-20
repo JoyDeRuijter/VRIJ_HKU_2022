@@ -68,6 +68,10 @@ MonoBehaviour:
   activateTileColor: {fileID: 2100000, guid: ceac337cf17678849b4861db112f04c2, type: 2}
   activatedObject: []
   deactivateAfterTime: 0
+  noGravityTileColor: {fileID: 0}
+  hitboxHeight: 1
+  camSwitchTileColor: {fileID: 2100000, guid: e9d9b1fba424c5741aa50654d3c1fb06, type: 2}
+  setCurrentAutoNode: 0
 --- !u!1 &6553379470947336917
 GameObject:
   m_ObjectHideFlags: 0

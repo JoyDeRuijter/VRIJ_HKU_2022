@@ -3,7 +3,7 @@ using UnityEngine;
 [SelectionBase, ExecuteAlways]
 public class ObstacleEffects : MonoBehaviour
 {
-    public enum TileEffect { none, death, drafting, activating, noGravity }
+    public enum TileEffect { none, death, drafting, activating, noGravity, setCamPosition }
 
     public TileEffect tileEffect;
 
@@ -26,6 +26,11 @@ public class ObstacleEffects : MonoBehaviour
     // No gravity stuff
     [SerializeField] Material noGravityTileColor;
     [SerializeField] float hitboxHeight = 1;
+
+    // Camera stuff
+    [SerializeField] Material camSwitchTileColor;
+    [SerializeField] int setCurrentAutoNode;
+    [SerializeField] int setLastAutoNode;
 
     private BoxCollider hitBox;
     private MeshRenderer mr;
@@ -88,6 +93,12 @@ public class ObstacleEffects : MonoBehaviour
                 hitBox.center = new Vector3(0, hitboxHeight / 2, 0);
                 hitBox.size = new Vector3(1, hitboxHeight, 1);
                 break;
+
+            case TileEffect.setCamPosition:
+                if (camSwitchTileColor != null) mr.material = camSwitchTileColor;
+                hitBox.center = Vector3.up * 0.15f;
+                hitBox.size = new Vector3(1, 0.3f, 1);
+                break;
         }
     }
 
@@ -139,6 +150,16 @@ public class ObstacleEffects : MonoBehaviour
                     rb.AddForce(Vector3.up * draftSpeed);
                     Character.isFloating = true;
                     break;
+                case TileEffect.setCamPosition:
+                    if (character.direction == WalkDirection.forward)
+                    {
+                        PlayerCamera.SetAutoCamNode(setCurrentAutoNode, setLastAutoNode);
+                    }
+                    else if (character.direction == WalkDirection.backward)
+                    {
+                        PlayerCamera.BackToLastNode();
+                    }
+                break;
             }
         }
     }
@@ -177,6 +198,10 @@ public class ObstacleEffects : MonoBehaviour
             case TileEffect.noGravity:
                 Gizmos.color = new Color(1, 1, 1, 0.4f);
                 break;
+            case TileEffect.setCamPosition:
+                Gizmos.color = new Color(0 / 255f, 255 / 255f, 0 / 255f, 0.4f);
+                break;
+
 
         }
         Gizmos.DrawCube(hitBox.transform.position + hitBox.center, hitBox.size);
