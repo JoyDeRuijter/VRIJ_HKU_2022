@@ -71,7 +71,7 @@ public class Character : MonoBehaviour
             ReloadScene();
 
         // Is only for debugging, will be removed later
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.W))
             FlipDirection();
 
         PlayAnimations();
