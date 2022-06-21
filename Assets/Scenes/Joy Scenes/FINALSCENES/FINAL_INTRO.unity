@@ -843,7 +843,7 @@ MonoBehaviour:
   - {fileID: 3755938812165884412, guid: 20d037b9a2a5d014d8ba582b8f58fd92, type: 3}
   - {fileID: 5036936787870584882, guid: 5047ec50ab847b047bedcc8194dfede8, type: 3}
   - {fileID: 7433835896021155144, guid: c827cb529896f1c42beb69de4bdc30e9, type: 3}
-  fadeTime: 3
+  fadeTime: 1
 --- !u!114 &1497889078
 MonoBehaviour:
   m_ObjectHideFlags: 0

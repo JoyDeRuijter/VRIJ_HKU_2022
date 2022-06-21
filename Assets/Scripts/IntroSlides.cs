@@ -10,15 +10,17 @@ public class IntroSlides : MonoBehaviour
 {
     #region Variables
 
+    [SerializeField] private bool isOutro;
     [SerializeField] private Button backButton;
     [SerializeField] private Button nextButton;
     [SerializeField] private Button goButton;
+    [SerializeField] private Button closeButton;
     [SerializeField] private Image image;
     [SerializeField] private Sprite[] slides;
     [SerializeField] private GameObject[] texts;
-    [SerializeField] private float fadeTime = 2f;
+    [SerializeField] private float fadeTime = 0.5f;
 
-    private int currentSlide;
+    private int currentSlide = 0;
     private GameObject currentText;
 
     #endregion
@@ -75,6 +77,11 @@ public class IntroSlides : MonoBehaviour
         SceneManager.LoadScene(sceneName);
     }
 
+    public void Close()
+    { 
+        Application.Quit();
+    }
+
     private IEnumerator FadeOutOldText()
     {
         if (currentText != null)
@@ -104,6 +111,12 @@ public class IntroSlides : MonoBehaviour
             goButton.gameObject.SetActive(false);
         }
 
+        if (currentSlide > 0 && currentSlide < 4 && isOutro)
+        {
+            closeButton.interactable = false;
+            closeButton.gameObject.SetActive(false);
+        }
+
         if (currentSlide > 0 && currentSlide < 11)
         { 
             backButton.interactable = true;
@@ -113,13 +126,22 @@ public class IntroSlides : MonoBehaviour
             goButton.gameObject.SetActive(false);
         }
 
-        if (currentSlide == 11)
+        if (currentSlide == 11 && !isOutro)
         { 
             backButton.interactable = true;
             nextButton.interactable = false;
             nextButton.gameObject.SetActive(false);
             goButton.interactable = true;
             goButton.gameObject.SetActive(true);
+        }
+
+        if (currentSlide == 3 && isOutro)
+        {
+            backButton.interactable = true;
+            nextButton.interactable = false;
+            nextButton.gameObject.SetActive(false);
+            closeButton.interactable = true;
+            closeButton.gameObject.SetActive(true);
         }
     }
 }

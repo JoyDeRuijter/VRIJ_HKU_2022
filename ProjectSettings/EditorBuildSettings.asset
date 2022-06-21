@@ -14,4 +14,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Joy Scenes/FINALSCENES/FINAL_GAME.unity
     guid: d01567d462e80ef409c1d270715a2495
+  - enabled: 1
+    path: Assets/Scenes/Joy Scenes/FINALSCENES/FINAL_OUTRO.unity
+    guid: 57064f5c63995f44a9a1c3a8c27721fd
   m_configObjects: {}

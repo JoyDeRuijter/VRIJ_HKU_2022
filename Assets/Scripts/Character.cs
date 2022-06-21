@@ -118,6 +118,9 @@ public class Character : MonoBehaviour
         {
             UseGravity(true);
         }
+
+        // Check if the player has reached the finish
+        FinishGame();
     }
 
     private void FixedUpdate()
@@ -563,6 +566,12 @@ public class Character : MonoBehaviour
     private void ReloadScene()
     {
         SceneManager.LoadScene("FINAL_GAME");
+    }
+
+    private void FinishGame()
+    {
+        if (currentPathID == 11 && currentNode == 36)
+            SceneManager.LoadScene("FINAL_OUTRO");
     }
 }
 
