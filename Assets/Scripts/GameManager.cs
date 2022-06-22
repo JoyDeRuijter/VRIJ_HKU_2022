@@ -131,9 +131,10 @@ public class GameManager : MonoBehaviour
             character.nodePath = spawnPath;
 
             Physics.gravity = paths[_pathID].gravityDirection * GravityTowardsPoint.gravityStrenght;
+
+            CamFollowsPlayer(characterGameObject);
         }
 
-        CamFollowsPlayer(characterGameObject);
     }
 
     public void DropCharacter(Vector3 _dropPosition)
